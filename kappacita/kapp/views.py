@@ -25,4 +25,7 @@ def meuprogresso(request):
 def artigos(request):
     return render(request, 'artigos.html')
 
+def configuracoes(request):
+    return render(request, 'configuracoes.html')
+
 

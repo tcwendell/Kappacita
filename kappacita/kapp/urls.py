@@ -10,4 +10,5 @@ urlpatterns = [
     path('favoritos/', favoritos, name = 'favoritos'),
     path('meuprogresso/', meuprogresso, name = 'meuprogresso'),
     path('artigos/', artigos, name = 'artigos'),
+    path('configuracoes/', configuracoes, name = 'configuracoes'),
 ]

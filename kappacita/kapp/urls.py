@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path # type: ignore
 from .views import *
 
 urlpatterns = [
     path('', homepage, name = 'homepage'),
+<<<<<<< HEAD
     path('cursos/', cursos, name = 'cursos'),
     path('kappabot/', kappabot, name = 'kappabot'),
     path('questionario/', questionario, name = 'questionario'),
@@ -12,3 +13,6 @@ urlpatterns = [
     path('artigos/', artigos, name = 'artigos'),
     
 ]
+=======
+]
+>>>>>>> db5fe9a (alteração irrelevante)

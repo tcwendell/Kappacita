@@ -10,9 +10,5 @@ urlpatterns = [
     path('favoritos/', favoritos, name = 'favoritos'),
     path('meuprogresso/', meuprogresso, name = 'meuprogresso'),
     path('artigos/', artigos, name = 'artigos'),
-<<<<<<< HEAD
     path('configuracoes/', configuracoes, name = 'configuracoes'),
-=======
-    
->>>>>>> fd9e39b (testee)
 ]

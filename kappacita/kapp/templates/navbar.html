@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,16 +8,67 @@
     <title>Document</title>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'homepage' %}">Inicio</a>
-        <a href="{% url 'questionario' %}">Questionario de Perfil</a>
-        <a href="{% url 'cursos' %}">Cursos</a>
-        <a href="{% url 'profissoes' %}">Profissões</a>
-        <a href="{% url 'favoritos' %}">Favoritos</a>
-        <a href="{% url 'kappabot' %}">KappaBOT</a>
-        <a href="{% url 'meuprogresso' %}">Meu progresso</a>
-        <a href="{% url 'artigos' %}">Artigos e Vestibulares</a>
-        <a href="{% url 'configuracoes' %}">Configurações</a>
+    <aside class="w-full lg:w-64 bg-white flex-shrink-0 flex flex-col border-r border-gray-100 z-50 h-screen">
+<div class="p-6 flex flex-col items-center">
+    <img src="{% static 'img/IMG_1.png' %}" alt="Kappacita Logo" class="w-16 h-16 mb-2">
+    <h1 class="text-[#233e78] text-xl font-normal font-[Poppins]">Kappacita</h1>
+</div>
+
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
+    
+    <a href="{% url 'homepage' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_2.svg' %}" class="w-4 h-4" alt="Início">
+    <span>Início</span>
+    </a>
+
+    <a href="{% url 'questionario' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_3.svg' %}" class="w-4 h-4" alt="Questionário">
+        <span>Questionário de Perfil</span>
+    </a>
+
+    <a href="{% url 'cursos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_4.svg' %}" class="w-4 h-4" alt="Cursos">
+        <span>Cursos</span>
+    </a>
+
+    <a href="{% url 'profissoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_5.svg' %}" class="w-4 h-4" alt="Profissões">
+        <span>Profissões</span>
+    </a>
+
+    <a href="{% url 'favoritos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_6.svg' %}" class="w-4 h-4" alt="Favoritos">
+        <span>Favoritos</span>
+    </a>
+
+    <a href="{% url 'kappabot' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_7.svg' %}" class="w-4 h-4" alt="KappaBOT">
+        <span>KappaBOT</span>
+    </a>
+
+    <a href="{% url 'meuprogresso' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_8.svg' %}" class="w-4 h-4" alt="Progresso">
+        <span>Meu Progresso</span>
+    </a>
+
+    <a href="{% url 'artigos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_9.svg' %}" class="w-4 h-4" alt="Artigos">
+        <span>Artigos e Vestibulares</span>
+    </a>
+
     </nav>
+
+    <div class="p-4 border-t border-gray-100 space-y-1">
+    <a href="{% url 'configuracoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_10.svg' %}" class="w-4 h-4" alt="Configurações">
+        <span>Configurações</span>
+    </a>
+    
+    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
+        <img src="{% static 'img/IMG_11.svg' %}" class="w-4 h-4" alt="Sair">
+        <span>Sair</span>
+    </a>
+    </div>
+</aside>
 </body>
 </html>

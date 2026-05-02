@@ -1,6 +1,78 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Início{% endblock %}
+
 {% block body %}
-    <h1>homepage</h1>
+<div class="p-6 lg:p-10 bg-[#5b90bd] min-h-screen">
+    
+    <section class="hero-banner-border relative bg-white/10 mb-12 min-h-[300px] flex flex-col lg:flex-row overflow-hidden shadow-2xl">
+        <div class="absolute inset-0 z-0">
+            <img src="{% static 'img/IMG_19.jpeg' %}" class="w-full h-full object-cover scale-150 rotate-[270deg]" alt="Background">
+        </div>
+
+        <div class="relative z-10 flex-1 p-8 flex flex-col justify-center">
+            <div class="flex items-center gap-2 mb-2">
+                <img src="{% static 'img/IMG_20.svg' %}" class="w-5 h-5" alt="Sparkles">
+                <span class="font-poppins font-bold text-[#1b22b1]">Seja bem-vindo(a)</span>
+            </div>
+            
+            <h1 class="font-poppins text-4xl text-[#233e78] mb-4 font-bold">
+                Olá, {{ user.first_name|default:"Usuário" }}!
+            </h1>
+            
+            <p class="font-poppins text-[#1b22b1] max-w-xl mb-8">
+                Seu perfil está 50% completo. Complete o questionário vocacional para receber recomendações ainda mais precisas.
+            </p>
+            
+            <div class="flex flex-wrap items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <span class="font-poppins font-medium text-[#233e78]">Perfil</span>
+                    <div class="w-48 h-3.5 bg-[#1E3A8A]/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-[#233e78] w-1/2 rounded-full"></div>
+                    </div>
+                    <span class="font-poppins font-medium text-[#1e293b]">50%</span>
+                </div>
+                
+                <button class="flex items-center gap-2 px-5 py-2.5 border border-[#233e78] rounded-xl text-[#233e78] font-poppins text-sm hover:bg-white/30 transition-all shadow-md bg-white/10">
+                    Completar perfil
+                    <img src="{% static 'img/IMG_21.svg' %}" class="w-4 h-4" alt="Seta">
+                </button>
+            </div>
+        </div>
+
+        <div class="relative z-10 p-8 grid grid-cols-2 gap-4 self-center">
+            <div class="stat-card w-28 h-20 flex flex-col items-center justify-center text-center">
+                <span class="text-white text-xl font-bold">3</span>
+                <span class="text-[#DAE6F1] text-[10px] font-poppins uppercase">Salvos</span>
+            </div>
+            <div class="stat-card w-28 h-20 flex flex-col items-center justify-center text-center">
+                <span class="text-white text-xl font-bold">4</span>
+                <span class="text-[#DAE6F1] text-[10px] font-poppins uppercase">Áreas</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-2xl font-bold font-poppins text-white mb-6">Cursos Recomendados</h2>
+        <div class="grid grid-cols-1 gap-6">
+            <div class="flex flex-col md:flex-row bg-transparent rounded-[20px] overflow-hidden border-[3px] border-[#dee1e6] shadow-2xl">
+                <div class="w-full md:w-72 h-48 md:h-auto">
+                    <img src="{% static 'img/IMG_22.jpeg' %}" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 p-8">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-white text-xl font-bold">Ciência da Computação</h3>
+                        <span class="bg-[#1dd75b] text-white text-xs font-bold px-3 py-1 rounded-full">95% match</span>
+                    </div>
+                    <p class="text-white/80 text-sm mb-4">TI • 8 Semestres</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <span class="text-white font-bold">R$ 8.000 – R$ 20.000</span>
+                        <img src="{% static 'img/IMG_23.svg' %}" class="w-6 h-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kappacita - Dados e Privacidade{% endblock %}
+
+{% block body %}
+<style>
+    /* Estilos de Vidro e Layout */
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+    }
+    /* Classe para indicar a página ativa no menu lateral */
+    .nav-active {
+        background-color: #81a8cb;
+        color: white !important;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
+    <div class="px-8 pt-8 shrink-0">
+        <h1 class="text-4xl text-white mb-4 font-poppins font-bold">Configurações</h1>
+        <div class="border-t border-white/20"></div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden p-8 gap-8">
+        
+        <aside class="w-80 flex-shrink-0">
+            <div class="glass-panel rounded-2xl p-4 shadow-lg space-y-2 h-fit">
+                
+                <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
+                    <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                    <span class="font-poppins">Conta</span>
+                </a>
+
+                <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
+                    <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+                    <span class="font-poppins">Notificações</span>
+                </a>
+
+                <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
+                    <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+                    <span class="font-poppins">Idioma e Acessibilidade</span>
+                </a>
+
+                <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
+                    <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+                    <span class="font-poppins">Dados e Privacidade</span>
+                </a>
+
+            </div>
+        </aside>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar">
+            <div class="bg-white/20 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-white/20 min-h-full">
+                <h2 class="text-2xl text-[#233e78] mb-8 font-poppins font-bold">Dados e Privacidade</h2>
+                
+                <div class="space-y-12">
+                    
+                    <section>
+                        <h3 class="text-[#233e78] text-lg font-bold mb-6 font-poppins">Uso e personalização</h3>
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1">
+                                <p class="text-white text-sm font-normal mb-2 font-poppins">Uso do perfil para recomendações</p>
+                                <p class="text-[#1e293b] text-[11px] leading-relaxed font-poppins max-w-md">
+                                    Permitir que o sistema use suas respostas e histórico para gerar recomendações personalizadas.
+                                </p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1">
+                                <p class="text-white text-sm font-normal mb-2 font-poppins">Gerenciamento de Privacidade</p>
+                                <p class="text-[#1e293b] text-[11px] leading-relaxed font-poppins max-w-md">
+                                    Quando essa ferramenta for ativada, nosso site pode compartilhar informações pessoais com parceiros para <span class="font-bold">personalizar</span> o sistema de anúncios.
+                                </p>
+                                <a href="#" class="text-[#1f27cd] text-[11px] font-bold underline mt-2 block font-poppins">CLIQUE AQUI PARA SABER MAIS</a>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="pt-8 border-t border-white/10">
+                        <h3 class="text-white text-sm font-normal mb-4 font-poppins">Gerenciamento da conta</h3>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-red-500/10 p-6 rounded-2xl border border-red-500/20 gap-4">
+                            <p class="text-[#1e293b] text-[11px] font-poppins">
+                                <span class="font-bold">Excluir Perfil e Dados:</span> Apague sua conta e todo seu histórico de dados.
+                            </p>
+                            <button class="bg-[#ff0008]/80 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-red-600 transition-all shadow-lg">
+                                Excluir Conta
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,6 +1,114 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Kappacita - Configurações{% endblock %}
+
 {% block body %}
-    <h1>Configurações</h1>
+<style>
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    /* Classe para indicar a página atual no menu lateral */
+    .nav-active {
+      background-color: #81a8cb;
+      color: white !important;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+
+<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
+    <div class="px-8 pt-8 shrink-0">
+      <h1 class="text-4xl text-white mb-4 font-poppins font-bold">Configurações</h1>
+      <div class="border-t border-white/20"></div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden p-8 gap-8">
+      
+      <aside class="w-80 flex-shrink-0">
+        <div class="glass-panel rounded-2xl p-4 shadow-lg space-y-2 h-fit">
+          
+          <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
+            <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+            <span class="font-poppins font-medium">Conta</span>
+          </a>
+
+          <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 text-[#233e78] font-medium transition-all">
+            <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+            <span class="font-poppins">Notificações</span>
+          </a>
+
+          <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 text-[#233e78] font-medium transition-all">
+            <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+            <span class="font-poppins">Idioma e Acessibilidade</span>
+          </a>
+
+          <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 text-[#233e78] font-medium transition-all">
+            <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+            <span class="font-poppins">Dados e Privacidade</span>
+          </a>
+
+        </div>
+      </aside>
+
+      <div class="flex-1 overflow-y-auto no-scrollbar">
+        <div class="bg-white/20 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-white/20 min-h-full">
+          <h2 class="text-2xl text-[#233e78] mb-8 font-poppins font-bold">Detalhes da Conta</h2>
+          
+          <div class="flex items-center gap-8 mb-10 pb-10 border-b border-white/10">
+            <div class="relative">
+              <img src="{% static 'img/IMG_19.jpg' %}" alt="Profile" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl">
+              <button class="absolute bottom-0 right-0 bg-[#233e78] text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all">
+                <iconify-icon icon="lucide:camera" width="20"></iconify-icon>
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <p class="text-white text-xl font-semibold">@jsantos</p>
+                <p class="text-white/70 text-sm">Jhennifer Santos</p>
+              </div>
+              <div class="flex gap-4">
+                <button class="bg-[#233e78] text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#1a2e5a] transition-all">Alterar Foto</button>
+                <button class="bg-white/10 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-white/20 transition-all">Remover</button>
+              </div>
+            </div>
+          </div>
+
+          <form action="#" method="POST" class="space-y-8">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              <div class="space-y-2">
+                <label class="text-sm text-[#233e78] font-bold">Primeiro Nome</label>
+                <input type="text" value="Jhennifer" class="w-full bg-white border-none rounded-2xl px-5 py-4 text-gray-700 focus:ring-4 focus:ring-[#233e78]/20 outline-none shadow-inner">
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm text-[#233e78] font-bold">Sobrenome</label>
+                <input type="text" value="Santos" class="w-full bg-white border-none rounded-2xl px-5 py-4 text-gray-700 focus:ring-4 focus:ring-[#233e78]/20 outline-none shadow-inner">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              <div class="space-y-2">
+                <label class="text-sm text-[#233e78] font-bold">E-mail de Acesso</label>
+                <input type="email" value="jhennifer@gmail.com" class="w-full bg-white border-none rounded-2xl px-5 py-4 text-gray-700 focus:ring-4 focus:ring-[#233e78]/20 outline-none shadow-inner">
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm text-[#233e78] font-bold">Senha</label>
+                <div class="flex gap-2">
+                    <input type="password" value="********" disabled class="flex-1 bg-white/50 border-none rounded-2xl px-5 py-4 text-gray-400 outline-none">
+                    <button type="button" class="bg-[#233e78] text-white px-6 rounded-2xl font-bold">Alterar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-4 pt-10 border-t border-white/10">
+              <button type="button" class="px-10 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">Descartar</button>
+              <button type="submit" class="px-10 py-4 bg-[#233e78] text-white rounded-2xl font-bold shadow-xl hover:bg-[#1a2e5a] transition-all">Salvar Alterações</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</main>
 {% endblock %}

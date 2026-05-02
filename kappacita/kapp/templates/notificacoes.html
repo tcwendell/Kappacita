@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kappacita - Notificações{% endblock %}
+
+{% block body %}
+<style>
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-active {
+      background-color: #81a8cb;
+      color: white !important;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+
+<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
+    <div class="px-8 pt-8 shrink-0">
+        <h1 class="text-4xl text-white mb-4 font-poppins font-bold">Configurações</h1>
+        <div class="border-t border-white/20"></div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden p-8 gap-8">
+        
+        <aside class="w-80 flex-shrink-0">
+            <div class="bg-white/85 backdrop-blur-md rounded-2xl p-4 shadow-lg space-y-2">
+                <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 transition-all">
+                    <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                    <span class="font-poppins font-medium">Conta</span>
+                </a>
+                <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
+                    <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+                    <span class="font-poppins font-medium">Notificações</span>
+                </a>
+                <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 transition-all">
+                    <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+                    <span class="font-poppins font-medium">Idioma e Acessibilidade</span>
+                </a>
+                <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 transition-all">
+                    <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+                    <span class="font-poppins font-medium">Dados e Privacidade</span>
+                </a>
+            </div>
+        </aside>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar">
+            <div class="bg-[#9dbad5] rounded-3xl p-10 shadow-2xl border border-white/20 min-h-full">
+                <h2 class="text-[#233e78] text-2xl font-bold mb-8 font-poppins">Notificações</h2>
+                
+                <form action="#" method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between bg-white/10 p-5 rounded-2xl border border-white/10">
+                            <p class="text-white text-base font-poppins">Permitir notificações no sistema</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-12 h-6 bg-gray-400/50 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-md"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-white/10 p-5 rounded-2xl border border-white/10">
+                            <p class="text-white text-base font-poppins">Receber alertas sobre <b>vestibulares</b> próximos</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-12 h-6 bg-gray-400/50 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-md"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-white/10 p-5 rounded-2xl border border-white/10">
+                            <p class="text-white text-base font-poppins">Receber recomendações na caixa de e-mail</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-12 h-6 bg-gray-400/50 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-md"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-white/10 p-5 rounded-2xl border border-white/10">
+                            <p class="text-white text-base font-poppins">Lembretes de interação com o KappaBOT</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-12 h-6 bg-gray-400/50 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-md"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-white/10 p-5 rounded-2xl border border-white/10">
+                            <p class="text-white text-base font-poppins">Receber notificações na caixa de mensagens</p>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="w-12 h-6 bg-gray-400/50 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-md"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4 pt-10 border-t border-white/10">
+                        <button type="button" class="px-10 py-3 bg-white/20 text-white rounded-xl font-bold hover:bg-white/30 transition-all">Cancelar</button>
+                        <button type="submit" class="px-10 py-3 bg-[#233e78] text-white rounded-xl font-bold shadow-xl hover:bg-[#1a2e5a] transition-all">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

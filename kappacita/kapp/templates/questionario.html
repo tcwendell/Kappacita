@@ -71,14 +71,12 @@
         </div>
 
         <div class="mt-16 flex justify-between items-center">
-            <button class="text-gray-400 font-bold hover:text-[#233e78] transition-colors flex items-center gap-2">
-                <iconify-icon icon="lucide:arrow-left"></iconify-icon>
-                Anterior
-            </button>
-            <button class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2">
-                Próxima
-                <iconify-icon icon="lucide:arrow-right"></iconify-icon>
-            </button>
+            <div class="mt-16 flex justify-end items-center">
+                <a href="{% url 'questionario2' %}" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
+                        Próxima
+                    <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                </a>
+            </div>
         </div>
     </div>
 

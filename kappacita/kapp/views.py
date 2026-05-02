@@ -28,4 +28,16 @@ def artigos(request):
 def configuracoes(request):
     return render(request, 'configuracoes.html')
 
+def questionario2(request):
+    return render(request, 'questionario2.html')
+
+def questionario3(request):
+    return render(request, 'questionario3.html')
+
+def questionario4(request):
+    return render(request, 'questionario4.html')
+
+def questionario5(request):
+    return render(request, 'questionario4.html')
+
 

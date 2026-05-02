@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kappacita - Idioma e Acessibilidade{% endblock %}
+
+{% block body %}
+<style>
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .nav-active {
+        background-color: #81a8cb;
+        color: white !important;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .card-shadow {
+        box-shadow: 0px 17px 35px 0px rgba(23, 26, 31, 0.24);
+    }
+    /* Estilização dos Sliders */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+        width: 100%;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+        background: #ced0f8;
+        height: 4px;
+        border-radius: 2px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        margin-top: -6px;
+        background-color: #ffffff;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        border: 1px solid #636AE8;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+
+<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
+    <div class="px-8 pt-8 shrink-0">
+        <h2 class="text-white text-4xl font-bold mb-8 font-[Poppins]">Configurações</h2>
+        <div class="border-t border-white/20 mb-10"></div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden px-8 pb-8 gap-8">
+        
+        <aside class="w-80 flex-shrink-0">
+            <div class="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg space-y-2 h-fit">
+                <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
+                    <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                    <span class="font-[Poppins]">Conta</span>
+                </a>
+                <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
+                    <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+                    <span class="font-[Poppins]">Notificações</span>
+                </a>
+                <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
+                    <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+                    <span class="font-[Poppins]">Idioma e Acessibilidade</span>
+                </a>
+                <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
+                    <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+                    <span class="font-[Poppins]">Dados e Privacidade</span>
+                </a>
+            </div>
+        </aside>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar">
+            <div class="glass-panel rounded-2xl p-10 card-shadow min-h-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative">
+                    
+                    <div class="space-y-10">
+                        <h3 class="text-[#405d91] text-xl font-bold font-[Poppins]">Acessibilidade visual</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="text-white text-base font-[Poppins]">Tamanho da Fonte:</label>
+                            <div class="flex items-center gap-4">
+                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
+                                    <iconify-icon icon="lucide:minus" width="16"></iconify-icon>
+                                </button>
+                                <input type="range" min="12" max="24" value="16" class="flex-1">
+                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
+                                    <iconify-icon icon="lucide:plus" width="16"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="text-white text-base font-[Poppins]">Espaçamento entre palavras</label>
+                            <div class="flex items-center gap-4">
+                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
+                                    <iconify-icon icon="lucide:align-center" width="16"></iconify-icon>
+                                </button>
+                                <input type="range" min="0" max="50" value="25" class="flex-1">
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="text-white text-base font-[Poppins]">Alto Contraste</label>
+                            <div class="flex items-center gap-4">
+                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
+                                    <iconify-icon icon="lucide:contrast" width="16"></iconify-icon>
+                                </button>
+                                <input type="range" min="0" max="100" value="45" class="flex-1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2"></div>
+
+                    <div class="space-y-10">
+                        <h3 class="text-[#405d91] text-xl font-bold font-[Poppins]">Idioma</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="text-white text-base font-[Poppins]">Selecione o idioma:</label>
+                            <div class="relative group">
+                                <select class="w-full bg-[#f3f4f6] rounded-lg px-4 py-3 text-[#171a1f] text-sm font-serif-cactus appearance-none outline-none focus:ring-2 focus:ring-[#233e78]/30">
+                                    <option value="pt-br">Português (Brasil)</option>
+                                    <option value="en">English</option>
+                                    <option value="es">Español</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#223f78]">
+                                    <iconify-icon icon="lucide:chevron-down" width="18"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-4 mt-20 pt-8 border-t border-white/10">
+                    <button class="px-10 py-3 bg-[#636AE8]/50 text-white rounded-xl text-sm font-[Poppins] hover:bg-[#636AE8]/70 transition-all">
+                        Cancelar
+                    </button>
+                    <button class="px-10 py-3 bg-[#233e78] text-white rounded-xl text-sm font-[Poppins] shadow-lg hover:bg-[#1a2e5a] transition-all">
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

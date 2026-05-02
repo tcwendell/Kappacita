@@ -40,4 +40,11 @@ def questionario4(request):
 def questionario5(request):
     return render(request, 'questionario5.html')
 
+def privacidade(request):
+    return render(request, 'privacidade.html')
 
+def idiomas(request):
+    return render(request, 'idiomas.html')
+
+def notificacoes(request):
+    return render(request, 'notificacoes.html')

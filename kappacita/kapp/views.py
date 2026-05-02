@@ -38,6 +38,6 @@ def questionario4(request):
     return render(request, 'questionario4.html')
 
 def questionario5(request):
-    return render(request, 'questionario4.html')
+    return render(request, 'questionario5.html')
 
 

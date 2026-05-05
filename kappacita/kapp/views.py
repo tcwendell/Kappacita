@@ -1,4 +1,6 @@
 from django.shortcuts import render # type: ignore
+from .models import *
+from django.core.paginator import Paginator
 
 
 def homepage(request):
@@ -14,7 +16,12 @@ def questionario(request):
     return render(request, 'questionario.html')
 
 def profissoes(request):
-    return render(request, 'profissoes.html')
+    q = request.GET.get('q', '')
+    lista = Profissao.objects.filter(nome__icontains=q)
+    paginator = Paginator(lista, 12)  # 12 por página
+    page = request.GET.get('page')
+    profissoes = paginator.get_page(page)
+    return render(request, 'profissoes.html', {'profissoes': profissoes})
 
 def favoritos(request):
     return render(request, 'favoritos.html')

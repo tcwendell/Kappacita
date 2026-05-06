@@ -151,7 +151,7 @@
         </div>
 
         <!-- Form Login -->
-        <form id="form-login" class="w-full space-y-6" method="POST" action="">
+        <form id="form-login" class="w-full space-y-6" method="POST" action="{% url 'loginFuncionalidades' %}">
           {% csrf_token %}
           <input type="hidden" name="form_type" value="login">
 
@@ -181,54 +181,6 @@
             Entrar
           </button>
         </form>
-
-        <!-- Form Cadastro -->
-        <form id="form-cadastro" class="w-full space-y-6 hidden" method="POST" action="">
-          {% csrf_token %}
-          <input type="hidden" name="form_type" value="cadastro">
-
-          <div class="space-y-2">
-            <label class="text-white text-lg font-normal ml-2">Nome completo</label>
-            <input type="text" name="nome" required
-              class="w-full h-12 px-6 rounded-full bg-white input-shadow outline-none focus:ring-2 focus:ring-white/50">
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-white text-lg font-normal ml-2">E-mail</label>
-            <input type="email" name="email" required
-              class="w-full h-12 px-6 rounded-full bg-white input-shadow outline-none focus:ring-2 focus:ring-white/50">
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-white text-lg font-normal ml-2">Senha</label>
-            <div class="relative">
-              <input type="password" name="password1" id="senha-cadastro" required
-                class="w-full h-12 px-6 rounded-full bg-white input-shadow outline-none focus:ring-2 focus:ring-white/50">
-              <button type="button" onclick="toggleSenha('senha-cadastro')"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40 hover:opacity-100">
-                <img src="{% static 'img/mostrar_senha.svg' %}" alt="Toggle Password" class="w-6 h-6">
-              </button>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-white text-lg font-normal ml-2">Confirmar senha</label>
-            <div class="relative">
-              <input type="password" name="password2" id="senha-confirmar" required
-                class="w-full h-12 px-6 rounded-full bg-white input-shadow outline-none focus:ring-2 focus:ring-white/50">
-              <button type="button" onclick="toggleSenha('senha-confirmar')"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40 hover:opacity-100">
-                <img src="{% static 'img/mostrar_senha.svg' %}" alt="Toggle Password" class="w-6 h-6">
-              </button>
-            </div>
-          </div>
-
-          <button type="submit"
-            class="w-full h-14 bg-white text-[#224178] font-bold text-xl rounded-2xl shadow-lg hover:bg-blue-50 mt-4">
-            Cadastrar
-          </button>
-        </form>
-
         <!-- Divider -->
         <div class="w-full flex items-center gap-4 my-8">
           <div class="flex-1 h-[1px] bg-[#DEDDDB]/50"></div>
@@ -251,6 +203,11 @@
     </div>
 
   </main>
-
+<script>
+  function toggleSenha(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+</script>
 </body>
 </html>

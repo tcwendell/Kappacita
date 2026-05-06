@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
 
 
 # ---------- AUTH ----------
@@ -146,7 +147,30 @@ def homepage(request):
 
 @login_required
 def cursos(request):
-    return render(request, 'cursos.html')
+    q = request.GET.get('q', '')
+    lista = Curso.objects.filter(nome__icontains=q)
+    paginator = Paginator(lista, 12)
+    page = request.GET.get('page')
+    cursos_paginados = paginator.get_page(page)
+    categorias = Categoria.objects.all()
+    favoritos_ids = list(
+        Favorito.objects.filter(usuario=request.user).values_list('curso_id', flat=True)
+    )
+    return render(request, 'cursos.html', {
+        'cursos': cursos_paginados,
+        'categorias': categorias,
+        'favoritos_ids': favoritos_ids,
+    })
+
+
+@login_required
+@require_POST
+def favoritar_curso(request, curso_id):
+    curso = Curso.objects.get(id=curso_id)
+    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, curso=curso)
+    if not criado:
+        favorito.delete()
+    return redirect('cursos')
 
 @login_required
 def kappabot(request):

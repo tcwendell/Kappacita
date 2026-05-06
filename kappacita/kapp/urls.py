@@ -18,4 +18,8 @@ urlpatterns = [
     path('questionario/3/', questionario3, name='questionario3'),
     path('questionario/4/', questionario4, name='questionario4'),
     path('questionario/5/', questionario5, name='questionario5'),
+    path('loginArea/', loginArea, name = 'loginArea'),
+    path('loginFuncionalidades/', loginFuncionalidades, name = 'loginFuncionalidades'),
+    path('cadastrarFuncionalidades/', cadastrarFuncionalidades, name = 'cadastrarFuncionalidades'),
+    path('cadastrarArea/', cadastrarArea, name = 'cadastrarArea'),
 ]

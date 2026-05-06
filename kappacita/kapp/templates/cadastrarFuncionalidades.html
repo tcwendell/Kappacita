@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kappacita - Cadastro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+        color: #1e293b;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .font-serif-accent { font-family: "Playfair Display", serif; }
+
+    button { font-family: "Poppins", sans-serif; font-weight: 600; }
+
+    .bg-hero {
+        background: url("{% static 'img/fundo_inicio.jpeg' %}") no-repeat center center;
+        background-size: cover;
+    }
+
+    .glass-card {
+        background: rgba(91, 144, 189, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    * { transition: all 0.2s ease; }
+  </style>
+</head>
+<body class="bg-hero min-h-screen flex items-center justify-center p-4 lg:p-0">
+
+  <!-- Overlay escuro suave -->
+  <div class="fixed inset-0 z-[-1] bg-black/20"></div>
+
+  <main class="container mx-auto max-w-[1280px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-12">
+
+    <!-- Coluna Esquerda -->
+    <div class="lg:col-span-7 flex flex-col space-y-8 px-4 lg:px-8">
+
+      <!-- Toggle Funcionalidades / Áreas -->
+      <div class="inline-flex bg-white/40 backdrop-blur-md p-1 rounded-2xl w-fit">
+        <a href="{% url 'cadastrarFuncionalidades' %}"
+          class="px-8 py-2 bg-white rounded-xl text-[#223f78] font-bold text-sm lg:text-base shadow-sm">
+          Funcionalidades
+        </a>
+        <a href="{% url 'cadastrarArea' %}"
+          class="px-8 py-2 text-[#223e79] font-bold text-sm lg:text-base hover:bg-white/20 rounded-xl">
+          Áreas
+        </a>
+      </div>
+
+      <!-- Texto Principal -->
+      <div class="space-y-6">
+        <h1 class="font-serif-accent text-4xl lg:text-[48px] leading-tight text-[#379ae6] max-w-[600px]">
+          Descubra o caminho certo para o seu futuro
+        </h1>
+        <p class="text-lg lg:text-[20px] leading-relaxed font-bold text-[#1e293b] max-w-[610px]">
+          Orientação vocacional inteligente para ajudar você a tomar a melhor decisão sobre sua carreira.
+        </p>
+      </div>
+
+      <!-- Lista de Funcionalidades -->
+      <ul class="space-y-4">
+        <li class="flex items-center gap-4">
+          <img src="{% static 'img/certo.svg' %}" alt="check" class="w-6 h-6 opacity-80">
+          <span class="text-lg lg:text-[20px] font-bold text-[#1e293b]">Questionário vocacional personalizado</span>
+        </li>
+        <li class="flex items-center gap-4">
+          <img src="{% static 'img/certo.svg' %}" alt="check" class="w-6 h-6 opacity-80">
+          <span class="text-lg lg:text-[20px] font-bold text-[#1e293b]">Recomendações de cursos por IA</span>
+        </li>
+        <li class="flex items-center gap-4">
+          <img src="{% static 'img/certo.svg' %}" alt="check" class="w-6 h-6 opacity-80">
+          <span class="text-lg lg:text-[20px] font-bold text-[#1e293b]">Exploração de +300 carreiras</span>
+        </li>
+        <li class="flex items-center gap-4">
+          <img src="{% static 'img/certo.svg' %}" alt="check" class="w-6 h-6 opacity-80">
+          <span class="text-lg lg:text-[20px] font-bold text-[#1e293b]">Acompanhamento do seu progresso</span>
+        </li>
+      </ul>
+
+      <!-- Estatísticas -->
+      <div class="grid grid-cols-3 gap-4 pt-8 max-w-[600px]">
+        <div>
+          <div class="text-3xl lg:text-[32px] font-bold text-[#405d91]">50k+</div>
+          <div class="text-sm text-[#224178]">Estudantes</div>
+        </div>
+        <div>
+          <div class="text-3xl lg:text-[32px] font-bold text-[#405d91]">100+</div>
+          <div class="text-sm text-[#224178]">Carreiras</div>
+        </div>
+        <div>
+          <div class="text-3xl lg:text-[32px] font-bold text-[#405d91]">98%</div>
+          <div class="text-sm text-[#224178]">Satisfação</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coluna Direita: Card de Cadastro -->
+    <div class="lg:col-span-5 flex justify-center lg:justify-end px-4">
+      <div class="glass-card w-full max-w-[577px] rounded-[32px] p-8 lg:p-12">
+
+        <!-- Logo -->
+        <div class="flex flex-col items-center mb-6">
+          <img src="{% static 'img/marca.png' %}" alt="Kappacita Logo" class="w-full max-w-[360px] h-auto">
+        </div>
+
+        <!-- Mensagens Django -->
+        {% if messages %}
+          {% for message in messages %}
+            <div class="w-full mb-4 px-4 py-3 rounded-xl text-sm font-medium
+              {% if message.tags == 'error' %} bg-red-100 text-red-700
+              {% else %} bg-green-100 text-green-700 {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Toggle Entrar / Cadastrar -->
+        <div class="bg-white rounded-2xl p-1 flex mb-6">
+          <a href="{% url 'loginFuncionalidades' %}"
+            class="flex-1 py-3 text-center text-[#8C9295] font-medium text-sm rounded-xl hover:bg-gray-50">
+            Entrar
+          </a>
+          <span class="flex-1 py-3 text-center bg-[#5b90bd] text-white rounded-xl font-medium text-sm shadow-md">
+            Cadastrar
+          </span>
+        </div>
+
+        <!-- Formulário -->
+        <form class="space-y-4" method="POST" action="{% url 'cadastrarFuncionalidades' %}">
+            {% csrf_token %}
+
+            <div>
+            <label class="text-white text-base font-normal ml-2 block mb-1">Nome de Usuario</label>
+            <input type="text" name="username" required
+                class="w-full h-12 px-6 rounded-full bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+            </div>
+
+            <div>
+            <label class="text-white text-base font-normal ml-2 block mb-1">E-mail</label>
+            <input type="email" name="email" required
+                class="w-full h-12 px-6 rounded-full bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+            </div>
+
+          <div>
+            <label class="text-white text-base font-normal ml-2 block mb-1">Confirmar E-mail</label>
+            <input type="email" name="email_confirm" required
+              class="w-full h-12 px-6 rounded-full bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+          </div>
+
+          <div>
+            <label class="text-white text-base font-normal ml-2 block mb-1">Senha</label>
+            <div class="relative">
+              <input type="password" name="password1" id="senha1" requ  
+                class="w-full h-12 px-6 rounded-full bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+              <button type="button" onclick="toggle('senha1')"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40 hover:opacity-100">
+                <img src="{% static 'img/mostrar_senha.svg' %}" class="w-6 h-6">
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-white text-base font-normal ml-2 block mb-1">Confirmar Senha</label>
+            <div class="relative">
+              <input type="password" name="password2" id="senha2" required
+                class="w-full h-12 px-6 rounded-full bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+              <button type="button" onclick="toggle('senha2')"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40 hover:opacity-100">
+                <img src="{% static 'img/mostrar_senha.svg' %}" class="w-6 h-6">
+              </button>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full h-[52px] bg-white text-[#223f78] text-xl font-bold rounded-2xl shadow-lg hover:bg-blue-50 active:scale-95 mt-4">
+            Cadastrar
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 my-6">
+          <div class="flex-1 h-[1px] bg-[#DEDDDB]"></div>
+          <span class="text-white text-xs whitespace-nowrap">ou continue com</span>
+          <div class="flex-1 h-[1px] bg-[#DEDDDB]"></div>
+        </div>
+
+        <!-- Google -->
+        <button class="w-full h-11 bg-white rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-gray-50 active:scale-95">
+          <img src="{% static 'img/google.svg' %}" alt="Google" class="w-7 h-7">
+          <span class="text-[#224178] font-bold text-lg">Google</span>
+        </button>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function toggle(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
+</body>
+</html>

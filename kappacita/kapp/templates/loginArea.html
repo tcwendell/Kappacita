@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kappacita - Seu Sucesso Profissional</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: #1e3a8a;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+      font-weight: 700;
+    }
+
+    * { transition: all 0.2s ease; }
+
+    .glass-card {
+      background: rgba(91, 144, 189, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-card-shadow {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .input-focus-ring:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .bg-hero-image {
+      background-image: url("{% static 'img/fundo_inicio.jpeg' %}");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .tab-active {
+      background-color: white;
+      color: #223f78;
+      font-weight: 700;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .tab-inactive {
+      color: #223e79;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-hero-image flex items-center justify-center p-4 md:p-8 lg:p-12">
+
+  <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+    <!-- Left Content -->
+    <div class="flex flex-col space-y-8">
+
+      <!-- Navigation Toggle -->
+      <div class="flex items-center bg-white/30 backdrop-blur-md p-1 rounded-2xl w-fit">
+        <a href="{% url 'loginFuncionalidades' %}"
+          class="px-8 py-2 tab-inactive hover:bg-white/20 rounded-xl">Funcionalidades</a>
+        <a href="{% url 'loginArea' %}"
+          class="px-8 py-2 tab-active">Áreas</a>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="space-y-6">
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#EDF5FB] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/icon_questionario.svg' %}" alt="Questionário" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#2C3237]">Questionário Vocacional</h3>
+            <p class="text-sm font-bold text-[#224178]">Mapeamento de perfil em 5 etapas</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#EDF5FB] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/icon_cursos.svg' %}" alt="Recomendação" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#2C3237]">Recomendação de Cursos</h3>
+            <p class="text-sm font-bold text-[#224178]">IA analisa seu perfil e sugere cursos</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#EDF5FB] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/icon_kappabot.svg' %}" alt="KappaBOT" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#1e293b]">KappaBOT IA</h3>
+            <p class="text-sm font-bold text-[#224178]">Chatbot de orientação profissional</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/maleta.svg' %}" alt="Carreiras" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#2C3237]">Exploração de Carreiras</h3>
+            <p class="text-sm font-bold text-[#224178]">300+ profissões com salários e skills</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#EDF5FB] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/progresso.svg' %}" alt="Progresso" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#2C3237]">Progresso Pessoal</h3>
+            <p class="text-sm font-bold text-[#224178]">Acompanhe sua jornada</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#EDF5FB] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/artigos.svg' %}" alt="Artigos" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#2C3237]">Artigos e Vestibulares</h3>
+            <p class="text-sm font-bold text-[#223f78]">Datas, dicas e orientações</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 group">
+          <div class="flex-shrink-0 w-12 h-12 bg-[#ECEBE9] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110">
+            <img src="{% static 'img/coracao_vermelho.svg' %}" alt="Favoritos" class="w-6 h-6">
+          </div>
+          <div>
+            <h3 class="text-lg text-[#1e293b]">Favoritos</h3>
+            <p class="text-sm font-bold text-[#224178]">Salve cursos e profissões</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Login Card -->
+    <div class="flex justify-center lg:justify-end">
+      <div class="glass-card auth-card-shadow w-full max-w-[577px] rounded-[32px] p-8 md:p-12 flex flex-col items-center">
+
+        <!-- Logo -->
+        <div class="mb-8 text-center">
+          <img src="{% static 'img/marca.png' %}" alt="Kappacita Logo" class="w-full max-w-[400px] mx-auto mb-2">
+        </div>
+
+        <!-- Mensagens Django -->
+        {% if messages %}
+          {% for message in messages %}
+            <div class="w-full mb-4 px-4 py-3 rounded-xl text-sm font-medium
+              {% if message.tags == 'error' %} bg-red-100 text-red-700
+              {% else %} bg-green-100 text-green-700 {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Auth Toggle -->
+        <div class="w-full bg-white rounded-2xl p-1 flex mb-8">
+          <button onclick="showLogin()" id="btn-login"
+            class="flex-1 py-3 bg-[#5b90bd] text-white rounded-xl font-medium text-sm shadow-md">Entrar</button>
+          <a href="{% url 'cadastrarFuncionalidades' %}"
+              class="flex-1 py-3 text-center text-[#9095a1] font-medium rounded-xl">Cadastrar</a>
+        </div>
+
+        <!-- Form Login -->
+        <form id="form-login" class="w-full space-y-6" method="POST" action="">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="login">
+
+          <div class="space-y-2">
+            <label class="block text-white font-[Poppins] text-lg ml-2">E-mail</label>
+            <input type="email" name="username" required
+              class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between items-center px-2">
+              <label class="text-white font-[Poppins] text-lg">Senha</label>
+              <a href="#" class="text-white text-xs font-medium hover:underline">Esqueceu a senha?</a>
+            </div>
+            <div class="relative">
+              <input type="password" name="password" id="senha-login" required
+                class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+              <button type="button" onclick="toggleSenha('senha-login')"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40">
+                <img src="{% static 'img/mostrar_senha.svg' %}" alt="Toggle Password" class="w-6 h-6">
+              </button>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full h-14 bg-white text-[#223f78] font-bold text-xl rounded-2xl shadow-lg hover:bg-blue-50 active:scale-95 mt-4">
+            Entrar
+          </button>
+        </form>
+
+        <!-- Form Cadastro -->
+        <form id="form-cadastro" class="w-full space-y-6 hidden" method="POST" action="">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="cadastro">
+
+          <div class="space-y-2">
+            <label class="block text-white font-[Poppins] text-lg ml-2">Nome completo</label>
+            <input type="text" name="nome" required
+              class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-white font-[Poppins] text-lg ml-2">E-mail</label>
+            <input type="email" name="email" required
+              class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-white font-[Poppins] text-lg ml-2">Senha</label>
+            <div class="relative">
+              <input type="password" name="password1" id="senha-cadastro" required
+                class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+              <button type="button" onclick="toggleSenha('senha-cadastro')"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40">
+                <img src="{% static 'img/mostar_senha.svg' %}" alt="Toggle Password" class="w-6 h-6">
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-white font-[Poppins] text-lg ml-2">Confirmar senha</label>
+            <div class="relative">
+              <input type="password" name="password2" id="senha-confirmar" required
+                class="w-full h-12 px-6 rounded-2xl bg-white shadow-lg input-focus-ring" placeholder="">
+              <button type="button" onclick="toggleSenha('senha-confirmar')"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#233e78] opacity-40">
+                <img src="{% static 'img/mostrar_senha.svg' %}" alt="Toggle Password" class="w-6 h-6">
+              </button>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full h-14 bg-white text-[#223f78] font-bold text-xl rounded-2xl shadow-lg hover:bg-blue-50 active:scale-95 mt-4">
+            Cadastrar
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="w-full flex items-center gap-4 my-8">
+          <div class="flex-1 h-[1px] bg-[#DEDDDB]"></div>
+          <span class="text-white text-xs font-[Inter] whitespace-nowrap">ou continue com</span>
+          <div class="flex-1 h-[1px] bg-[#DEDDDB]"></div>
+        </div>
+
+        <!-- Google -->
+        <button class="w-full h-12 bg-white rounded-2xl flex items-center justify-center gap-3 shadow-md hover:bg-gray-50 active:scale-95 mb-8">
+          <img src="{% static 'img/google.svg' %}" alt="Google" class="w-7 h-7">
+          <span class="text-[#224178] font-bold text-lg font-[Poppins]">Google</span>
+        </button>
+
+        <!-- Footer -->
+        <p class="text-sm font-[Inter]" id="footer-text">
+          <span class="text-white">Não tem conta?</span>
+          <a href="{% url 'cadastrarFuncionalidades' %}" class="text-[#1b22b1] font-bold ml-1 hover:underline">Cadastre-se grátis</a>
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,48 +1,187 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Kappacita - Meu Progresso{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        background-color: #5d9bce !important;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .soft-shadow {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    /* Adicionado para os gráficos funcionarem corretamente */
+    .chart-bar {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    .chart-bar:hover {
+        opacity: 0.8;
+        transform: scaleY(1.05);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<!-- Header -->
+<main class="flex-1 flex flex-col min-w-0">
+    
     <header class="h-16 flex items-center justify-between px-4 lg:px-8 bg-white shadow-sm">
-    <div class="flex items-center gap-4 flex-1">
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-        <img src="{% static 'img/anterior.svg' %}" class="w-5 h-5" alt="Voltar">
-    </button>
-        <div class="relative max-w-md w-full hidden md:block">
-        <form method="GET" action="">
-            <div class="flex items-center bg-[#B9D9F1] rounded-full px-4 py-2 shadow-sm">
-            <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
-            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Pesquisa"
-                class="bg-transparent border-none focus:ring-0 text-[#233e78] placeholder-[#233e78]/60 w-full ml-2 text-sm">
+        <div class="flex items-center gap-4 flex-1">
+            <button onclick="window.history.back()" class="p-2 text-[#233e78] hover:bg-gray-100 rounded-full transition-colors">
+                <img src="{% static 'img/anterior.svg' %}" class="w-5 h-5" alt="Voltar">
+            </button>
+            <div class="relative max-w-md w-full hidden md:block">
+                <form method="GET" action="">
+                    <div class="flex items-center bg-[#B9D9F1] rounded-full px-4 py-2 shadow-sm">
+                        <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
+                        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Pesquisa"
+                            class="bg-transparent border-none focus:ring-0 text-[#233e78] placeholder-[#233e78]/60 w-full ml-2 text-sm focus:outline-none">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 lg:gap-4">
+            <div class="flex items-center gap-1">
+                <button class="p-2 text-[#233e78] hover:bg-gray-100 rounded-full"><img src="{% static 'img/darkmode.svg' %}" class="w-6 h-6" alt="Dark"></button>
+                <button class="p-2 text-[#233e78] hover:bg-gray-100 rounded-full"><img src="{% static 'img/lightmode.svg' %}" class="w-6 h-6" alt="Light"></button>
+                <button class="p-2 text-[#233e78] hover:bg-gray-100 rounded-full"><img src="{% static 'img/sino.svg' %}" class="w-6 h-6" alt="Notificações"></button>
+            </div>
+            <div class="flex items-center gap-3 pl-4 border-l border-[#233e78]/20">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-semibold text-[#233e78]">{{ request.user.get_full_name|default:request.user.username }}</p>
+                    <p class="text-[10px] text-[#233e78]/70">{{ request.user.email }}</p>
                 </div>
-            </form>
+                <img src="{% static 'img/js.jpg' %}" alt="User" class="w-10 h-10 rounded-full object-cover border-2 border-[#5a91bd]">
+                <button class="text-[#233e78]">
+                    <img src="{% static 'img/seta_baixo.svg' %}" class="w-5 h-5" alt="Dropdown">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 p-4 lg:p-10 space-y-8 overflow-y-auto no-scrollbar">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 class="text-white text-3xl lg:text-4xl font-bold font-[Poppins]">Meu Progresso</h2>
+            <div class="flex gap-3">
+                <button class="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-2xl text-white text-sm hover:bg-white/20 transition-all shadow-lg">
+                    <img src="{% static 'assets/IMG_20.svg' %}" class="w-4 h-4" alt="Export"> Exportar CSV
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-2xl text-white text-sm hover:bg-white/20 transition-all shadow-lg">
+                    <img src="{% static 'assets/IMG_20.svg' %}" class="w-4 h-4" alt="Download"> Baixar PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 shadow-xl">
+                <div class="w-12 h-12 bg-blue-500/40 rounded-2xl flex items-center justify-center">
+                    <img src="{% static 'assets/IMG_21.svg' %}" class="w-7 h-7" alt="Clock">
+                </div>
+                <div>
+                    <p class="text-white/60 text-sm font-[Poppins]">Relatório Semanal</p>
+                    <p class="text-white text-2xl font-bold font-[Poppins]">30h</p>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 shadow-xl">
+                <div class="w-12 h-12 bg-emerald-500/40 rounded-2xl flex items-center justify-center">
+                    <img src="{% static 'assets/IMG_4.svg' %}" class="w-7 h-7 brightness-0 invert" alt="Books">
+                </div>
+                <div>
+                    <p class="text-white/60 text-sm font-[Poppins]">Cursos Explorados</p>
+                    <p class="text-white text-2xl font-bold font-[Poppins]">4</p>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 shadow-xl">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center">
+                    <img src="{% static 'assets/IMG_22.svg' %}" class="w-7 h-7" alt="Flame">
+                </div>
+                <div>
+                    <p class="text-white/60 text-sm font-[Poppins]">Streak Atual</p>
+                    <p class="text-white text-2xl font-bold font-[Poppins]">6 dias</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            <div class="xl:col-span-8 space-y-6">
+                <div class="glass-card p-6 rounded-2xl shadow-xl border-white/30">
+                    <h3 class="text-[#233e78] text-base font-semibold font-[Poppins] mb-8">Evolução de Estudos</h3>
+                    <div class="flex items-end justify-between h-48 gap-2 sm:gap-4 px-2">
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="chart-bar w-full bg-[#9fbed8] h-[30%] shadow-lg"></div>
+                            <span class="text-[10px] font-bold text-[#1e293b]/90 mt-2">Seg</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="chart-bar w-full bg-[#016abd]/55 h-[50%] shadow-lg"></div>
+                            <span class="text-[10px] font-bold text-[#1e293b] mt-2">Ter</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="chart-bar w-full bg-[#233e78]/80 h-[75%] shadow-lg"></div>
+                            <span class="text-[10px] font-bold text-[#1e293b] mt-2">Qui</span>
+                        </div>
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="chart-bar w-full bg-[#233e78]/70 h-[70%] shadow-lg"></div>
+                            <span class="text-[10px] font-bold text-[#1e293b] mt-2">Dom</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-2xl shadow-xl border-white/30">
+                        <h3 class="text-[#233e78] text-base font-semibold font-[Poppins] mb-6">Áreas de Conhecimento</h3>
+                        <div class="relative flex justify-center items-center py-4">
+                            <div class="w-32 h-32 rounded-full border-[12px] border-[#016ABD] flex flex-col items-center justify-center">
+                                <span class="text-[#323743] text-lg font-bold">100%</span>
+                                <span class="text-white text-sm font-bold">Exatas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl shadow-xl border-white/30 flex flex-col">
+                        <h3 class="text-[#233e78] text-base font-bold font-[Poppins] mb-4">Perfil</h3>
+                        <div class="flex-1 relative flex flex-col items-center justify-center">
+                            <img src="{% static 'assets/IMG_27.svg' %}" class="w-44" alt="Gauge">
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 text-center">
+                                <p class="text-[#323743] text-lg font-bold">70%</p>
+                                <p class="text-white text-[12px] font-bold">Completo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="xl:col-span-4">
+                <div class="bg-white/95 p-6 rounded-2xl shadow-xl border-2 border-[#5b91bc] h-full">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-2">
+                            <img src="{% static 'assets/IMG_23.svg' %}" class="w-5 h-5" alt="Trophy">
+                            <h3 class="text-[#405d91] text-lg font-bold font-['Plus_Jakarta_Sans']">Marcos da Jornada</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 bg-[#EFFDF4] rounded-xl">
+                            <div class="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <img src="{% static 'assets/IMG_24.svg' %}" class="w-4 h-4" alt="User">
+                            </div>
+                            <span class="flex-1 text-[#233e78] text-sm font-medium">Criou sua conta</span>
+                            <img src="{% static 'assets/IMG_25.svg' %}" class="w-4.5 h-4.5" alt="Check">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="flex items-center gap-2 lg:gap-4">
-     <div class="flex items-center gap-1">
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/darkmode.svg' %}" class="w-6 h-6" alt="Dark Mode">
-        </button>
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/lightmode.svg' %}" class="w-6 h-6" alt="Light Mode">
-        </button>
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/sino.svg' %}" class="w-6 h-6" alt="Notifications">
-        </button>
-    </div>
-    <div class="flex items-center gap-3 pl-4 border-l border-[#233e78]/20">
-        <div class="text-right hidden sm:block">
-            <p class="text-sm font-semibold text-[#233e78]">{{ request.user.get_full_name|default:request.user.username }}</p>
-            <p class="text-[10px] text-[#233e78]/70">{{ request.user.email }}</p>
-        </div>
-        <img src="{% static 'img/js.jpg' %}" alt="User" class="w-10 h-10 rounded-full object-cover border-2 border-white">
-        <button class="text-[#233e78]">
-            <img src="{% static 'img/seta_baixo.svg' %}" class="w-5 h-5" alt="Dropdown">
-        </button>
-      </div>
-    </div>
-  </header>
-
-    <h1>Meu Progresso</h1>
+</main>
 {% endblock %}

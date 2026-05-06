@@ -55,3 +55,15 @@ def idiomas(request):
 
 def notificacoes(request):
     return render(request, 'notificacoes.html')
+
+def loginArea(request):
+    return render(request, 'loginArea.html')
+
+def loginFuncionalidades(request):
+    return render(request, 'loginFuncionalidades.html')
+
+def cadastrarFuncionalidades(request):
+    return render(request, 'cadastrarFuncionalidades.html')
+
+def cadastrarArea(request):
+    return render(request, 'cadastrarArea.html')

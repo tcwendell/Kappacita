@@ -29,4 +29,5 @@ urlpatterns = [
     path('privacidade/', privacidade, name='privacidade'),
     path('notificacoes/', notificacoes, name='notificacoes'),
     path('idiomas/', idiomas, name='idiomas'),
+    path('cursos/<int:curso_id>/favoritar/', favoritar_curso, name='favoritar_curso'),
 ]

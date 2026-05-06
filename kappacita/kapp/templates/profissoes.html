@@ -4,117 +4,44 @@
 {% block title %}Profissões{% endblock %}
 
 {% block body %}
+{% include 'header.html' %}
 
 <style>
-  body {
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #1e293b;
-    background-color: #5b91bc !important;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .font-serif-accent {
-    font-family: "Cactus Classical Serif", serif;
-  }
-
-  * {
-    transition: all 0.2s ease;
-  }
-
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #f1f5f9; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-  .card-shadow {
-    box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12), 0px 17px 35px 0px rgba(23,26,31,0.24);
-  }
-
   .profession-card {
     background-color: rgba(129, 168, 203, 0.8);
     border: 1px solid #1065a6;
     backdrop-filter: blur(4px);
   }
-
   .profession-card:hover {
     background-color: rgba(129, 168, 203, 1);
     transform: translateY(-2px);
   }
-
+  .dark .profession-card {
+    background-color: rgba(30, 41, 59, 0.8);
+    border-color: #334155;
+  }
+  .dark .profession-card:hover {
+    background-color: rgba(30, 41, 59, 1);
+  }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .card-shadow { box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12), 0px 17px 35px 0px rgba(23,26,31,0.24); }
 </style>
 
-<!-- Main Content -->
 <main class="flex-1 flex flex-col min-w-0">
-
-<!-- Header -->
-    <header class="h-16 flex items-center justify-between px-4 lg:px-8 bg-white shadow-sm">
-    <div class="flex items-center gap-4 flex-1">
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-        <img src="{% static 'img/anterior.svg' %}" class="w-5 h-5" alt="Voltar">
-    </button>
-        <div class="relative max-w-md w-full hidden md:block">
-        <form method="GET" action="">
-            <div class="flex items-center bg-[#B9D9F1] rounded-full px-4 py-2 shadow-sm">
-            <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
-            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Pesquisa"
-                class="bg-transparent border-none focus:ring-0 text-[#233e78] placeholder-[#233e78]/60 w-full ml-2 text-sm">
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="flex items-center gap-2 lg:gap-4">
-     <div class="flex items-center gap-1">
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/darkmode.svg' %}" class="w-6 h-6" alt="Dark Mode">
-        </button>
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/lightmode.svg' %}" class="w-6 h-6" alt="Light Mode">
-        </button>
-        <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
-            <img src="{% static 'img/sino.svg' %}" class="w-6 h-6" alt="Notifications">
-        </button>
-    </div>
-    <div class="flex items-center gap-3 pl-4 border-l border-[#233e78]/20">
-        <div class="text-right hidden sm:block">
-            <p class="text-sm font-semibold text-[#233e78]">{{ request.user.get_full_name|default:request.user.username }}</p>
-            <p class="text-[10px] text-[#233e78]/70">{{ request.user.email }}</p>
-        </div>
-        <img src="{% static 'img/js.jpg' %}" alt="User" class="w-10 h-10 rounded-full object-cover border-2 border-white">
-        <button class="text-[#233e78]">
-            <img src="{% static 'img/seta_baixo.svg' %}" class="w-5 h-5" alt="Dropdown">
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Content Area -->
-  <div class="p-4 lg:p-10 space-y-8">
+  <div class="p-4 lg:p-10 space-y-8 bg-[#5b91bc] dark:bg-gray-950 min-h-screen transition-colors">
     <h2 class="text-white text-4xl lg:text-5xl font-bold">Explorar Profissões</h2>
 
-    <!-- Search & Filter -->
     <div class="flex flex-col md:flex-row items-center gap-4">
-      <button class="p-2 text-[#233e78] hover:bg-white/20 rounded-full">
+      <button class="p-2 text-[#233e78] dark:text-white hover:bg-white/20 rounded-full">
         <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filter">
       </button>
       <div class="relative flex-1 w-full">
         <form method="GET" action="">
-          <div class="flex items-center bg-white rounded-full px-6 py-3 card-shadow">
+          <div class="flex items-center bg-white dark:bg-gray-800 rounded-full px-6 py-3 card-shadow">
             <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar profissões..."
-              class="bg-transparent border-none focus:ring-0 text-[#233e78] placeholder-[#233e78]/60 w-full ml-3">
-            <button type="submit" class="p-1 text-[#233e78]">
-              <img src="{% static 'img/voice.svg' %}" class="w-5 h-5" alt="Buscar">
-            </button>
+              class="bg-transparent border-none focus:ring-0 text-[#233e78] dark:text-white placeholder-[#233e78]/60 dark:placeholder-white/40 w-full ml-3">
           </div>
         </form>
       </div>
@@ -122,12 +49,10 @@
 
     <p class="text-white text-sm">{{ profissoes.count }} profissão(ões) encontrada(s)</p>
 
-    <!-- Category Carousel -->
     <div class="relative group">
-      <button class="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-50">
+      <button class="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700">
         <img src="{% static 'img/anterior.svg' %}" class="w-5 h-5" alt="Prev">
       </button>
-
       <div class="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
         <div class="relative min-w-[200px] h-48 rounded-2xl overflow-hidden flex-shrink-0 group cursor-pointer">
           <img src="{% static 'img/area_saude.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="Saúde">
@@ -155,22 +80,18 @@
           <span class="absolute bottom-4 left-4 text-white font-bold text-xl">Educação</span>
         </div>
       </div>
-
-      <button class="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-50">
+      <button class="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700">
         <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Next">
       </button>
     </div>
 
-    <!-- Profession Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {% for profissao in profissoes %}
       <div class="profession-card p-6 rounded-2xl flex flex-col gap-4 relative group">
         <div class="flex justify-between items-start">
-
-          <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
+          <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl flex items-center justify-center">
             <img src="{% static 'img/' %}{{ profissao.icone }}" class="w-7 h-7" alt="{{ profissao.nome }}">
           </div>
-
           <div class="flex gap-0.5">
             {% for i in "12345" %}
               {% if forloop.counter <= profissao.estrelas %}
@@ -180,18 +101,12 @@
               {% endif %}
             {% endfor %}
           </div>
-
         </div>
-
         <div>
           <h3 class="text-white text-lg">{{ profissao.nome }}</h3>
-          <p class="text-slate-800 text-sm">{{ profissao.area }}</p>
+          <p class="text-slate-800 dark:text-gray-300 text-sm">{{ profissao.area }}</p>
         </div>
-
-        <p class="text-white text-sm mt-auto">
-          Salário: R$ {{ profissao.salario_min }} à R$ {{ profissao.salario_max }}
-        </p>
-
+        <p class="text-white text-sm mt-auto">Salário: R$ {{ profissao.salario_min }} à R$ {{ profissao.salario_max }}</p>
         <button class="absolute bottom-4 right-4 p-2 hover:bg-white/20 rounded-full">
           <img src="{% static 'img/coracao.svg' %}" class="w-5 h-5" alt="Like">
         </button>
@@ -201,45 +116,38 @@
       {% endfor %}
     </div>
 
-    <!-- Pagination -->
     {% if profissoes.has_other_pages %}
     <div class="flex justify-center items-center gap-2 py-8">
       {% if profissoes.has_previous %}
-      <a href="?page={{ profissoes.previous_page_number }}" class="p-2 text-[#223f78] hover:bg-white/20 rounded-lg">
+      <a href="?page={{ profissoes.previous_page_number }}" class="p-2 text-[#223f78] dark:text-white hover:bg-white/20 rounded-lg">
         <img src="{% static 'img/seta_anterior.svg' %}" class="w-4 h-4" alt="Prev">
       </a>
       {% endif %}
-
       {% for num in profissoes.paginator.page_range %}
         {% if profissoes.number == num %}
-        <span class="w-9 h-9 bg-[#223f78] text-white rounded-lg font-serif-accent flex items-center justify-center">{{ num }}</span>
+        <span class="w-9 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-lg flex items-center justify-center">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}" class="w-9 h-9 bg-white border border-gray-200 text-gray-400 rounded-lg font-serif-accent hover:bg-gray-50 flex items-center justify-center">{{ num }}</a>
+        <a href="?page={{ num }}" class="w-9 h-9 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center">{{ num }}</a>
         {% endif %}
       {% endfor %}
-
       {% if profissoes.has_next %}
-      <a href="?page={{ profissoes.next_page_number }}" class="p-2 text-[#223e79] hover:bg-white/20 rounded-lg">
+      <a href="?page={{ profissoes.next_page_number }}" class="p-2 text-[#223e79] dark:text-white hover:bg-white/20 rounded-lg">
         <img src="{% static 'img/seta_proximo.svg' %}" class="w-4 h-4" alt="Next">
       </a>
       {% endif %}
     </div>
     {% endif %}
 
-  </div>
-
-  <!-- Footer -->
-  <footer class="mt-auto bg-white/10 backdrop-blur-sm border-t border-gray-200/20 py-6 px-4 lg:px-10">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-      <p class="text-sm text-[#565d6d] font-[Poppins]">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
-      <div class="flex gap-6 text-sm text-[#565d6d] font-[Poppins]">
-        <a href="{% url 'privacidade' %}" class="hover:text-white">Privacidade</a>
-        <a href="#" class="hover:text-white">Termos de Uso</a>
-        <a href="#" class="hover:text-white">Suporte</a>
+    <footer class="mt-auto bg-white/10 dark:bg-gray-800/30 backdrop-blur-sm border-t border-gray-200/20 dark:border-gray-700 py-6 px-4 lg:px-10">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-sm text-[#565d6d] dark:text-gray-400">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
+        <div class="flex gap-6 text-sm text-[#565d6d] dark:text-gray-400">
+          <a href="{% url 'privacidade' %}" class="hover:text-white">Privacidade</a>
+          <a href="#" class="hover:text-white">Termos de Uso</a>
+          <a href="#" class="hover:text-white">Suporte</a>
+        </div>
       </div>
-    </div>
-  </footer>
-
+    </footer>
+  </div>
 </main>
-
 {% endblock %}

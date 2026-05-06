@@ -61,7 +61,7 @@
         <div class="flex gap-4">
           <div class="w-12 h-12 bg-[#dee1e6] rounded-xl flex items-center justify-center">
             {% if curso.icone %}
-              <img src="{{ curso.icone.url }}" class="w-7 h-7" alt="{{ curso.nome }} ícone">
+              <img src="{% static 'img/' %}{{ curso.icone }}" class="w-7 h-7" alt="{{ curso.nome }} ícone">
             {% else %}
               <img src="{% static 'img/curso_default.svg' %}" class="w-7 h-7" alt="{{ curso.nome }} ícone">
             {% endif %}

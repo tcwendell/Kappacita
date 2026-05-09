@@ -1,5 +1,7 @@
+/* ── Fontes ── */
 .font-poppins { font-family: 'Poppins', sans-serif; }
 
+/* ── Componentes existentes ── */
 .hero-banner-border {
     position: relative;
     border-radius: 15px;
@@ -24,4 +26,53 @@
     background-color: #1e293b;
     border-radius: 15px;
     box-shadow: 0px 17px 35px 0px rgba(23, 26, 31, 0.24);
+}
+
+
+/* ══════════════════════════════════════
+   PREFERÊNCIAS DE ACESSIBILIDADE
+   Aplicadas no <html> via classe
+══════════════════════════════════════ */
+
+/* ── Tamanho de fonte ──
+   Usa % no <html> para que todos os
+   valores rem do Tailwind escalam junto */
+.fonte-grande       { font-size: 110%; }
+.fonte-muito-grande { font-size: 125%; }
+
+
+/* ── Reduzir animações ──
+   Zera duration de tudo, incluindo
+   classes transition-* do Tailwind */
+.sem-animacoes *,
+.sem-animacoes *::before,
+.sem-animacoes *::after {
+    animation-duration:        0ms !important;
+    animation-delay:           0ms !important;
+    transition-duration:       0ms !important;
+    transition-delay:          0ms !important;
+}
+
+
+/* ── Alto contraste ──
+   filter no <html> afeta toda a página.
+   A segunda regra garante que imagens
+   não fiquem distorcidas. */
+.alto-contraste {
+    filter: contrast(1.4) brightness(0.97);
+}
+
+.alto-contraste img,
+.alto-contraste video,
+.alto-contraste iframe {
+    filter: none; /* imagens ficam sem o filtro */
+}
+
+
+/* ── Dark mode + alto contraste juntos ──
+   Quando as duas classes coexistem,
+   aumenta o contraste um pouco menos
+   para não ficar agressivo demais */
+.dark.alto-contraste {
+    filter: contrast(1.25) brightness(1.05);
 }

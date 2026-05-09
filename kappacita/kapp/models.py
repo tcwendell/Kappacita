@@ -47,3 +47,25 @@ class Perfil(models.Model):
 
     def __str__(self):
         return f'Perfil de {self.usuario.username}'
+    
+class Perfil(models.Model):
+    IDIOMA_CHOICES = [
+        ('pt-br', 'Português (Brasil)'),
+        ('en',    'English'),
+        ('es',    'Español'),
+    ]
+    FONTE_CHOICES = [
+        ('normal',      'Normal'),
+        ('grande',      'Grande'),
+        ('muito_grande','Muito grande'),
+    ]
+
+    usuario            = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    foto               = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True)
+    idioma             = models.CharField(max_length=10, choices=IDIOMA_CHOICES, default='pt-br')
+    alto_contraste     = models.BooleanField(default=False)
+    tamanho_fonte      = models.CharField(max_length=20, choices=FONTE_CHOICES, default='normal')
+    reduzir_animacoes  = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Perfil de {self.usuario.username}'

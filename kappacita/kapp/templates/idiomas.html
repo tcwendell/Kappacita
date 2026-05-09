@@ -4,147 +4,146 @@
 {% block title %}Kappacita - Idioma e Acessibilidade{% endblock %}
 
 {% block body %}
+{% include 'header.html' %}
+
 <style>
-    .glass-panel {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .nav-active {
-        background-color: #81a8cb;
-        color: white !important;
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-    }
-    .card-shadow {
-        box-shadow: 0px 17px 35px 0px rgba(23, 26, 31, 0.24);
-    }
-    /* Estilização dos Sliders */
-    input[type="range"] {
-        -webkit-appearance: none;
-        appearance: none;
-        background: transparent;
-        cursor: pointer;
-        width: 100%;
-    }
-    input[type="range"]::-webkit-slider-runnable-track {
-        background: #ced0f8;
-        height: 4px;
-        border-radius: 2px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        margin-top: -6px;
-        background-color: #ffffff;
-        height: 16px;
-        width: 16px;
-        border-radius: 50%;
-        border: 1px solid #636AE8;
-    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
 </style>
 
-<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
-    <div class="px-8 pt-8 shrink-0">
-        <h2 class="text-white text-4xl font-bold mb-8 font-[Poppins]">Configurações</h2>
-        <div class="border-t border-white/20 mb-10"></div>
-    </div>
+<div class="flex h-screen bg-[#5b90bd] dark:bg-gray-950 transition-colors overflow-hidden">
 
-    <div class="flex-1 flex overflow-hidden px-8 pb-8 gap-8">
-        
-        <aside class="w-80 flex-shrink-0">
-            <div class="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg space-y-2 h-fit">
-                <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
-                    <iconify-icon icon="lucide:user" width="20"></iconify-icon>
-                    <span class="font-[Poppins]">Conta</span>
-                </a>
-                <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
-                    <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
-                    <span class="font-[Poppins]">Notificações</span>
-                </a>
-                <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
-                    <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
-                    <span class="font-[Poppins]">Idioma e Acessibilidade</span>
-                </a>
-                <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-gray-50 font-medium transition-all">
-                    <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
-                    <span class="font-[Poppins]">Dados e Privacidade</span>
-                </a>
-            </div>
-        </aside>
+    <!-- Menu lateral -->
+    <aside class="w-80 flex-shrink-0 p-6">
+        <div class="bg-white/85 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl p-4 shadow-lg space-y-2 h-fit">
 
+            <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                <span class="font-poppins">Conta</span>
+            </a>
+
+            <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+                <span class="font-poppins">Notificações</span>
+            </a>
+
+            <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl bg-[#81a8cb] dark:bg-blue-600 text-white shadow-md transition-all">
+                <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+                <span class="font-poppins font-medium">Idioma e Acessibilidade</span>
+            </a>
+
+            <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+                <span class="font-poppins">Dados e Privacidade</span>
+            </a>
+
+        </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <div class="flex-1 flex flex-col overflow-hidden p-6 pl-0">
         <div class="flex-1 overflow-y-auto no-scrollbar">
-            <div class="glass-panel rounded-2xl p-10 card-shadow min-h-full">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative">
-                    
-                    <div class="space-y-10">
-                        <h3 class="text-[#405d91] text-xl font-bold font-[Poppins]">Acessibilidade visual</h3>
-                        
-                        <div class="space-y-4">
-                            <label class="text-white text-base font-[Poppins]">Tamanho da Fonte:</label>
-                            <div class="flex items-center gap-4">
-                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
-                                    <iconify-icon icon="lucide:minus" width="16"></iconify-icon>
-                                </button>
-                                <input type="range" min="12" max="24" value="16" class="flex-1">
-                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
-                                    <iconify-icon icon="lucide:plus" width="16"></iconify-icon>
-                                </button>
-                            </div>
+            <div class="bg-white/20 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-white/20 dark:border-white/10 min-h-full transition-colors">
+
+                <h2 class="text-2xl text-[#233e78] dark:text-white mb-8 font-poppins font-bold">Idioma e Acessibilidade</h2>
+
+                <!-- Mensagens de feedback -->
+                {% for message in messages %}
+                <div class="mb-6 px-5 py-4 rounded-2xl font-medium font-poppins
+                    {% if message.tags == 'success' %}bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300
+                    {% else %}bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+
+                <form method="POST" action="{% url 'idiomas' %}" class="space-y-12">
+                    {% csrf_token %}
+
+                    <!-- Seção: Idioma -->
+                    <section>
+                        <h3 class="text-lg text-[#233e78] dark:text-white font-bold mb-6 font-poppins">Idioma</h3>
+
+                        <div class="space-y-2">
+                            <label class="text-sm text-[#233e78] dark:text-gray-300 font-bold font-poppins">Idioma do sistema</label>
+                            <p class="text-xs text-[#233e78]/70 dark:text-gray-400 font-poppins mb-3">Define o idioma exibido em toda a plataforma.</p>
+                            <select name="idioma"
+                                class="w-full max-w-xs bg-white dark:bg-gray-700/80 dark:text-gray-100 border-none rounded-2xl px-5 py-4 text-gray-700 focus:ring-4 focus:ring-[#233e78]/20 dark:focus:ring-blue-500/30 outline-none shadow-inner transition-colors font-poppins">
+                                <option value="pt-br" {% if idioma_atual == 'pt-br' %}selected{% endif %}>🇧🇷 Português (Brasil)</option>
+                                <option value="en" {% if idioma_atual == 'en' %}selected{% endif %}>🇺🇸 English</option>
+                                <option value="es" {% if idioma_atual == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+                            </select>
                         </div>
+                    </section>
 
-                        <div class="space-y-4">
-                            <label class="text-white text-base font-[Poppins]">Espaçamento entre palavras</label>
-                            <div class="flex items-center gap-4">
-                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
-                                    <iconify-icon icon="lucide:align-center" width="16"></iconify-icon>
-                                </button>
-                                <input type="range" min="0" max="50" value="25" class="flex-1">
-                            </div>
-                        </div>
+                    <!-- Seção: Acessibilidade -->
+                    <section class="pt-8 border-t border-white/10 dark:border-white/5">
+                        <h3 class="text-lg text-[#233e78] dark:text-white font-bold mb-6 font-poppins">Acessibilidade</h3>
 
-                        <div class="space-y-4">
-                            <label class="text-white text-base font-[Poppins]">Alto Contraste</label>
-                            <div class="flex items-center gap-4">
-                                <button class="w-8 h-8 flex items-center justify-center bg-[#636AE8]/40 rounded-full text-white">
-                                    <iconify-icon icon="lucide:contrast" width="16"></iconify-icon>
-                                </button>
-                                <input type="range" min="0" max="100" value="45" class="flex-1">
-                            </div>
-                        </div>
-                    </div>
+                        <div class="space-y-8">
 
-                    <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2"></div>
-
-                    <div class="space-y-10">
-                        <h3 class="text-[#405d91] text-xl font-bold font-[Poppins]">Idioma</h3>
-                        
-                        <div class="space-y-4">
-                            <label class="text-white text-base font-[Poppins]">Selecione o idioma:</label>
-                            <div class="relative group">
-                                <select class="w-full bg-[#f3f4f6] rounded-lg px-4 py-3 text-[#171a1f] text-sm font-serif-cactus appearance-none outline-none focus:ring-2 focus:ring-[#233e78]/30">
-                                    <option value="pt-br">Português (Brasil)</option>
-                                    <option value="en">English</option>
-                                    <option value="es">Español</option>
-                                </select>
-                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#223f78]">
-                                    <iconify-icon icon="lucide:chevron-down" width="18"></iconify-icon>
+                            <!-- Alto contraste -->
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1">
+                                    <p class="text-[#233e78] dark:text-white text-sm font-semibold mb-1 font-poppins">Alto contraste</p>
+                                    <p class="text-[#233e78]/70 dark:text-gray-300 text-xs leading-relaxed font-poppins max-w-md">
+                                        Aumenta o contraste das cores para facilitar a leitura.
+                                    </p>
                                 </div>
+                                <label class="relative inline-flex items-center cursor-pointer mt-1">
+                                    <input type="checkbox" name="alto_contraste" class="sr-only peer" {% if prefs.alto_contraste %}checked{% endif %}>
+                                    <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] dark:peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                                </label>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="flex justify-end gap-4 mt-20 pt-8 border-t border-white/10">
-                    <button class="px-10 py-3 bg-[#636AE8]/50 text-white rounded-xl text-sm font-[Poppins] hover:bg-[#636AE8]/70 transition-all">
-                        Cancelar
-                    </button>
-                    <button class="px-10 py-3 bg-[#233e78] text-white rounded-xl text-sm font-[Poppins] shadow-lg hover:bg-[#1a2e5a] transition-all">
-                        Salvar
-                    </button>
-                </div>
+                            <!-- Tamanho da fonte -->
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1">
+                                    <p class="text-[#233e78] dark:text-white text-sm font-semibold mb-1 font-poppins">Tamanho da fonte</p>
+                                    <p class="text-[#233e78]/70 dark:text-gray-300 text-xs leading-relaxed font-poppins max-w-md">
+                                        Ajusta o tamanho do texto exibido na plataforma.
+                                    </p>
+                                </div>
+                                <select name="tamanho_fonte"
+                                    class="bg-white dark:bg-gray-700/80 dark:text-gray-100 border-none rounded-2xl px-4 py-3 text-gray-700 focus:ring-4 focus:ring-[#233e78]/20 dark:focus:ring-blue-500/30 outline-none shadow-inner transition-colors font-poppins text-sm">
+                                    <option value="normal" {% if prefs.tamanho_fonte == 'normal' %}selected{% endif %}>Normal</option>
+                                    <option value="grande" {% if prefs.tamanho_fonte == 'grande' %}selected{% endif %}>Grande</option>
+                                    <option value="muito_grande" {% if prefs.tamanho_fonte == 'muito_grande' %}selected{% endif %}>Muito grande</option>
+                                </select>
+                            </div>
+
+                            <!-- Reduzir animações -->
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1">
+                                    <p class="text-[#233e78] dark:text-white text-sm font-semibold mb-1 font-poppins">Reduzir animações</p>
+                                    <p class="text-[#233e78]/70 dark:text-gray-300 text-xs leading-relaxed font-poppins max-w-md">
+                                        Desativa transições e animações para quem tem sensibilidade a movimento.
+                                    </p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer mt-1">
+                                    <input type="checkbox" name="reduzir_animacoes" class="sr-only peer" {% if prefs.reduzir_animacoes %}checked{% endif %}>
+                                    <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] dark:peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                                </label>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- Botões -->
+                    <div class="flex justify-end gap-4 pt-10 border-t border-white/10 dark:border-white/5">
+                        <a href="{% url 'idiomas' %}"
+                            class="px-10 py-4 bg-white/10 dark:bg-gray-700/50 text-white rounded-2xl font-bold hover:bg-white/20 dark:hover:bg-gray-600/50 transition-all font-poppins">
+                            Descartar
+                        </a>
+                        <button type="submit"
+                            class="px-10 py-4 bg-[#233e78] dark:bg-blue-600 text-white rounded-2xl font-bold shadow-xl hover:bg-[#1a2e5a] dark:hover:bg-blue-700 transition-all font-poppins">
+                            Salvar Alterações
+                        </button>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
-</main>
+</div>
+
 {% endblock %}

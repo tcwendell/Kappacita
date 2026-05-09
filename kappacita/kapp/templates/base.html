@@ -1,20 +1,23 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+
+<html lang="{% if perfil_global %}{{ perfil_global.idioma }}{% else %}pt-br{% endif %}"
+        class="
+        {% if perfil_global.alto_contraste %}alto-contraste {% endif %}
+        {% if perfil_global.tamanho_fonte == 'grande' %}fonte-grande {% endif %}
+        {% if perfil_global.tamanho_fonte == 'muito_grande' %}fonte-muito-grande {% endif %}
+        {% if perfil_global.reduzir_animacoes %}sem-animacoes{% endif %}
+        ">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kappacita - {% block title %}{% endblock %}</title>
+    <title>{% block title %}Kappacita{% endblock %}</title>
 
-    <!-- 1º: Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 2º: config do Tailwind (deve vir DEPOIS de carregar o Tailwind) -->
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
-
-    <!-- 3º: tema (aplica a classe dark antes de renderizar) -->
     <script>
         if (localStorage.getItem('tema') === 'dark') {
             document.documentElement.classList.add('dark');
@@ -22,11 +25,10 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;700&family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 </head>
+
 <body class="bg-[#FCFAF8] dark:bg-gray-950">
 
     <div class="flex min-h-screen w-full">

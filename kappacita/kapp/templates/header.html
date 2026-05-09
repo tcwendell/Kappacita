@@ -15,7 +15,6 @@
         </form>
         </div>
     </div>
-
     <div class="flex items-center gap-2 lg:gap-4">
     <div class="flex items-center gap-1">
         <button onclick="toggleTema()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -26,20 +25,18 @@
         <img src="{% static 'img/sino.svg' %}" class="w-6 h-6" alt="Notifications">
         </button>
     </div>
-
     <div class="flex items-center gap-3 pl-4 border-l border-[#233e78]/20 dark:border-white/20">
-        <div class="text-right hidden sm:block">
-        <p class="text-sm font-semibold text-[#233e78] dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</p>
-        <p class="text-[10px] text-[#233e78]/70 dark:text-white/50">{{ request.user.email }}</p>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-[#233e78] border-2 border-white flex items-center justify-center">
-    <span class="text-white text-sm font-bold">
-        {{ request.user.username|slice:":1"|upper }}
-    </span>
-</div>
-        <button class="text-[#233e78] dark:text-white">
-        <img src="{% static 'img/seta_baixo.svg' %}" class="w-5 h-5" alt="Dropdown">
-        </button>
+        <a href="{% url 'configuracoes' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
+            <div class="text-right hidden sm:block">
+                <p class="text-sm font-semibold text-[#233e78] dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</p>
+                <p class="text-[10px] text-[#233e78]/70 dark:text-white/50">{{ request.user.email }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-[#233e78] border-2 border-white flex items-center justify-center">
+                <span class="text-white text-sm font-bold">
+                    {{ request.user.username|slice:":1"|upper }}
+                </span>
+            </div>
+        </a>
     </div>
     </div>
 </header>

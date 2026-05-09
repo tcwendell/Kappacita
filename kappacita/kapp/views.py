@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
-from django.contrib.auth import update_session_auth_hash
 
 
 # ---------- AUTH ----------
@@ -140,8 +139,6 @@ def sair(request):
     return redirect('loginFuncionalidades')
 
 
-# ---------- PÁGINAS PROTEGIDAS ----------
-
 @login_required
 def homepage(request):
     return render(request, 'homepage.html')
@@ -219,10 +216,6 @@ def artigos(request):
     return render(request, 'artigos.html')
 
 @login_required
-def configuracoes(request):
-    return render(request, 'configuracoes.html')
-
-@login_required
 def privacidade(request):
     return render(request, 'privacidade.html')
 
@@ -290,3 +283,21 @@ def configuracoes(request):
             return redirect('configuracoes')
 
     return render(request, 'configuracoes.html', {'perfil': perfil})
+
+@login_required
+@require_POST
+def excluir_conta(request):
+    senha = request.POST.get('senha_confirmacao')
+    user = request.user
+
+    # Verifica se a senha está correta antes de excluir
+    if not user.check_password(senha):
+        messages.error(request, 'Senha incorreta. Sua conta não foi excluída.')
+        return redirect('privacidade')
+
+    # Desloga o usuário antes de excluir
+    logout(request)
+    user.delete()
+
+    messages.success(request, 'Sua conta foi excluída com sucesso.')
+    return redirect('loginFuncionalidades')

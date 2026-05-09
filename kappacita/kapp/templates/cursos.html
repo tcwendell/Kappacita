@@ -16,7 +16,6 @@
       <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filtro">
     </button>
 
-    <!-- ✅ FIX 1: input agora dentro de um form -->
     <form method="GET" action="{% url 'cursos' %}" class="relative flex-1">
       <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Buscar">
@@ -24,7 +23,7 @@
       <input type="text" name="q" placeholder="Buscar cursos..." value="{{ request.GET.q|default:'' }}"
         class="w-full bg-white dark:bg-gray-800 rounded-full py-3 pl-12 pr-12 text-[#233e78] dark:text-white shadow-lg outline-none">
       <button type="submit" class="absolute inset-y-0 right-4 flex items-center">
-        <img src="{% static 'img/mic.svg' %}" class="w-5 h-5" alt="Buscar">
+        <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5" alt="Buscar">
       </button>
     </form>
   </div>
@@ -38,9 +37,26 @@
       {% for categoria in categorias %}
       <div class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl">
         {% if categoria.imagem %}
+          {# ✅ FIX 1: imagem do banco de dados — usa .url normalmente #}
           <img src="{{ categoria.imagem.url }}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
         {% else %}
-          <img src="{% static 'img/categoria_default.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {# ✅ FIX 2: fallback por nome de categoria, usando imagens que existem na pasta img #}
+          {% if categoria.nome == "Tecnologia" %}
+            <img src="{% static 'img/tecnologia.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% elif categoria.nome == "Saúde" or categoria.nome == "Saude" %}
+            <img src="{% static 'img/area_saude.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% elif categoria.nome == "Artes" %}
+            <img src="{% static 'img/artes.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% elif categoria.nome == "Educação" or categoria.nome == "Educacao" %}
+            <img src="{% static 'img/educacao.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% elif categoria.nome == "Psicologia" %}
+            <img src="{% static 'img/psicologia.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% elif categoria.nome == "Direito" %}
+            <img src="{% static 'img/direito profissoes.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% else %}
+            {# fallback genérico usando uma imagem que existe #}
+            <img src="{% static 'img/educacao.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          {% endif %}
         {% endif %}
         <div class="absolute inset-0 bg-black/20"></div>
         <span class="absolute bottom-4 left-4 text-white text-xl font-bold font-poppins">{{ categoria.nome }}</span>
@@ -63,14 +79,37 @@
         <div class="flex gap-4">
           <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
             {% if curso.icone %}
-              <img src="{% static 'img/' %}{{ curso.icone }}" class="w-7 h-7" alt="{{ curso.nome }}">
+              {# ✅ FIX 3: concatenação com static não funciona — usar get_static_prefix ou if/elif por nome #}
+              {% if curso.icone == "tecnologia.jpeg" %}
+                <img src="{% static 'img/tecnologia.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "area_saude.jpeg" %}
+                <img src="{% static 'img/area_saude.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "computacao.jpeg" %}
+                <img src="{% static 'img/computacao.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "js.jpg" %}
+                <img src="{% static 'img/js.jpg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "analise de sistemas.jp..." %}
+                <img src="{% static 'img/analise de sistemas.jp...' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "psicologia.jpeg" %}
+                <img src="{% static 'img/psicologia.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "direito profissoes.jpeg" %}
+                <img src="{% static 'img/direito profissoes.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "educacao.jpeg" %}
+                <img src="{% static 'img/educacao.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "artes.jpeg" %}
+                <img src="{% static 'img/artes.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% elif curso.icone == "medicina inicio.jpeg" %}
+                <img src="{% static 'img/medicina inicio.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
+              {% else %}
+                {# fallback seguro com ícone SVG que existe #}
+                <img src="{% static 'img/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
+              {% endif %}
             {% else %}
-              <img src="{% static 'img/curso_default.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
+              <img src="{% static 'img/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
             {% endif %}
           </div>
           <div>
             <h3 class="text-white text-lg font-bold font-poppins">{{ curso.nome }}</h3>
-            <!-- ✅ FIX 2: cor da área legível em ambos os modos -->
             <p class="text-white/80 dark:text-white/60 text-sm font-poppins">{{ curso.area }}</p>
           </div>
         </div>
@@ -90,7 +129,7 @@
           {% csrf_token %}
           <button type="submit" class="p-2 hover:bg-white/20 rounded-full transition-all">
             {% if curso.id in favoritos_ids %}
-              <img src="{% static 'img/coracao_cheio.svg' %}" class="w-5 h-5" alt="Favoritado">
+              <img src="{% static 'img/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">
             {% else %}
               <img src="{% static 'img/coracao.svg' %}" class="w-5 h-5" alt="Favoritar">
             {% endif %}
@@ -103,7 +142,7 @@
     {% endfor %}
   </div>
 
-  <!-- ✅ FIX 4: Paginação com dark mode -->
+  <!-- Paginação -->
   {% if cursos.has_other_pages %}
   <div class="flex items-center justify-center gap-2 py-8">
     {% if cursos.has_previous %}

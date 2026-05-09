@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
+from django.contrib.auth import update_session_auth_hash
 
 
 # ---------- AUTH ----------
@@ -232,3 +233,60 @@ def notificacoes(request):
 @login_required
 def idiomas(request):
     return render(request, 'idiomas.html')
+
+@login_required
+def configuracoes(request):
+    user = request.user
+    # Garante que o perfil existe
+    perfil, _ = Perfil.objects.get_or_create(usuario=user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # --- Salvar dados da conta ---
+        if action == 'salvar':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name  = request.POST.get('last_name', '').strip()
+            email      = request.POST.get('email', '').strip()
+
+            # Checa se o email já pertence a outro usuário
+            if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+                messages.error(request, 'Este e-mail já está em uso por outra conta.')
+            else:
+                user.first_name = first_name
+                user.last_name  = last_name
+                user.email      = email
+                user.save()
+
+                # Foto de perfil
+                if 'foto' in request.FILES:
+                    perfil.foto = request.FILES['foto']
+                    perfil.save()
+
+                # Remover foto
+                if request.POST.get('remover_foto') == '1':
+                    perfil.foto.delete(save=True)
+
+                messages.success(request, 'Alterações salvas com sucesso!')
+            return redirect('configuracoes')
+
+        # --- Alterar senha ---
+        elif action == 'alterar_senha':
+            senha_atual = request.POST.get('senha_atual')
+            nova_senha  = request.POST.get('nova_senha')
+            confirmar   = request.POST.get('confirmar_senha')
+
+            if not user.check_password(senha_atual):
+                messages.error(request, 'Senha atual incorreta.')
+            elif nova_senha != confirmar:
+                messages.error(request, 'As novas senhas não coincidem.')
+            elif len(nova_senha) < 8:
+                messages.error(request, 'A nova senha deve ter pelo menos 8 caracteres.')
+            else:
+                user.set_password(nova_senha)
+                user.save()
+                update_session_auth_hash(request, user)  # mantém o usuário logado
+                messages.success(request, 'Senha alterada com sucesso!')
+            return redirect('configuracoes')
+
+    return render(request, 'configuracoes.html', {'perfil': perfil})

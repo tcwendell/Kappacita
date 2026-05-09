@@ -15,21 +15,23 @@
     <button class="p-2 bg-transparent hover:bg-white/20 rounded-full">
       <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filtro">
     </button>
-    <div class="relative flex-1">
+
+    <!-- ✅ FIX 1: input agora dentro de um form -->
+    <form method="GET" action="{% url 'cursos' %}" class="relative flex-1">
       <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Buscar">
       </div>
-      <input type="text" name="q" placeholder="Buscar cursos..." value="{{ request.GET.q }}"
+      <input type="text" name="q" placeholder="Buscar cursos..." value="{{ request.GET.q|default:'' }}"
         class="w-full bg-white dark:bg-gray-800 rounded-full py-3 pl-12 pr-12 text-[#233e78] dark:text-white shadow-lg outline-none">
-      <button class="absolute inset-y-0 right-4 flex items-center">
-        <img src="{% static 'img/mic.svg' %}" class="w-5 h-5" alt="Microfone">
+      <button type="submit" class="absolute inset-y-0 right-4 flex items-center">
+        <img src="{% static 'img/mic.svg' %}" class="w-5 h-5" alt="Buscar">
       </button>
-    </div>
+    </form>
   </div>
 
   <!-- Categorias Horizontais -->
   <div class="relative group">
-    <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+    <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
     </button>
     <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth" style="scrollbar-width: none;">
@@ -47,7 +49,7 @@
       <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
       {% endfor %}
     </div>
-    <button class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+    <button class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Próximo">
     </button>
   </div>
@@ -55,23 +57,24 @@
   <!-- Grid de Cursos -->
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     {% for curso in cursos %}
-    <div class="rounded-2xl p-5 flex flex-col gap-3 relative group hover:bg-white/20 transition-all"
+    <div class="rounded-2xl p-5 flex flex-col gap-3 relative group hover:bg-white/20 dark:hover:bg-white/5 transition-all"
          style="background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);">
       <div class="flex justify-between items-start">
         <div class="flex gap-4">
-          <div class="w-12 h-12 bg-[#dee1e6] rounded-xl flex items-center justify-center">
+          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
             {% if curso.icone %}
-              <img src="{% static 'img/' %}{{ curso.icone }}" class="w-7 h-7" alt="{{ curso.nome }} ícone">
+              <img src="{% static 'img/' %}{{ curso.icone }}" class="w-7 h-7" alt="{{ curso.nome }}">
             {% else %}
-              <img src="{% static 'img/curso_default.svg' %}" class="w-7 h-7" alt="{{ curso.nome }} ícone">
+              <img src="{% static 'img/curso_default.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
             {% endif %}
           </div>
           <div>
             <h3 class="text-white text-lg font-bold font-poppins">{{ curso.nome }}</h3>
-            <p class="text-[#1e293b] dark:text-white/60 text-sm font-poppins">{{ curso.area }}</p>
+            <!-- ✅ FIX 2: cor da área legível em ambos os modos -->
+            <p class="text-white/80 dark:text-white/60 text-sm font-poppins">{{ curso.area }}</p>
           </div>
         </div>
-        <div class="flex gap-0.5">
+        <div class="flex gap-0.5 flex-shrink-0">
           {% for i in "12345" %}
             {% if forloop.counter <= curso.avaliacao %}
               <img src="{% static 'img/estrela_cheia.svg' %}" class="w-2.5 h-2.5" alt="estrela">
@@ -100,12 +103,12 @@
     {% endfor %}
   </div>
 
-  <!-- Paginação -->
+  <!-- ✅ FIX 4: Paginação com dark mode -->
   {% if cursos.has_other_pages %}
   <div class="flex items-center justify-center gap-2 py-8">
     {% if cursos.has_previous %}
     <a href="?page={{ cursos.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-       class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20">
+        class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
       <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4 rotate-180" alt="Anterior">
     </a>
     {% else %}
@@ -116,16 +119,20 @@
 
     {% for num in cursos.paginator.page_range %}
       {% if cursos.number == num %}
-        <span class="w-8 h-9 bg-[#223f78] text-white rounded-md font-poppins font-bold flex items-center justify-center">{{ num }}</span>
+        <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md font-poppins font-bold flex items-center justify-center">
+          {{ num }}
+        </span>
       {% else %}
         <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-           class="w-8 h-9 bg-white border border-[#dee1e6] text-[#9095a1] rounded-md font-poppins flex items-center justify-center hover:bg-gray-100">{{ num }}</a>
+            class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600 text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+          {{ num }}
+        </a>
       {% endif %}
     {% endfor %}
 
     {% if cursos.has_next %}
     <a href="?page={{ cursos.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-       class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20">
+        class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
       <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Próximo">
     </a>
     {% else %}
@@ -137,13 +144,13 @@
   {% endif %}
 
   <!-- Footer -->
-  <footer class="mt-auto bg-gray-100/30 border-t border-[#dee1e6] py-6 px-4 lg:px-12 rounded-xl">
+  <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6] dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <p class="text-sm text-white/70 font-poppins">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
       <div class="flex gap-6">
-        <a href="{% url 'privacidade' %}" class="text-sm text-white/70 hover:text-white font-poppins">Privacidade</a>
-        <a href="#" class="text-sm text-white/70 hover:text-white font-poppins">Termos de Uso</a>
-        <a href="#" class="text-sm text-white/70 hover:text-white font-poppins">Suporte</a>
+        <a href="{% url 'privacidade' %}" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Privacidade</a>
+        <a href="#" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Termos de Uso</a>
+        <a href="#" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Suporte</a>
       </div>
     </div>
   </footer>

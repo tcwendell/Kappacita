@@ -225,7 +225,21 @@ def notificacoes(request):
 
 @login_required
 def idiomas(request):
-    return render(request, 'idiomas.html')
+    perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
+
+    if request.method == 'POST':
+        perfil.idioma            = request.POST.get('idioma', 'pt-br')
+        perfil.alto_contraste    = 'alto_contraste' in request.POST
+        perfil.tamanho_fonte     = request.POST.get('tamanho_fonte', 'normal')
+        perfil.reduzir_animacoes = 'reduzir_animacoes' in request.POST
+        perfil.save()
+        messages.success(request, 'Preferências salvas com sucesso!')
+        return redirect('idiomas')
+
+    return render(request, 'idiomas.html', {
+        'idioma_atual': perfil.idioma,
+        'prefs': perfil,
+    })
 
 @login_required
 def configuracoes(request):

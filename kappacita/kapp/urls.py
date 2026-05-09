@@ -30,4 +30,5 @@ urlpatterns = [
     path('notificacoes/', notificacoes, name='notificacoes'),
     path('idiomas/', idiomas, name='idiomas'),
     path('cursos/<int:curso_id>/favoritar/', favoritar_curso, name='favoritar_curso'),
+    path('excluir-conta/', excluir_conta, name='excluir_conta'),
 ]

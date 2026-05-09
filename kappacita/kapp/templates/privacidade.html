@@ -4,108 +4,149 @@
 {% block title %}Kappacita - Dados e Privacidade{% endblock %}
 
 {% block body %}
+{% include 'header.html' %}
+
 <style>
-    /* Estilos de Vidro e Layout */
-    .glass-panel {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-    }
-    /* Classe para indicar a página ativa no menu lateral */
-    .nav-active {
-        background-color: #81a8cb;
-        color: white !important;
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 
-<main class="flex-1 flex flex-col h-screen bg-[#81a8cb]">
-    <div class="px-8 pt-8 shrink-0">
-        <h1 class="text-4xl text-white mb-4 font-poppins font-bold">Configurações</h1>
-        <div class="border-t border-white/20"></div>
-    </div>
+<div class="flex h-screen bg-[#5b90bd] dark:bg-gray-950 transition-colors overflow-hidden">
 
-    <div class="flex-1 flex overflow-hidden p-8 gap-8">
-        
-        <aside class="w-80 flex-shrink-0">
-            <div class="glass-panel rounded-2xl p-4 shadow-lg space-y-2 h-fit">
-                
-                <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
-                    <iconify-icon icon="lucide:user" width="20"></iconify-icon>
-                    <span class="font-poppins">Conta</span>
-                </a>
+    <!-- Menu lateral -->
+    <aside class="w-80 flex-shrink-0 p-6">
+        <div class="bg-white/85 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl p-4 shadow-lg space-y-2 h-fit">
 
-                <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
-                    <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
-                    <span class="font-poppins">Notificações</span>
-                </a>
+            <a href="{% url 'configuracoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                <span class="font-poppins">Conta</span>
+            </a>
 
-                <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-[#233e78] hover:bg-white/50 font-medium transition-all">
-                    <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
-                    <span class="font-poppins">Idioma e Acessibilidade</span>
-                </a>
+            <a href="{% url 'notificacoes' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:bell" width="20"></iconify-icon>
+                <span class="font-poppins">Notificações</span>
+            </a>
 
-                <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl nav-active transition-all">
-                    <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
-                    <span class="font-poppins">Dados e Privacidade</span>
-                </a>
+            <a href="{% url 'idiomas' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700/50 text-[#233e78] dark:text-gray-200 font-medium transition-all">
+                <iconify-icon icon="lucide:languages" width="20"></iconify-icon>
+                <span class="font-poppins">Idioma e Acessibilidade</span>
+            </a>
 
-            </div>
-        </aside>
+            <a href="{% url 'privacidade' %}" class="w-full flex items-center gap-3 px-4 py-4 rounded-xl bg-[#81a8cb] dark:bg-blue-600 text-white shadow-md transition-all">
+                <iconify-icon icon="lucide:shield-check" width="20"></iconify-icon>
+                <span class="font-poppins font-medium">Dados e Privacidade</span>
+            </a>
 
+        </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <div class="flex-1 flex flex-col overflow-hidden p-6 pl-0">
         <div class="flex-1 overflow-y-auto no-scrollbar">
-            <div class="bg-white/20 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-white/20 min-h-full">
-                <h2 class="text-2xl text-[#233e78] mb-8 font-poppins font-bold">Dados e Privacidade</h2>
-                
+            <div class="bg-white/20 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-white/20 dark:border-white/10 min-h-full transition-colors">
+
+                <h2 class="text-2xl text-[#233e78] dark:text-white mb-8 font-poppins font-bold">Dados e Privacidade</h2>
+
+                <!-- Mensagens de feedback -->
+                {% for message in messages %}
+                <div class="mb-6 px-5 py-4 rounded-2xl font-medium font-poppins
+                    {% if message.tags == 'success' %}bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300
+                    {% else %}bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+
                 <div class="space-y-12">
-                    
+
+                    <!-- Uso e personalização -->
                     <section>
-                        <h3 class="text-[#233e78] text-lg font-bold mb-6 font-poppins">Uso e personalização</h3>
+                        <h3 class="text-lg text-[#233e78] dark:text-white font-bold mb-6 font-poppins">Uso e personalização</h3>
                         <div class="flex items-start justify-between gap-4">
                             <div class="flex-1">
-                                <p class="text-white text-sm font-normal mb-2 font-poppins">Uso do perfil para recomendações</p>
-                                <p class="text-[#1e293b] text-[11px] leading-relaxed font-poppins max-w-md">
+                                <p class="text-[#233e78] dark:text-white text-sm font-semibold mb-2 font-poppins">Uso do perfil para recomendações</p>
+                                <p class="text-[#233e78]/70 dark:text-gray-300 text-xs leading-relaxed font-poppins max-w-md">
                                     Permitir que o sistema use suas respostas e histórico para gerar recomendações personalizadas.
                                 </p>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                            <label class="relative inline-flex items-center cursor-pointer mt-1">
                                 <input type="checkbox" checked class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] dark:peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
                             </label>
                         </div>
                     </section>
 
-                    <section>
+                    <!-- Gerenciamento de Privacidade -->
+                    <section class="pt-8 border-t border-white/10 dark:border-white/5">
                         <div class="flex items-start justify-between gap-4">
                             <div class="flex-1">
-                                <p class="text-white text-sm font-normal mb-2 font-poppins">Gerenciamento de Privacidade</p>
-                                <p class="text-[#1e293b] text-[11px] leading-relaxed font-poppins max-w-md">
+                                <p class="text-[#233e78] dark:text-white text-sm font-semibold mb-2 font-poppins">Gerenciamento de Privacidade</p>
+                                <p class="text-[#233e78]/70 dark:text-gray-300 text-xs leading-relaxed font-poppins max-w-md">
                                     Quando essa ferramenta for ativada, nosso site pode compartilhar informações pessoais com parceiros para <span class="font-bold">personalizar</span> o sistema de anúncios.
                                 </p>
-                                <a href="#" class="text-[#1f27cd] text-[11px] font-bold underline mt-2 block font-poppins">CLIQUE AQUI PARA SABER MAIS</a>
+                                <a href="#" class="text-[#233e78] dark:text-blue-400 text-xs font-bold underline mt-2 block font-poppins">CLIQUE AQUI PARA SABER MAIS</a>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                            <label class="relative inline-flex items-center cursor-pointer mt-1">
                                 <input type="checkbox" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
+                                <div class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-[#233e78] dark:peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full shadow-inner"></div>
                             </label>
                         </div>
                     </section>
 
-                    <section class="pt-8 border-t border-white/10">
-                        <h3 class="text-white text-sm font-normal mb-4 font-poppins">Gerenciamento da conta</h3>
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-red-500/10 p-6 rounded-2xl border border-red-500/20 gap-4">
-                            <p class="text-[#1e293b] text-[11px] font-poppins">
-                                <span class="font-bold">Excluir Perfil e Dados:</span> Apague sua conta e todo seu histórico de dados.
-                            </p>
-                            <button class="bg-[#ff0008]/80 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-red-600 transition-all shadow-lg">
+                    <!-- Excluir conta -->
+                    <section class="pt-8 border-t border-white/10 dark:border-white/5">
+                        <h3 class="text-lg text-[#233e78] dark:text-white font-bold mb-6 font-poppins">Gerenciamento da conta</h3>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-red-500/10 dark:bg-red-900/20 p-6 rounded-2xl border border-red-500/20 gap-4">
+                            <div>
+                                <p class="text-[#233e78] dark:text-white text-sm font-bold font-poppins mb-1">Excluir Perfil e Dados</p>
+                                <p class="text-[#233e78]/70 dark:text-gray-300 text-xs font-poppins">Apague sua conta e todo seu histórico de dados. Essa ação é irreversível.</p>
+                            </div>
+                            <!-- Botão abre o modal de confirmação -->
+                            <button type="button" onclick="document.getElementById('modal-excluir').classList.remove('hidden')"
+                                class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-lg font-poppins whitespace-nowrap">
                                 Excluir Conta
                             </button>
                         </div>
                     </section>
+
                 </div>
             </div>
         </div>
     </div>
-</main>
+</div>
+
+<!-- Modal de confirmação de exclusão -->
+<div id="modal-excluir" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl max-w-md w-full mx-4">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                <iconify-icon icon="lucide:triangle-alert" width="20" class="text-red-500"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-bold text-[#233e78] dark:text-white font-poppins">Excluir conta</h3>
+        </div>
+
+        <p class="text-sm text-gray-600 dark:text-gray-300 font-poppins mb-2">
+            Tem certeza que deseja excluir sua conta? Essa ação é <span class="font-bold text-red-500">permanente e irreversível</span>.
+        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-300 font-poppins mb-6">
+            Para confirmar, digite sua senha abaixo:
+        </p>
+
+        <form method="POST" action="{% url 'excluir_conta' %}">
+            {% csrf_token %}
+            <input type="password" name="senha_confirmacao" placeholder="••••••••" required
+                class="w-full bg-gray-100 dark:bg-gray-700 dark:text-white border-none rounded-2xl px-5 py-4 text-gray-700 focus:ring-4 focus:ring-red-400/30 outline-none mb-6 font-poppins">
+
+            <div class="flex gap-3 justify-end">
+                <button type="button" onclick="document.getElementById('modal-excluir').classList.add('hidden')"
+                    class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-poppins">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-bold transition-all shadow-lg font-poppins">
+                    Confirmar Exclusão
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

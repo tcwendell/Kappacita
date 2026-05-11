@@ -33,38 +33,28 @@
     <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
     </button>
+
     <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth" style="scrollbar-width: none;">
       {% for categoria in categorias %}
       <div class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl">
+
+        {# Se o banco tiver imagem cadastrada, usa ela. Senão, fundo neutro. #}
         {% if categoria.imagem %}
-          {# ✅ FIX 1: imagem do banco de dados — usa .url normalmente #}
-          <img src="{{ categoria.imagem.url }}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
+          <img src="{{ categoria.imagem.url }}"
+               class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500"
+               alt="{{ categoria.nome }}">
         {% else %}
-          {# ✅ FIX 2: fallback por nome de categoria, usando imagens que existem na pasta img #}
-          {% if categoria.nome == "Tecnologia" %}
-            <img src="{% static 'img/tecnologia.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% elif categoria.nome == "Saúde" or categoria.nome == "Saude" %}
-            <img src="{% static 'img/area_saude.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% elif categoria.nome == "Artes" %}
-            <img src="{% static 'img/artes.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% elif categoria.nome == "Educação" or categoria.nome == "Educacao" %}
-            <img src="{% static 'img/educacao.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% elif categoria.nome == "Psicologia" %}
-            <img src="{% static 'img/psicologia.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% elif categoria.nome == "Direito" %}
-            <img src="{% static 'img/direito profissoes.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% else %}
-            {# fallback genérico usando uma imagem que existe #}
-            <img src="{% static 'img/educacao.jpeg' %}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500" alt="{{ categoria.nome }}">
-          {% endif %}
+          <div class="absolute inset-0 bg-[#1e293b]/60"></div>
         {% endif %}
+
         <div class="absolute inset-0 bg-black/20"></div>
         <span class="absolute bottom-4 left-4 text-white text-xl font-bold font-poppins">{{ categoria.nome }}</span>
       </div>
       {% empty %}
-      <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
+        <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
       {% endfor %}
     </div>
+
     <button class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Próximo">
     </button>
@@ -75,70 +65,95 @@
     {% for curso in cursos %}
     <div class="rounded-2xl p-5 flex flex-col gap-3 relative group hover:bg-white/20 dark:hover:bg-white/5 transition-all"
          style="background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);">
+
       <div class="flex justify-between items-start">
         <div class="flex gap-4">
-          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
+
+          {# Ícone do curso — usa curso.icone.url se existir, senão ícone padrão #}
+          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
             {% if curso.icone %}
-              {# ✅ FIX 3: concatenação com static não funciona — usar get_static_prefix ou if/elif por nome #}
-              {% if curso.icone == "tecnologia.jpeg" %}
-                <img src="{% static 'img/tecnologia.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "area_saude.jpeg" %}
-                <img src="{% static 'img/area_saude.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "computacao.jpeg" %}
-                <img src="{% static 'img/computacao.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "js.jpg" %}
-                <img src="{% static 'img/js.jpg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "analise de sistemas.jp..." %}
-                <img src="{% static 'img/analise de sistemas.jp...' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "psicologia.jpeg" %}
-                <img src="{% static 'img/psicologia.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "direito profissoes.jpeg" %}
-                <img src="{% static 'img/direito profissoes.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "educacao.jpeg" %}
-                <img src="{% static 'img/educacao.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "artes.jpeg" %}
-                <img src="{% static 'img/artes.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% elif curso.icone == "medicina inicio.jpeg" %}
-                <img src="{% static 'img/medicina inicio.jpeg' %}" class="w-7 h-7 object-cover rounded-lg" alt="{{ curso.nome }}">
-              {% else %}
-                {# fallback seguro com ícone SVG que existe #}
-                <img src="{% static 'img/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
-              {% endif %}
+              <img src="{{ curso.icone.url }}" class="w-full h-full object-cover" alt="{{ curso.nome }}">
             {% else %}
-              <img src="{% static 'img/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
+              <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
             {% endif %}
           </div>
+
           <div>
             <h3 class="text-white text-lg font-bold font-poppins">{{ curso.nome }}</h3>
             <p class="text-white/80 dark:text-white/60 text-sm font-poppins">{{ curso.area }}</p>
           </div>
         </div>
+
+        {# Estrelas — usando img/icons/ que é onde os arquivos realmente estão #}
         <div class="flex gap-0.5 flex-shrink-0">
-          {% for i in "12345" %}
-            {% if forloop.counter <= curso.avaliacao %}
-              <img src="{% static 'img/estrela_cheia.svg' %}" class="w-2.5 h-2.5" alt="estrela">
-            {% else %}
-              <img src="{% static 'img/estrela_vazia.svg' %}" class="w-2.5 h-2.5" alt="estrela">
-            {% endif %}
-          {% endfor %}
+
+          {# Posição 1 #}
+          {% if curso.avaliacao >= 1 %}
+            <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+          {% elif curso.avaliacao >= 0.5 %}
+            <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+          {% else %}
+            <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
+          {% endif %}
+
+          {# Posição 2 #}
+          {% if curso.avaliacao >= 2 %}
+            <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+          {% elif curso.avaliacao >= 1.5 %}
+            <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+          {% else %}
+            <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
+          {% endif %}
+
+          {# Posição 3 #}
+          {% if curso.avaliacao >= 3 %}
+            <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+          {% elif curso.avaliacao >= 2.5 %}
+            <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+          {% else %}
+            <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
+          {% endif %}
+
+          {# Posição 4 #}
+          {% if curso.avaliacao >= 4 %}
+            <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+          {% elif curso.avaliacao >= 3.5 %}
+            <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+          {% else %}
+            <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
+          {% endif %}
+
+          {# Posição 5 #}
+          {% if curso.avaliacao >= 5 %}
+            <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+          {% elif curso.avaliacao >= 4.5 %}
+            <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+          {% else %}
+            <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
+          {% endif %}
+
         </div>
       </div>
+
       <p class="text-white text-xs leading-relaxed font-poppins">{{ curso.descricao }}</p>
+
+      {# Coração — coracao.svg (vazio) e coracao_vermelho.svg (favoritado), ambos em img/icons/ #}
       <div class="flex justify-end mt-auto">
         <form method="post" action="{% url 'favoritar_curso' curso.id %}">
           {% csrf_token %}
           <button type="submit" class="p-2 hover:bg-white/20 rounded-full transition-all">
             {% if curso.id in favoritos_ids %}
-              <img src="{% static 'img/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">
+              <img src="{% static 'img/icons/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">
             {% else %}
               <img src="{% static 'img/coracao.svg' %}" class="w-5 h-5" alt="Favoritar">
             {% endif %}
           </button>
         </form>
       </div>
+
     </div>
     {% empty %}
-    <p class="text-white col-span-3 text-center py-10 font-poppins">Nenhum curso encontrado.</p>
+      <p class="text-white col-span-3 text-center py-10 font-poppins">Nenhum curso encontrado.</p>
     {% endfor %}
   </div>
 

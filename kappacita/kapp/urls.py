@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *   # importa todas as views do app
+from .views import *  
 
 urlpatterns = [
     # Raiz vai direto pro login
@@ -24,6 +24,7 @@ urlpatterns = [
     path('questionario/4/', questionario4, name='questionario4'),
     path('questionario/5/', questionario5, name='questionario5'),
     path('profissoes/', profissoes, name='profissoes'),
+    path('profissoes/favoritar/<int:profissao_id>/', favoritar_profissao, name='favoritar_profissao'),
     path('favoritos/', favoritos, name='favoritos'),
     path('meuprogresso/', meuprogresso, name='meuprogresso'),
     path('configuracoes/', configuracoes, name='configuracoes'),

@@ -10,51 +10,46 @@
     <body>
         <aside class="w-full lg:w-64 bg-white flex-shrink-0 flex flex-col border-r border-gray-100 z-50 h-screen">
             <div class="p-6 flex flex-col items-center">
-                <img src="{% static 'img/kappacitalogo.png' %}" alt="Kappacita Logo" class="w-16 h-16 mb-2">
+                <img src="{% static 'img/logos/kappacitalogo.png' %}" alt="Kappacita Logo" class="w-16 h-16 mb-2">
             <h1 class="text-[#233e78] text-xl font-normal font-[Poppins]">Kappacita</h1>
         </div>
     <nav class="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
         <a href="{% url 'homepage' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-            <img src="{% static 'img/icon_inicio.svg' %}" class="w-4 h-4" alt="Início">
+            <img src="{% static 'img/icons/icon_inicio.svg' %}" class="w-4 h-4" alt="Início">
             <span>Início</span>
         </a>
     <a href="{% url 'questionario' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_questionario.svg' %}" class="w-4 h-4" alt="Questionário">
+        <img src="{% static 'img/icons/icon_questionario.svg' %}" class="w-4 h-4" alt="Questionário">
         <span>Questionário de Perfil</span>
     </a>
     <a href="{% url 'cursos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_cursos.svg' %}" class="w-4 h-4" alt="Cursos">
+        <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-4 h-4" alt="Cursos">
         <span>Cursos</span>
     </a>
     <a href="{% url 'profissoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_profissoes.svg' %}" class="w-4 h-4" alt="Profissões">
+        <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-4 h-4" alt="Profissões">
         <span>Profissões</span>
     </a>
     <a href="{% url 'favoritos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_favorito.png' %}" class="w-4 h-4" alt="Favoritos">
+        <img src="{% static 'img/icons/icon_favorito.png' %}" class="w-4 h-4" alt="Favoritos">
         <span>Favoritos</span>
     </a>
     <a href="{% url 'kappabot' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_kappabot.svg' %}" class="w-4 h-4" alt="KappaBOT">
+        <img src="{% static 'img/icons/icon_kappabot.svg' %}" class="w-4 h-4" alt="KappaBOT">
         <span>KappaBOT</span>
     </a>
     <a href="{% url 'meuprogresso' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_progresso.svg' %}" class="w-4 h-4" alt="Progresso">
+        <img src="{% static 'img/icons/icon_progresso.svg' %}" class="w-4 h-4" alt="Progresso">
         <span>Meu Progresso</span>
-    </a>
-    <a href="{% url 'artigos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_artigos.svg' %}" class="w-4 h-4" alt="Artigos">
-        <span>Artigos e Vestibulares</span>
-    </a>
     </nav>
     <div class="p-4 border-t border-gray-100 space-y-1">
         <a href="{% url 'configuracoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-        <img src="{% static 'img/icon_config.svg' %}" class="w-4 h-4" alt="Configurações">
+        <img src="{% static 'img/icons/icon_config.svg' %}" class="w-4 h-4" alt="Configurações">
         <span>Configurações</span>
     </a>
     
     <a href="{% url 'sair' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] hover:bg-gray-50 rounded-lg">
-    <img src="{% static 'img/icon_sair.svg' %}" class="w-4 h-4" alt="Sair">
+    <img src="{% static 'img/icons/icon_sair.svg' %}" class="w-4 h-4" alt="Sair">
     <span>Sair</span>
     </a>
     </div>

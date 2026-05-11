@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from .models import *
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
@@ -139,9 +140,51 @@ def sair(request):
     return redirect('loginFuncionalidades')
 
 
+# ---------- HOME ----------
+
 @login_required
 def homepage(request):
-    return render(request, 'homepage.html')
+    # Cursos ordenados por avaliação decrescente, limitado a 6
+    cursos_recomendados = Curso.objects.order_by('-avaliacao')[:6]
+
+    # IDs dos favoritos do usuário — usado no template para pintar o coração
+    favoritos_ids = list(
+        Favorito.objects.filter(usuario=request.user).values_list('curso_id', flat=True)
+    )
+
+    return render(request, 'homepage.html', {
+        'cursos_recomendados': cursos_recomendados,
+        'favoritos_ids': favoritos_ids,
+    })
+
+
+# ---------- FAVORITAR VIA AJAX (homepage e outras páginas) ----------
+
+@login_required
+@require_POST
+def favoritar_curso_ajax(request, curso_id):
+    """
+    Chamada pelo JavaScript via fetch().
+    Faz o toggle de favorito: cria se não existe, deleta se já existe.
+    Retorna JSON com o novo estado { favoritado: true/false }.
+    """
+    try:
+        curso = Curso.objects.get(id=curso_id)
+    except Curso.DoesNotExist:
+        return JsonResponse({'erro': 'Curso não encontrado.'}, status=404)
+
+    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, curso=curso)
+
+    if not criado:
+        favorito.delete()
+        favoritado = False
+    else:
+        favoritado = True
+
+    return JsonResponse({'favoritado': favoritado, 'curso_id': curso_id})
+
+
+# ---------- CURSOS ----------
 
 @login_required
 def cursos(request):
@@ -169,6 +212,7 @@ def favoritar_curso(request, curso_id):
     if not criado:
         favorito.delete()
     return redirect('cursos')
+
 
 @login_required
 def kappabot(request):
@@ -212,10 +256,6 @@ def meuprogresso(request):
     return render(request, 'meuprogresso.html')
 
 @login_required
-def artigos(request):
-    return render(request, 'artigos.html')
-
-@login_required
 def privacidade(request):
     return render(request, 'privacidade.html')
 
@@ -244,19 +284,16 @@ def idiomas(request):
 @login_required
 def configuracoes(request):
     user = request.user
-    # Garante que o perfil existe
     perfil, _ = Perfil.objects.get_or_create(usuario=user)
 
     if request.method == 'POST':
         action = request.POST.get('action')
 
-        # --- Salvar dados da conta ---
         if action == 'salvar':
             first_name = request.POST.get('first_name', '').strip()
             last_name  = request.POST.get('last_name', '').strip()
             email      = request.POST.get('email', '').strip()
 
-            # Checa se o email já pertence a outro usuário
             if User.objects.filter(email=email).exclude(pk=user.pk).exists():
                 messages.error(request, 'Este e-mail já está em uso por outra conta.')
             else:
@@ -265,19 +302,16 @@ def configuracoes(request):
                 user.email      = email
                 user.save()
 
-                # Foto de perfil
                 if 'foto' in request.FILES:
                     perfil.foto = request.FILES['foto']
                     perfil.save()
 
-                # Remover foto
                 if request.POST.get('remover_foto') == '1':
                     perfil.foto.delete(save=True)
 
                 messages.success(request, 'Alterações salvas com sucesso!')
             return redirect('configuracoes')
 
-        # --- Alterar senha ---
         elif action == 'alterar_senha':
             senha_atual = request.POST.get('senha_atual')
             nova_senha  = request.POST.get('nova_senha')
@@ -292,7 +326,7 @@ def configuracoes(request):
             else:
                 user.set_password(nova_senha)
                 user.save()
-                update_session_auth_hash(request, user)  # mantém o usuário logado
+                update_session_auth_hash(request, user)
                 messages.success(request, 'Senha alterada com sucesso!')
             return redirect('configuracoes')
 
@@ -304,12 +338,10 @@ def excluir_conta(request):
     senha = request.POST.get('senha_confirmacao')
     user = request.user
 
-    # Verifica se a senha está correta antes de excluir
     if not user.check_password(senha):
         messages.error(request, 'Senha incorreta. Sua conta não foi excluída.')
         return redirect('privacidade')
 
-    # Desloga o usuário antes de excluir
     logout(request)
     user.delete()
 

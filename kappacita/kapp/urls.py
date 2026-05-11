@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import *   # importa todas as views do app
 
 urlpatterns = [
     # Raiz vai direto pro login
@@ -14,7 +14,9 @@ urlpatterns = [
 
     # Páginas protegidas
     path('homepage/', homepage, name='homepage'),
+    path('favoritar-ajax/<int:curso_id>/', favoritar_curso_ajax, name='favoritar_curso_ajax'),
     path('cursos/', cursos, name='cursos'),
+    path('cursos/<int:curso_id>/favoritar/', favoritar_curso, name='favoritar_curso'),
     path('kappabot/', kappabot, name='kappabot'),
     path('questionario/', questionario, name='questionario'),
     path('questionario/2/', questionario2, name='questionario2'),
@@ -24,11 +26,9 @@ urlpatterns = [
     path('profissoes/', profissoes, name='profissoes'),
     path('favoritos/', favoritos, name='favoritos'),
     path('meuprogresso/', meuprogresso, name='meuprogresso'),
-    path('artigos/', artigos, name='artigos'),
     path('configuracoes/', configuracoes, name='configuracoes'),
     path('privacidade/', privacidade, name='privacidade'),
     path('notificacoes/', notificacoes, name='notificacoes'),
     path('idiomas/', idiomas, name='idiomas'),
-    path('cursos/<int:curso_id>/favoritar/', favoritar_curso, name='favoritar_curso'),
     path('excluir-conta/', excluir_conta, name='excluir_conta'),
 ]

@@ -256,8 +256,33 @@ def profissoes(request):
     })
 @login_required
 def favoritos(request):
-    return render(request, 'favoritos.html')
+    filtro = request.GET.get('filtro', 'todos')
 
+    favoritos_cursos = Favorito.objects.filter(
+        usuario=request.user, curso__isnull=False
+    ).select_related('curso')
+
+    favoritos_profissoes = Favorito.objects.filter(
+        usuario=request.user, profissao__isnull=False
+    ).select_related('profissao')
+
+    return render(request, 'favoritos.html', {
+        'favoritos_cursos': favoritos_cursos,
+        'favoritos_profissoes': favoritos_profissoes,
+        'filtro': filtro,
+    })
+    
+@login_required
+@require_POST
+def desfavoritar_curso(request, curso_id):
+    Favorito.objects.filter(usuario=request.user, curso_id=curso_id).delete()
+    return JsonResponse({'ok': True})
+
+@login_required
+@require_POST
+def desfavoritar_profissao(request, profissao_id):
+    Favorito.objects.filter(usuario=request.user, profissao_id=profissao_id).delete()
+    return JsonResponse({'ok': True})
 @login_required
 def meuprogresso(request):
     return render(request, 'meuprogresso.html')

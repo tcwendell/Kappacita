@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
-{% load static %}
 
+<<<<<<< HEAD
 {% block title %}Artigos e Vestibulares{% endblock %}
 
 {% block body %}
@@ -115,3 +114,404 @@
   </div>
 </div>
 {% endblock %}
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste</title>
+</head>
+<body>
+
+</body>
+</html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kappacita - Artigos e Vestibulares</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cactus+Classical+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #1e293b;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .font-serif { font-family: "Cactus Classical Serif", serif; }
+    .font-poppins { font-family: "Poppins", sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glass-input {
+      background: rgba(185, 217, 241, 0.9);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .text-shadow-sm { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+    .custom-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-active {
+      background-color: #5B90BD;
+      color: white !important;
+      box-shadow: 0 4px 14px 0 rgba(23, 26, 31, 0.24);
+    }
+    input::placeholder { color: #233E78; opacity: 0.6; }
+    button:active { transform: scale(0.98); }
+    .hero-bg {
+      background-image: linear-gradient(rgba(91, 145, 188, 0.7), rgba(91, 145, 188, 0.7)), url('./assets/IMG_10.jpeg');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body class="bg-[#5B91BC] min-h-screen flex flex-col lg:flex-row">
+
+  <!-- Sidebar -->
+<aside class="w-full lg:w-64 bg-white flex-shrink-0 flex flex-col z-20 lg:sticky lg:top-0">
+
+  <!-- Logo -->
+  <div class="p-6 flex flex-col items-center">
+      <img 
+  src="{% static 'img/IMG_9.jpeg' %}" 
+  alt="Logo"
+  class="w-12 h-12 object-contain mx-auto"
+/>
+    <h1 class="text-[#233E78] text-xl font-poppins font-normal">Kappacita</h1>
+  </div>
+
+  <!-- Menu -->
+  <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:home-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Início
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:clipboard-text-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Questionário de Perfil
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:school-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Cursos
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:briefcase-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Profissões
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:heart-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Favoritos
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:robot-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      KappaBOT
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:chart-line" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Meu Progresso
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-md text-sm font-poppins transition">
+      <iconify-icon icon="mdi:book-open-page-variant-outline" class="w-4 h-4 text-white"></iconify-icon>
+      Artigos e Vestibulares
+    </a>
+
+  </nav>
+
+  <!-- Bottom -->
+  <div class="p-4 border-t border-gray-100 space-y-1">
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:cog-outline" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Configurações
+    </a>
+
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm font-poppins">
+      <iconify-icon icon="mdi:logout" class="w-4 h-4 text-[#233E78]"></iconify-icon>
+      Sair
+    </a>
+
+  </div>
+
+</aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+    
+    <!-- Header -->
+    <header class="h-16 flex items-center justify-between px-6 lg:px-10 bg-transparent">
+      <div class="flex items-center gap-4 flex-1">
+        <button class="p-2 text-[#233E78] hover:bg-white/10 rounded-full transition">
+          <img src="img/voltar.svg" class="w-5 h-5" alt="Voltar">
+        </button>
+        <div class="relative max-w-md w-full hidden md:block">
+          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <img src="./assets/IMG_1.svg" class="w-5 h-5 opacity-80" alt="Search">
+          </div>
+          <input type="text" placeholder="Pesquisa" class="w-full pl-12 pr-10 py-2 bg-[#B9D9F1] rounded-full text-[#233E78] focus:outline-none custom-shadow">
+          <button class="absolute inset-y-0 right-4 flex items-center">
+            <img src="./assets/IMG_5.svg" class="w-5 h-5" alt="Mic">
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <button class="p-2 text-[#233E78] hover:bg-white/10 rounded-full transition">
+            <img src="./assets/IMG_3.svg" class="w-6 h-6" alt="Dark Mode">
+          </button>
+          <button class="p-2 text-[#233E78] hover:bg-white/10 rounded-full transition">
+            <img src="./assets/IMG_4.svg" class="w-6 h-6" alt="Light Mode">
+          </button>
+          <button class="p-2 text-[#233E78] hover:bg-white/10 rounded-full transition">
+            <img src="./assets/IMG_2.svg" class="w-6 h-6" alt="Notifications">
+          </button>
+        </div>
+        <div class="flex items-center gap-3 pl-4 border-l border-[#233E78]/20">
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-semibold text-[#233E78]">Jhennifer</p>
+            <p class="text-[11px] font-serif text-[#233E78]/70">js@gmail.com</p>
+          </div>
+          <img src="./assets/IMG_8.jpg" alt="User" class="w-10 h-10 rounded-full object-cover border-2 border-white/50">
+          <button class="text-[#233E78]">
+            <img src="./assets/IMG_7.svg" class="w-5 h-5" alt="Dropdown">
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="flex-1 p-6 lg:p-10 space-y-8">
+      
+      <!-- Hero Banner -->
+      <section class="hero-bg rounded-2xl p-8 lg:p-12 text-white custom-shadow relative overflow-hidden">
+        <div class="relative z-10 max-w-2xl">
+          <h2 class="text-4xl lg:text-5xl font-poppins font-bold mb-4">Artigos e Vestibulares</h2>
+          <p class="text-xl lg:text-2xl font-poppins font-normal opacity-90">Dicas de estudo, calendários de vestibulares e orientações para sua jornada acadêmica</p>
+        </div>
+      </section>
+
+      <!-- Search & Filters -->
+      <section class="flex flex-col lg:flex-row gap-6 items-center">
+        <div class="relative w-full lg:max-w-sm">
+          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <img src="./assets/IMG_1.svg" class="w-4 h-4" alt="Search">
+          </div>
+          <input type="text" placeholder="Buscar artigos..." class="w-full pl-10 pr-10 py-3 bg-white border border-[#ECF0F1] rounded-xl text-sm focus:outline-none custom-shadow">
+          <button class="absolute inset-y-0 right-4 flex items-center">
+            <img src="./assets/IMG_5.svg" class="w-5 h-5" alt="Mic">
+          </button>
+        </div>
+        
+        <div class="flex flex-wrap gap-3">
+          <button class="px-6 py-2 bg-[#016abd] text-white rounded-full text-xs font-poppins">Todos</button>
+          <button class="px-6 py-2 bg-[#016abd]/20 text-white rounded-full text-xs font-poppins custom-shadow">Vestibulares</button>
+          <button class="px-6 py-2 bg-[#016abd]/20 text-white rounded-full text-xs font-poppins custom-shadow">Dicas de Estudo</button>
+          <button class="px-6 py-2 bg-[#016abd]/20 text-white rounded-full text-xs font-poppins custom-shadow">Orientação</button>
+        </div>
+      </section>
+
+      <!-- Main Grid Layout -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        
+        <!-- Articles Column -->
+        <div class="xl:col-span-8 space-y-8">
+          
+          <!-- Featured Articles Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card 1 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow group">
+              <div class="relative h-48">
+                <img src="./assets/IMG_17.jpeg" alt="ENEM 2026" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-4 bg-[#E11D48] text-white text-[10px] font-bold px-3 py-1 rounded-full">Vestibulares</span>
+              </div>
+              <div class="p-5 space-y-4">
+                <h3 class="text-white font-poppins font-bold text-base leading-tight group-hover:text-blue-200 transition">ENEM 2026: Tudo que você precisa saber sobre inscrições e datas</h3>
+                <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-poppins">
+                  <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 6 min</span>
+                  <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 09 de março de 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow group">
+              <div class="relative h-48">
+                <img src="./assets/IMG_20.jpeg" alt="Neurociência" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-4 bg-[#efb034] text-white text-[10px] font-bold px-3 py-1 rounded-full">Dicas de Estudo</span>
+              </div>
+              <div class="p-5 space-y-4">
+                <h3 class="text-white font-poppins font-bold text-base leading-tight group-hover:text-blue-200 transition">5 técnicas de estudo comprovadas pela neurociência</h3>
+                <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-poppins">
+                  <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 8 min</span>
+                  <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 04 de março de 2026</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- All Articles List -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-2 text-[#233E78]">
+              <img src="./assets/IMG_13.svg" class="w-5 h-5" alt="Book">
+              <h2 class="text-xl font-bold font-['Plus_Jakarta_Sans']">Todos os Artigos <span class="font-normal text-base">(9)</span></h2>
+            </div>
+
+            <!-- List Item 1 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow flex flex-col">
+              <div class="relative h-48 w-full">
+                <img src="./assets/IMG_26.webp" alt="FUVEST" class="w-full h-full object-cover">
+                <span class="absolute top-4 left-4 bg-[#E11D48] text-white text-[10px] font-bold px-3 py-1 rounded-full">Vestibulares</span>
+              </div>
+              <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-2">
+                  <h3 class="text-white font-poppins font-bold text-lg">Manual do Candidato: Como se organizar para a FUVEST</h3>
+                  <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-serif">
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 7 min</span>
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 12 de março de 2026</span>
+                  </div>
+                </div>
+                <button class="bg-[#016ABD] text-white px-10 py-2 rounded-lg font-poppins text-sm hover:bg-blue-700 transition whitespace-nowrap">Ler artigo</button>
+              </div>
+            </div>
+
+            <!-- List Item 2 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow flex flex-col">
+              <div class="relative h-48 w-full">
+                <img src="./assets/IMG_27.webp" alt="Carreira" class="w-full h-full object-cover">
+                <span class="absolute top-4 left-4 bg-[#016ABD] text-white text-[10px] font-bold px-3 py-1 rounded-full">Orientação</span>
+              </div>
+              <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-2">
+                  <h3 class="text-white font-poppins font-bold text-lg">Escolhendo sua carreira: O peso da vocação vs. mercado</h3>
+                  <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-serif">
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 10 min</span>
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 18 de março de 2026</span>
+                  </div>
+                </div>
+                <button class="bg-[#016ABD] text-white px-10 py-2 rounded-lg font-poppins text-sm hover:bg-blue-700 transition whitespace-nowrap">Ler artigo</button>
+              </div>
+            </div>
+
+            <!-- List Item 3 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow flex flex-col">
+              <div class="relative h-48 w-full">
+                <img src="./assets/IMG_28.webp" alt="Foco" class="w-full h-full object-cover">
+                <span class="absolute top-4 left-4 bg-[#efb034] text-white text-[10px] font-bold px-3 py-1 rounded-full">Dicas de Estudo</span>
+              </div>
+              <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-2">
+                  <h3 class="text-white font-poppins font-bold text-lg">Como manter o foco durante longas sessões de estudo</h3>
+                  <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-serif">
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 8 min</span>
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 22 de março de 2026</span>
+                  </div>
+                </div>
+                <button class="bg-[#016ABD] text-white px-10 py-2 rounded-lg font-poppins text-sm hover:bg-blue-700 transition whitespace-nowrap">Ler artigo</button>
+              </div>
+            </div>
+
+            <!-- List Item 4 -->
+            <div class="glass-card rounded-2xl overflow-hidden custom-shadow flex flex-col">
+              <div class="relative h-48 w-full">
+                <img src="./assets/IMG_29.webp" alt="Calendário" class="w-full h-full object-cover">
+                <span class="absolute top-4 left-4 bg-[#E11D48] text-white text-[10px] font-bold px-3 py-1 rounded-full">Vestibulares</span>
+              </div>
+              <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-2">
+                  <h3 class="text-white font-poppins font-bold text-lg">Calendário Unificado 2026: Não perca nenhum prazo</h3>
+                  <div class="flex items-center gap-4 text-[#dee1e6] text-[11px] font-serif">
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_18.svg" class="w-3 h-3"> 5 min</span>
+                    <span class="flex items-center gap-1"><img src="./assets/IMG_19.svg" class="w-3 h-3"> 25 de março de 2026</span>
+                  </div>
+                </div>
+                <button class="bg-[#016ABD] text-white px-10 py-2 rounded-lg font-poppins text-sm hover:bg-blue-700 transition whitespace-nowrap">Ler artigo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex justify-center items-center gap-2 py-8">
+            <button class="p-2 text-[#223f78] hover:bg-white/20 rounded-md transition">
+              <img src="./assets/IMG_30.svg" class="w-4 h-4" alt="Prev">
+            </button>
+            <button class="w-8 h-9 flex items-center justify-center bg-[#223f78] text-white rounded-md font-serif text-sm">1</button>
+            <button class="w-8 h-9 flex items-center justify-center bg-white border border-[#dee1e6] text-[#9095a1] rounded-md font-serif text-sm">2</button>
+            <button class="w-8 h-9 flex items-center justify-center bg-white border border-[#dee1e6] text-[#9095a1] rounded-md font-serif text-sm">3</button>
+            <button class="w-8 h-9 flex items-center justify-center bg-white border border-[#dee1e6] text-[#9095a1] rounded-md font-serif text-sm">4</button>
+            <button class="p-2 text-[#223e79] hover:bg-white/20 rounded-md transition">
+              <img src="./assets/IMG_31.svg" class="w-4 h-4" alt="Next">
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar Column (Vestibulares) -->
+        <aside class="xl:col-span-4 space-y-6">
+          <div class="glass-card rounded-2xl p-6 custom-shadow border-dashed border-[#dee1e6]/20">
+            <h2 class="text-white font-poppins font-bold text-xl mb-6">Próximos Vestibulares</h2>
+            
+            <div class="space-y-4">
+              <!-- Exam 1 -->
+              <div class="bg-[#dee1e6] rounded-2xl p-4 flex items-center justify-between custom-shadow">
+                <span class="text-[#233E78] font-poppins font-bold text-sm">ENEM 2026</span>
+                <span class="bg-[#1dd75b] text-white text-[10px] font-medium px-3 py-1 rounded-full">Inscrições abertas</span>
+              </div>
+              <!-- Exam 2 -->
+              <div class="bg-[#dee1e6] rounded-2xl p-4 flex items-center justify-between custom-shadow">
+                <span class="text-[#233E78] font-poppins font-bold text-sm">FUVEST 2026</span>
+                <span class="bg-[#223F78]/16 text-[#223E79] text-[10px] font-medium px-3 py-1 rounded-full">Em breve</span>
+              </div>
+              <!-- Exam 3 -->
+              <div class="bg-[#dee1e6] rounded-2xl p-4 flex items-center justify-between custom-shadow">
+                <span class="text-[#233E78] font-poppins font-bold text-sm">UNICAMP 2026</span>
+                <span class="bg-[#223F78]/16 text-[#223E79] text-[10px] font-medium px-3 py-1 rounded-full">Em breve</span>
+              </div>
+              <!-- Exam 4 -->
+              <div class="bg-[#dee1e6] rounded-2xl p-4 flex items-center justify-between custom-shadow">
+                <span class="text-[#233E78] font-poppins font-bold text-sm">UNESP 2026</span>
+                <span class="bg-[#1dd75b] text-white text-[10px] font-medium px-3 py-1 rounded-full">Inscrições abertas</span>
+              </div>
+            </div>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto bg-[#f3f4f6]/30 border-t border-[#dee1e6] py-6 px-10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-[#565d6d] font-poppins text-sm">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
+      <div class="flex gap-8 text-[#565d6d] font-poppins text-sm">
+        <a href="#" class="hover:text-[#233E78] transition">Privacidade</a>
+        <a href="#" class="hover:text-[#233E78] transition">Termos de Uso</a>
+        <a href="#" class="hover:text-[#233E78] transition">Suporte</a>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>
+>>>>>>> b6f8b70 (teste)

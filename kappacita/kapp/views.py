@@ -244,9 +244,16 @@ def profissoes(request):
     lista = Profissao.objects.filter(nome__icontains=q)
     paginator = Paginator(lista, 12)
     page = request.GET.get('page')
-    profissoes = paginator.get_page(page)
-    return render(request, 'profissoes.html', {'profissoes': profissoes})
-
+    profissoes_paginadas = paginator.get_page(page)
+    categorias = Categoria.objects.all()
+    favoritos_ids = list(
+        Favorito.objects.filter(usuario=request.user).values_list('profissao_id', flat=True)
+    )
+    return render(request, 'profissoes.html', {
+        'profissoes': profissoes_paginadas,
+        'categorias': categorias,
+        'favoritos_ids': favoritos_ids,
+    })
 @login_required
 def favoritos(request):
     return render(request, 'favoritos.html')
@@ -347,3 +354,12 @@ def excluir_conta(request):
 
     messages.success(request, 'Sua conta foi excluída com sucesso.')
     return redirect('loginFuncionalidades')
+
+@login_required
+@require_POST
+def favoritar_profissao(request, profissao_id):
+    profissao = Profissao.objects.get(id=profissao_id)
+    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, profissao=profissao)
+    if not criado:
+        favorito.delete()
+    return redirect('profissoes')

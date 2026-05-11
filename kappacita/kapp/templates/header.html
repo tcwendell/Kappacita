@@ -3,12 +3,12 @@
 <header class="h-16 flex items-center justify-between px-4 lg:px-8 bg-white dark:bg-gray-900 shadow-sm transition-colors">
     <div class="flex items-center gap-4 flex-1">
     <button class="p-2 text-[#233e78] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-        <img src="{% static 'img/anterior.svg' %}" class="w-5 h-5" alt="Voltar">
+        <img src="{% static 'img/icons/anterior.svg' %}" class="w-5 h-5" alt="Voltar">
     </button>
     <div class="relative max-w-md w-full hidden md:block">
         <form method="GET" action="">
         <div class="flex items-center bg-[#B9D9F1] dark:bg-gray-700 rounded-full px-4 py-2 shadow-sm">
-            <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
+            <img src="{% static 'img/icons/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Pesquisa"
             class="bg-transparent border-none focus:ring-0 text-[#233e78] dark:text-white placeholder-[#233e78]/60 dark:placeholder-white/50 w-full ml-2 text-sm">
         </div>
@@ -18,11 +18,11 @@
     <div class="flex items-center gap-2 lg:gap-4">
     <div class="flex items-center gap-1">
         <button onclick="toggleTema()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-        <img src="{% static 'img/darkmode.svg' %}" class="w-6 h-6 dark:hidden" alt="Dark Mode">
-        <img src="{% static 'img/lightmode.svg' %}" class="w-6 h-6 hidden dark:block" alt="Light Mode">
+        <img src="{% static 'img/icons/darkmode.svg' %}" class="w-6 h-6 dark:hidden" alt="Dark Mode">
+        <img src="{% static 'img/icons/lightmode.svg' %}" class="w-6 h-6 hidden dark:block" alt="Light Mode">
         </button>
         <button class="p-2 text-[#233e78] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-        <img src="{% static 'img/sino.svg' %}" class="w-6 h-6" alt="Notifications">
+        <img src="{% static 'img/icons/sino.svg' %}" class="w-6 h-6" alt="Notifications">
         </button>
     </div>
     <div class="flex items-center gap-3 pl-4 border-l border-[#233e78]/20 dark:border-white/20">

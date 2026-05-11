@@ -8,6 +8,7 @@
 
 <div class="p-6 lg:p-10 bg-[#5b90bd] dark:bg-gray-950 min-h-screen transition-colors">
 
+    {# BANNER DE BOAS-VINDAS #}
     <section class="relative rounded-[32px] mb-12 min-h-[250px] flex flex-col lg:flex-row overflow-hidden shadow-2xl border border-white/20 dark:border-white/10">
 
         <div class="absolute inset-0 z-0">
@@ -17,7 +18,7 @@
 
         <div class="relative z-10 flex-1 p-10 flex flex-col justify-center">
             <div class="flex items-center gap-2 mb-2">
-                <img src="{% static 'img/estrela.svg' %}" class="w-5 h-5" alt="Sparkles">
+                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="Sparkles">
                 <span class="font-poppins font-bold text-[#233e78] dark:text-white">Seja bem-vindo(a)</span>
             </div>
 
@@ -57,31 +58,150 @@
         </div>
     </section>
 
+    {# CURSOS RECOMENDADOS #}
     <section>
         <h2 class="text-2xl font-bold font-poppins text-white dark:text-white mb-6">Cursos Recomendados</h2>
         <div class="grid grid-cols-1 gap-6">
+
+            {% for curso in cursos_recomendados %}
             <div class="flex flex-col md:flex-row bg-[#81a8cb]/30 dark:bg-gray-800/80 backdrop-blur-sm rounded-[32px] overflow-hidden border border-white/20 dark:border-white/10 shadow-2xl">
-                <div class="w-full md:w-80 h-52">
-                    <img src="{% static 'img/computacao.jpeg' %}" class="w-full h-full object-cover" alt="Ciência da Computação">
+
+                {# Imagem do curso #}
+                <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
+                    {% if curso.icone %}
+                        <img src="{{ curso.icone.url }}" class="w-full h-full object-cover" alt="{{ curso.nome }}">
+                    {% endif %}
                 </div>
-                <div class="flex-1 p-8 flex flex-col justify-between">
+
+                {# Conteúdo do card #}
+                <div class="flex-1 min-w-0 p-8 flex flex-col justify-between">
                     <div>
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-white dark:text-white text-2xl font-bold font-poppins">Ciência da Computação</h3>
-                            <span class="bg-[#1dd75b] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">95% match</span>
-                        </div>
-                        <p class="text-white/80 dark:text-white/60 font-poppins font-medium">TI • 8 Semestres</p>
+                        <h3 class="text-white dark:text-white text-2xl font-bold font-poppins mb-1">{{ curso.nome }}</h3>
+                        <p class="text-white/80 dark:text-white/60 font-poppins font-medium">{{ curso.area }}</p>
+                        <p class="text-white/70 dark:text-white/50 font-poppins text-sm mt-2">{{ curso.descricao }}</p>
                     </div>
 
-                    <div class="flex justify-between items-center mt-6">
-                        <span class="text-white dark:text-white text-xl font-bold font-poppins">R$ 8.000 – R$ 20.000</span>
-                        <button class="hover:scale-110 transition-transform">
-                            <img src="{% static 'img/coracao.svg' %}" class="w-8 h-8" alt="Favoritar">
+                    <div class="flex justify-between items-center mt-6 gap-4">
+
+                        {# ESTRELAS #}
+                        <div class="flex items-center gap-1 flex-shrink-0">
+
+                            {# Posição 1 #}
+                            {% if curso.avaliacao >= 1 %}
+                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
+                            {% elif curso.avaliacao >= 0.5 %}
+                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                            {% else %}
+                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                            {% endif %}
+
+                            {# Posição 2 #}
+                            {% if curso.avaliacao >= 2 %}
+                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
+                            {% elif curso.avaliacao >= 1.5 %}
+                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                            {% else %}
+                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                            {% endif %}
+
+                            {# Posição 3 #}
+                            {% if curso.avaliacao >= 3 %}
+                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
+                            {% elif curso.avaliacao >= 2.5 %}
+                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                            {% else %}
+                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                            {% endif %}
+
+                            {# Posição 4 #}
+                            {% if curso.avaliacao >= 4 %}
+                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
+                            {% elif curso.avaliacao >= 3.5 %}
+                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                            {% else %}
+                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                            {% endif %}
+
+                            {# Posição 5 #}
+                            {% if curso.avaliacao >= 5 %}
+                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
+                            {% elif curso.avaliacao >= 4.5 %}
+                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                            {% else %}
+                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                            {% endif %}
+
+                            <span class="text-white/70 font-poppins text-sm ml-1">({{ curso.avaliacao }})</span>
+                        </div>
+
+                        {# CORAÇÃO — coracao.svg = vazio | coracao_vermelho.svg = favoritado #}
+                        <button
+                            class="btn-favoritar hover:scale-110 transition-transform flex-shrink-0"
+                            data-curso-id="{{ curso.id }}"
+                            data-favoritado="{% if curso.id in favoritos_ids %}true{% else %}false{% endif %}"
+                            aria-label="Favoritar curso"
+                        >
+                            <img
+                                src="{% if curso.id in favoritos_ids %}{% static 'img/icons/coracao_vermelho.svg' %}{% else %}{% static 'img/coracao.svg' %}{% endif %}"
+                                class="w-8 h-8 icone-coracao"
+                                alt="Favoritar"
+                            >
                         </button>
+
                     </div>
                 </div>
             </div>
+            {% empty %}
+                <p class="text-white font-poppins">Nenhum curso disponível no momento.</p>
+            {% endfor %}
+
         </div>
     </section>
+
 </div>
+
+{# JAVASCRIPT DO CORAÇÃO #}
+<script>
+    const urlBase = "{% url 'favoritar_curso_ajax' 0 %}".replace('/0/', '/');
+    const coracaoVazio    = "{% static 'img/coracao.svg' %}";
+    const coracaoVermelho = "{% static 'img/icons/coracao_vermelho.svg' %}";
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            for (let cookie of document.cookie.split(';')) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.slice(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.querySelectorAll('.btn-favoritar').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const cursoId = this.dataset.cursoId;
+            const icone   = this.querySelector('.icone-coracao');
+
+            fetch(urlBase + cursoId + '/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.favoritado) {
+                    icone.src = coracaoVermelho;
+                    btn.dataset.favoritado = 'true';
+                } else {
+                    icone.src = coracaoVazio;
+                    btn.dataset.favoritado = 'false';
+                }
+            })
+            .catch(err => console.error('Erro ao favoritar:', err));
+        });
+    });
+</script>
+
 {% endblock %}

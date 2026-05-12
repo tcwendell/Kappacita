@@ -81,15 +81,15 @@
       {% if filtro == 'todos' or filtro == 'profissoes' %}
         {% for fav in favoritos_profissoes %}
         <div class="favorito-item bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-lg border-2 border-transparent hover:border-[#5b90bd]/30 cursor-pointer transition-all"
-             id="fav-profissao-{{ fav.profissao.id }}"
-             data-tipo="profissao"
-             data-id="{{ fav.profissao.id }}"
-             data-nome="{{ fav.profissao.nome }}"
-             data-area="{{ fav.profissao.area }}"
-             data-descricao="{{ fav.profissao.descricao }}"
-             data-salario-min="{{ fav.profissao.salario_min }}"
-             data-salario-max="{{ fav.profissao.salario_max }}"
-             data-icone="{% if fav.profissao.icone %}{{ fav.profissao.icone.url }}{% endif %}"
+              id="fav-profissao-{{ fav.profissao.id }}"
+              data-tipo="profissao"
+              data-id="{{ fav.profissao.id }}"
+              data-nome="{{ fav.profissao.nome }}"
+              data-area="{{ fav.profissao.area }}"
+              data-descricao="{{ fav.profissao.descricao }}"
+              data-salario-min="{{ fav.profissao.salario_min }}"
+              data-salario-max="{{ fav.profissao.salario_max }}"
+              data-icone="{% if fav.profissao.icone %}{{ fav.profissao.icone.url }}{% endif %}"
              onclick="selecionarItem(this)">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-[#f2f2fd] dark:bg-gray-700 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">

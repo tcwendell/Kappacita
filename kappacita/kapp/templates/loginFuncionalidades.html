@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -188,11 +189,11 @@
           <div class="flex-1 h-[1px] bg-[#DEDDDB]/50"></div>
         </div>
 
-        <!-- Google -->
-        <button class="w-full h-12 bg-white rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-blue-50">
-          <img src="{% static 'img/google.svg' %}" alt="Google" class="w-7 h-7">
-          <span class="text-[#224178] font-bold text-lg">Google</span>
-        </button>
+    <a href="{% provider_login_url 'google' %}"
+      class="w-full h-12 bg-white rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-gray-50 active:scale-95">
+      <img src="{% static 'img/google.svg' %}" alt="Google" class="w-7 h-7">
+      <span class="text-[#224178] font-bold text-lg">Google</span>
+    </a>
 
         <!-- Footer -->
         <div class="mt-8 text-center" id="footer-text">

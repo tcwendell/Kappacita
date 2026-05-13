@@ -1,6 +1,30 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class CategoriaCurso(models.Model):
+
+    nome = models.CharField(max_length=100)
+    imagem = models.ImageField(upload_to='categorias_cursos/', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Categoria de Curso'
+        verbose_name_plural = 'Categorias de Cursos'
+
+    def __str__(self):
+        return self.nome
+
+
+class CategoriaProfissao(models.Model):
+    nome = models.CharField(max_length=100)
+    imagem = models.ImageField(upload_to='categorias_profissoes/', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Categoria de Profissão'
+        verbose_name_plural = 'Categorias de Profissões'
+
+    def __str__(self):
+        return self.nome
+
 
 class Profissao(models.Model):
     nome = models.CharField(max_length=100)
@@ -11,13 +35,17 @@ class Profissao(models.Model):
     icone = models.ImageField(blank=True, null=True)
     avaliacao = models.DecimalField(max_digits=3, decimal_places=1, default=4.0)
 
-    def __str__(self):
-        return self.nome
+    categoria = models.ForeignKey(
+        CategoriaProfissao,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='profissoes'
+    )
 
-
-class Categoria(models.Model):
-    nome = models.CharField(max_length=100)
-    imagem = models.ImageField(upload_to='categorias/', blank=True, null=True)
+    class Meta:
+        verbose_name = 'Profissão'
+        verbose_name_plural = 'Profissões'
 
     def __str__(self):
         return self.nome
@@ -29,7 +57,18 @@ class Curso(models.Model):
     descricao = models.TextField()
     avaliacao = models.DecimalField(max_digits=3, decimal_places=1, default=4.0)
     icone = models.ImageField(upload_to='cursos/icones/', blank=True, null=True)
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
+
+    categoria = models.ForeignKey(
+        CategoriaCurso,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='cursos'
+    )
+
+    class Meta:
+        verbose_name = 'Curso'
+        verbose_name_plural = 'Cursos'
 
     def __str__(self):
         return self.nome
@@ -41,7 +80,6 @@ class Favorito(models.Model):
     profissao = models.ForeignKey(Profissao, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        # Garante que o mesmo usuário não favorite o mesmo curso ou profissão duas vezes
         constraints = [
             models.UniqueConstraint(
                 fields=['usuario', 'curso'],

@@ -188,19 +188,33 @@ def favoritar_curso_ajax(request, curso_id):
 
 @login_required
 def cursos(request):
-    q = request.GET.get('q', '')
-    lista = Curso.objects.filter(nome__icontains=q)
-    paginator = Paginator(lista, 12)
-    page = request.GET.get('page')
+    q            = request.GET.get('q', '').strip()
+    # NOVO: lê o id da categoria vindo da URL (?categoria=ID)
+    categoria_id = request.GET.get('categoria', '').strip()
+
+    qs = Curso.objects.all()
+    
+    if q:
+        qs = qs.filter(nome__icontains=q)
+
+    # NOVO: filtra pelo categoria_id se ele foi enviado na URL
+    if categoria_id:
+        qs = qs.filter(categoria_id=categoria_id)
+
+    paginator        = Paginator(qs, 9)
+    page             = request.GET.get('page', 1)
     cursos_paginados = paginator.get_page(page)
-    categorias = Categoria.objects.all()
-    favoritos_ids = list(
-        Favorito.objects.filter(usuario=request.user).values_list('curso_id', flat=True)
+
+    favoritos_ids = set(
+        Favorito.objects.filter(usuario=request.user, curso__isnull=False)
+        .values_list('curso_id', flat=True)
     )
+
     return render(request, 'cursos.html', {
-        'cursos': cursos_paginados,
-        'categorias': categorias,
-        'favoritos_ids': favoritos_ids,
+        'cursos':          cursos_paginados,
+        'categorias':      CategoriaCurso.objects.all(),
+        'favoritos_ids':   favoritos_ids,
+        'categoria_ativa': int(categoria_id) if categoria_id.isdigit() else None,
     })
 
 
@@ -240,20 +254,34 @@ def questionario5(request):
 
 @login_required
 def profissoes(request):
-    q = request.GET.get('q', '')
-    lista = Profissao.objects.filter(nome__icontains=q)
-    paginator = Paginator(lista, 12)
-    page = request.GET.get('page')
+    q            = request.GET.get('q', '').strip()
+    # NOVO: lê o id da categoria vindo da URL (?categoria=ID)
+    categoria_id = request.GET.get('categoria', '').strip()
+
+    qs = Profissao.objects.all()
+
+    if q:
+        qs = qs.filter(nome__icontains=q)
+
+    if categoria_id:
+        qs = qs.filter(categoria_id=categoria_id)
+
+    paginator            = Paginator(qs, 9)
+    page                 = request.GET.get('page', 1)
     profissoes_paginadas = paginator.get_page(page)
-    categorias = Categoria.objects.all()
-    favoritos_ids = list(
-        Favorito.objects.filter(usuario=request.user).values_list('profissao_id', flat=True)
+
+    favoritos_ids = set(
+        Favorito.objects.filter(usuario=request.user, profissao__isnull=False)
+        .values_list('profissao_id', flat=True)
     )
+
     return render(request, 'profissoes.html', {
-        'profissoes': profissoes_paginadas,
-        'categorias': categorias,
-        'favoritos_ids': favoritos_ids,
+        'profissoes':      profissoes_paginadas,
+        'categorias':      CategoriaProfissao.objects.all(),
+        'favoritos_ids':   favoritos_ids,
+        'categoria_ativa': int(categoria_id) if categoria_id.isdigit() else None,
     })
+    
 @login_required
 def favoritos(request):
     filtro = request.GET.get('filtro', 'todos')

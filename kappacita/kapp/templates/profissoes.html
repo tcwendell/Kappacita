@@ -33,13 +33,26 @@
 
     <h2 class="text-white text-4xl lg:text-5xl font-bold font-poppins">Explorar Profissões</h2>
 
-    <!-- Search & Filter Bar -->
+    <!-- ───────────────────────────────────────────
+         Search & Filter Bar — ALTERAÇÃO:
+         Adicionado campo hidden para preservar
+         a categoria ativa durante buscas por texto.
+         ─────────────────────────────────────────── -->
     <div class="flex flex-col md:flex-row items-center gap-4">
       <button class="p-2 text-[#233e78] dark:text-white hover:bg-white/20 rounded-full">
         <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filter">
       </button>
       <div class="relative flex-1 w-full">
         <form method="GET" action="">
+          <!--
+            NOVO: quando uma categoria está ativa e o usuário faz
+            uma busca por texto, esse campo hidden garante que
+            ?categoria=ID continue na URL junto com ?q=...
+          -->
+          {% if categoria_ativa %}
+            <input type="hidden" name="categoria" value="{{ categoria_ativa }}">
+          {% endif %}
+
           <div class="flex items-center bg-white dark:bg-gray-800 rounded-full px-6 py-3 card-shadow">
             <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar profissões..."
@@ -49,9 +62,38 @@
       </div>
     </div>
 
-    <p class="text-white text-sm font-poppins">{{ profissoes.paginator.count }} profissão(ões) encontrada(s)</p>
+    <!-- ───────────────────────────────────────────
+         Contador + botão limpar — ALTERAÇÃO:
+         NOVO botão "Limpar filtro" aparece apenas
+         quando uma categoria está selecionada.
+         ─────────────────────────────────────────── -->
+    <div class="flex items-center gap-4 flex-wrap">
+      <p class="text-white text-sm font-poppins">
+        {{ profissoes.paginator.count }} profissão(ões) encontrada(s)
+      </p>
 
-    <!-- Categorias Horizontais (dinâmico) -->
+      <!--
+        NOVO: link que remove o filtro de categoria da URL.
+        Preserva o ?q= se houver uma busca por texto ativa.
+      -->
+      {% if categoria_ativa %}
+        <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+           class="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white text-xs font-poppins px-3 py-1 rounded-full transition-all">
+          ✕ Limpar filtro de categoria
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- ───────────────────────────────────────────
+         Categorias Horizontais — ALTERAÇÕES:
+         1. Cada card agora é uma tag <a> (link) ao
+            invés de <div> — permite clicar e navegar
+         2. Clicar aplica ?categoria=ID na URL
+         3. Categoria ativa recebe ring-4 ring-white
+            e ícone ✓ no canto superior direito
+         4. Clicar na categoria ativa a remove (limpa)
+         5. Preserva ?q= no link quando há busca ativa
+         ─────────────────────────────────────────── -->
     <div class="relative group">
       <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
         <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
@@ -59,7 +101,23 @@
 
       <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth no-scrollbar">
         {% for categoria in categorias %}
-        <div class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl">
+
+        <!--
+          ALTERAÇÃO PRINCIPAL: era <div class="... cursor-pointer">
+          Agora é <a href="..."> — funciona como link real ao clicar.
+
+          Se a categoria clicada JÁ está ativa → link limpa o filtro.
+          Se a categoria clicada NÃO está ativa → link aplica o filtro.
+        -->
+        {% if categoria_ativa == categoria.id %}
+          <!-- Categoria ATIVA: clicar limpa o filtro -->
+          <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+             class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl ring-4 ring-white transition-all">
+        {% else %}
+          <!-- Categoria INATIVA: clicar aplica o filtro -->
+          <a href="?categoria={{ categoria.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+             class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl transition-all hover:ring-2 hover:ring-white/60">
+        {% endif %}
 
           {% if categoria.imagem %}
             <img src="{{ categoria.imagem.url }}"
@@ -69,9 +127,26 @@
             <div class="absolute inset-0 bg-[#1e293b]/60"></div>
           {% endif %}
 
-          <div class="absolute inset-0 bg-black/20"></div>
+          <!--
+            ALTERAÇÃO: overlay levemente mais escuro quando
+            a categoria está ativa, para dar contraste ao ✓
+          -->
+          <div class="absolute inset-0 {% if categoria_ativa == categoria.id %}bg-black/40{% else %}bg-black/20{% endif %}"></div>
+
           <span class="absolute bottom-4 left-4 text-white text-xl font-bold font-poppins">{{ categoria.nome }}</span>
-        </div>
+
+          <!--
+            NOVO: ícone ✓ aparece somente quando esta categoria
+            é a que está atualmente filtrando os resultados.
+          -->
+          {% if categoria_ativa == categoria.id %}
+            <div class="absolute top-3 right-3 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow">
+              <span class="text-[#1065a6] text-sm font-bold leading-none">✓</span>
+            </div>
+          {% endif %}
+
+        </a>
+
         {% empty %}
           <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
         {% endfor %}
@@ -82,15 +157,16 @@
       </button>
     </div>
 
-    <!-- Grid de Profissões (dinâmico) -->
+    <!-- ───────────────────────────────────────────
+         Grid de Profissões — SEM ALTERAÇÃO visual.
+         Os dados já chegam filtrados da view.
+         ─────────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {% for profissao in profissoes %}
       <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative group transition-all">
 
         <div class="flex justify-between items-start">
           <div class="flex gap-4">
-
-            <!-- Ícone da profissão -->
             <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
               {% if profissao.icone %}
                 <img src="{{ profissao.icone.url }}" class="w-full h-full object-cover" alt="{{ profissao.nome }}">
@@ -105,49 +181,26 @@
             </div>
           </div>
 
-          <!-- Estrelas -->
           <div class="flex gap-0.5 flex-shrink-0">
+            {% if profissao.avaliacao >= 1 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+            {% elif profissao.avaliacao >= 0.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
 
-            {% if profissao.avaliacao >= 1 %}
-              <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 0.5 %}
-              <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}
-              <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
-            {% endif %}
+            {% if profissao.avaliacao >= 2 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+            {% elif profissao.avaliacao >= 1.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
 
-            {% if profissao.avaliacao >= 2 %}
-              <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 1.5 %}
-              <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}
-              <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
-            {% endif %}
+            {% if profissao.avaliacao >= 3 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+            {% elif profissao.avaliacao >= 2.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
 
-            {% if profissao.avaliacao >= 3 %}
-              <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 2.5 %}
-              <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}
-              <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
-            {% endif %}
+            {% if profissao.avaliacao >= 4 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+            {% elif profissao.avaliacao >= 3.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
 
-            {% if profissao.avaliacao >= 4 %}
-              <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 3.5 %}
-              <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}
-              <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
-            {% endif %}
-
-            {% if profissao.avaliacao >= 5 %}
-              <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 4.5 %}
-              <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}
-              <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">
-            {% endif %}
-
+            {% if profissao.avaliacao >= 5 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
+            {% elif profissao.avaliacao >= 4.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
+            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
           </div>
         </div>
 
@@ -157,7 +210,6 @@
           Salário: R$ {{ profissao.salario_min }} à R$ {{ profissao.salario_max }}
         </p>
 
-        <!-- Coração (favoritar) -->
         <div class="flex justify-end mt-auto">
           <form method="post" action="{% url 'favoritar_profissao' profissao.id %}">
             {% csrf_token %}
@@ -177,11 +229,17 @@
       {% endfor %}
     </div>
 
-    <!-- Paginação -->
+    <!-- ───────────────────────────────────────────
+         Paginação — ALTERAÇÃO: adicionado
+         &categoria={{ categoria_ativa }} em todos
+         os links de página para que ao trocar de
+         página o filtro de categoria não se perca.
+         ─────────────────────────────────────────── -->
     {% if profissoes.has_other_pages %}
     <div class="flex items-center justify-center gap-2 py-8">
+
       {% if profissoes.has_previous %}
-      <a href="?page={{ profissoes.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      <a href="?page={{ profissoes.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
           class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
         <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4 rotate-180" alt="Anterior">
       </a>
@@ -197,7 +255,11 @@
             {{ num }}
           </span>
         {% else %}
-          <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+          <!--
+            ALTERAÇÃO: &categoria={{ categoria_ativa }} preserva
+            o filtro ao navegar entre as páginas da paginação.
+          -->
+          <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
               class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600 text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
             {{ num }}
           </a>
@@ -205,7 +267,7 @@
       {% endfor %}
 
       {% if profissoes.has_next %}
-      <a href="?page={{ profissoes.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      <a href="?page={{ profissoes.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
           class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
         <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Próximo">
       </a>
@@ -214,10 +276,11 @@
         <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Próximo">
       </span>
       {% endif %}
+
     </div>
     {% endif %}
 
-    <!-- Footer -->
+    <!-- Footer — SEM ALTERAÇÃO -->
     <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6] dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <p class="text-sm text-white/70 font-poppins">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>

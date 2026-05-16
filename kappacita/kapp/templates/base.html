@@ -1,13 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 
-<html lang="{% if perfil_global %}{{ perfil_global.idioma }}{% else %}pt-br{% endif %}"
+<html lang="{% if perfil %}{{ perfil.idioma }}{% else %}pt-br{% endif %}"
         class="
-        {% if perfil_global.alto_contraste %}alto-contraste {% endif %}
-        {% if perfil_global.tamanho_fonte == 'grande' %}fonte-grande {% endif %}
-        {% if perfil_global.tamanho_fonte == 'muito_grande' %}fonte-muito-grande {% endif %}
-        {% if perfil_global.reduzir_animacoes %}sem-animacoes{% endif %}
-        ">
+        {% if perfil.alto_contraste %}alto-contraste {% endif %}
+        {% if perfil.tamanho_fonte == 'grande' %}fonte-grande {% endif %}
+        {% if perfil.tamanho_fonte == 'muito_grande' %}fonte-muito-grande {% endif %}
+        {% if perfil.reduzir_animacoes %}sem-animacoes{% endif %}
+    ">
 
 <head>
     <meta charset="UTF-8">

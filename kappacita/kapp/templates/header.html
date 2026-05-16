@@ -31,11 +31,15 @@
                 <p class="text-sm font-semibold text-[#233e78] dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</p>
                 <p class="text-[10px] text-[#233e78]/70 dark:text-white/50">{{ request.user.email }}</p>
             </div>
-            <div class="w-10 h-10 rounded-full bg-[#233e78] border-2 border-white flex items-center justify-center">
-                <span class="text-white text-sm font-bold">
-                    {{ request.user.username|slice:":1"|upper }}
-                </span>
-            </div>
+            <div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden flex items-center justify-center bg-[#233e78]">
+                {% if perfil.foto %}
+                    <img src="{{ perfil.foto.url }}" alt="Foto" class="w-full h-full object-cover">
+                {% else %}
+                    <span class="text-white text-sm font-bold">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </span>
+                {% endif %}
+</div>
         </a>
     </div>
     </div>

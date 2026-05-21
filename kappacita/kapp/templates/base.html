@@ -27,13 +27,26 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;700&family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <style>
+        #sidebar-wrapper {
+            width: 16rem; /* 256px = w-64 */
+            transition: width 0.3s ease, min-width 0.3s ease;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        #sidebar-wrapper.collapsed {
+            width: 0;
+            min-width: 0;
+        }
+    </style>
 </head>
 
 <body class="bg-[#FCFAF8] dark:bg-gray-950">
 
     <div class="flex min-h-screen w-full">
-
-        <aside class="w-64 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-700 hidden lg:block sticky top-0 h-screen">
+        <aside id="sidebar-wrapper" class="bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-700 hidden lg:flex sticky top-0 h-screen flex-col">
             {% include 'navbar.html' %}
         </aside>
 
@@ -53,6 +66,28 @@
             } else {
                 html.classList.add('dark');
                 localStorage.setItem('tema', 'dark');
+            }
+        }
+
+        /* ── Toggle Sidebar ── */
+        let sidebarAberta = true;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-wrapper');
+            const icon    = document.getElementById('toggleSidebarIcon');
+
+            if (!sidebar || !icon) return;
+
+            sidebarAberta = !sidebarAberta;
+
+            if (sidebarAberta) {
+                sidebar.classList.remove('collapsed');
+                icon.src = ICON_ANTERIOR;
+                icon.alt = 'Ocultar menu';
+            } else {
+                sidebar.classList.add('collapsed');
+                icon.src = ICON_PROXIMO;
+                icon.alt = 'Exibir menu';
             }
         }
     </script>

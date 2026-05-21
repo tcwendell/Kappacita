@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-we9pu_rp(#2c9^p2aarc-l7w%m1g6m2_#i6%v)-*!t2ib7tt@l
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://kappacita.onrender.com/']
+ALLOWED_HOSTS = ['kappacita.onrender.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

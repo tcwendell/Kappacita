@@ -5,57 +5,77 @@
 
 {% block body %}
 <main class="flex-grow flex items-center justify-center p-4 lg:p-8 min-h-screen bg-[#81a8cb]">
-  <div class="glass-card w-full max-w-[1013px] rounded-[18px] p-6 lg:p-12 flex flex-col items-center relative overflow-hidden bg-white/95 backdrop-blur-md shadow-2xl">
-    
+  <div class="w-full max-w-[1013px] rounded-[18px] p-6 lg:p-12 flex flex-col items-center bg-white/95 backdrop-blur-md shadow-2xl">
+
     <div class="flex flex-col items-center gap-3 mb-8 w-full">
-      <span class="font-serif-cactus text-sm text-[#565d6d]">Etapa 2 de 5</span>
+      <span class="text-sm text-[#565d6d]">Etapa 2 de 5</span>
       <div class="flex gap-2 w-full max-w-[450px]">
-        <div class="h-1.5 flex-1 bg-[#233e78] rounded-full shadow-sm"></div> <div class="h-1.5 flex-1 bg-[#233e78] rounded-full shadow-sm"></div> <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-[#233e78] rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-[#233e78] rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
         <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
         <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
       </div>
     </div>
 
     <div class="text-center mb-10">
-      <h1 class="text-2xl lg:text-[32px] leading-tight text-[#233e78] mb-4 font-bold font-poppins">
+      <h1 class="text-2xl lg:text-[32px] leading-tight text-[#233e78] mb-4 font-bold">
         Em quais habilidades você se destaca ou quer desenvolver?
       </h1>
-      <p class="font-serif-cactus text-lg text-[#565d6d]">
+      <p class="text-lg text-[#565d6d]">
         Selecione até 3 opções que melhor descrevem seu perfil ideal.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[650px] relative z-10">
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Comunicação e oratória
-      </button>
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Raciocínio lógico e analítico
-      </button>
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Criatividade e inovação
-      </button>
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Organização e planejamento
-      </button>
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Empatia e relações interpessoais
-      </button>
-      <button class="h-[107px] bg-[#5a91bd] text-white rounded-[16px] shadow-lg font-serif-cactus text-sm px-4 hover:brightness-110 active:scale-95 transition-all">
-        Pesquisa e análise de dados
-      </button>
-    </div>
-    <div class="w-full flex justify-between items-center mt-12">
-      <a href="{% url 'questionario' %}" class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#233e78] transition-colors group">
-        <iconify-icon icon="lucide:arrow-left" class="group-hover:-translate-x-1 transition-transform"></iconify-icon>
-        Anterior
-      </a>
+    <form method="POST" class="w-full flex flex-col items-center gap-8">
+      {% csrf_token %}
 
-      <a href="{% url 'questionario3' %}" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
-        Próxima
-        <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-      </a>
-    </div>
+      <div class="grid grid-cols-2 gap-6 w-full max-w-[650px]">
+        {% for valor, label in resposta.HABILIDADES_CHOICES %}
+        <label class="opcao-btn cursor-pointer">
+          <input type="checkbox" name="habilidades" value="{{ valor }}" class="hidden opcao-check" {% if valor in selecionados %}checked{% endif %}>
+          <div class="h-[107px] w-full rounded-[16px] shadow-lg text-sm px-4 flex items-center justify-center text-center transition-all select-none opcao-visual bg-[#5a91bd] text-white hover:brightness-110 active:scale-95">
+            {{ label }}
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="w-full flex justify-between items-center">
+        <a href="{% url 'questionario' %}" class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#233e78] transition-colors group">
+          <iconify-icon icon="lucide:arrow-left" class="group-hover:-translate-x-1 transition-transform"></iconify-icon>
+          Anterior
+        </a>
+        <button type="submit" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
+          Próxima
+          <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+        </button>
+      </div>
+    </form>
   </div>
 </main>
+
+<script>
+  const MAX = 3;
+
+  document.querySelectorAll('.opcao-check').forEach(function(input) {
+    if (input.checked) aplicarSelecionado(input, true);
+    input.addEventListener('change', function() {
+      var total = document.querySelectorAll('.opcao-check:checked').length;
+      if (total > MAX) { input.checked = false; return; }
+      aplicarSelecionado(input, input.checked);
+    });
+  });
+
+  function aplicarSelecionado(input, ativo) {
+    var visual = input.closest('.opcao-btn').querySelector('.opcao-visual');
+    if (ativo) {
+      visual.classList.remove('bg-[#5a91bd]');
+      visual.classList.add('bg-[#233e78]', 'ring-4', 'ring-offset-1', 'ring-[#233e78]');
+    } else {
+      visual.classList.add('bg-[#5a91bd]');
+      visual.classList.remove('bg-[#233e78]', 'ring-4', 'ring-offset-1', 'ring-[#233e78]');
+    }
+  }
+</script>
 {% endblock %}

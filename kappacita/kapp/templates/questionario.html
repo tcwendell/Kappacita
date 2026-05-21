@@ -1,79 +1,77 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Questionário Vocacional{% endblock %}
+{% block title %}Kappacita - Áreas de Interesse{% endblock %}
 
 {% block body %}
-<style>
-    .glass-question-card {
-        background: rgba(248, 249, 250, 0.95);
-        backdrop-filter: blur(16px);
-        box-shadow: 0px 0px 20px 0px rgba(23, 26, 31, 0.12), 0px 17px 50px 0px rgba(23, 26, 31, 0.24);
-    }
-    .option-btn {
-        background-color: #5a91bd;
-        transition: all 0.3s ease;
-    }
-    .option-btn:hover {
-        transform: translateY(-3px);
-        filter: brightness(1.1);
-        box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
-    }
-</style>
+<main class="flex-grow flex items-center justify-center p-4 lg:p-8 min-h-screen bg-[#81a8cb]">
+  <div class="w-full max-w-[1013px] rounded-[18px] p-6 lg:p-12 flex flex-col items-center bg-white/95 backdrop-blur-md shadow-2xl">
 
-<div class="flex-1 flex items-center justify-center p-4 md:p-12 bg-[#81a8cb] min-h-screen">
-    
-    <div class="glass-question-card w-full max-w-4xl rounded-[32px] p-8 md:p-16 relative overflow-hidden">
-        
-        <div class="flex flex-col items-center gap-4 mb-12">
-            <span class="font-poppins text-sm font-bold text-[#565d6d] uppercase tracking-widest">Etapa 1 de 5</span>
-            <div class="flex gap-2 w-full max-w-md">
-                <div class="h-2 flex-1 bg-[#233e78] rounded-full shadow-sm"></div>
-                <div class="h-2 flex-1 bg-gray-200 rounded-full"></div>
-                <div class="h-2 flex-1 bg-gray-200 rounded-full"></div>
-                <div class="h-2 flex-1 bg-gray-200 rounded-full"></div>
-                <div class="h-2 flex-1 bg-gray-200 rounded-full"></div>
-            </div>
-        </div>
-
-        <div class="text-center mb-12">
-            <h1 class="text-2xl md:text-4xl font-bold font-poppins text-[#233e78] leading-tight mb-4">
-                Quais atividades mais te atraem no dia a dia?
-            </h1>
-            <p class="text-lg text-gray-500 font-medium">
-                Selecione até 3 opções que melhor descrevem seu perfil ideal.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Resolver problemas lógicos e matemáticos
-            </button>
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Cuidar e ajudar outras pessoas
-            </button>
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Criar e expressar ideias visualmente
-            </button>
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Pesquisar e analisar informações
-            </button>
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Liderar equipe e tomar decisões
-            </button>
-            <button class="option-btn text-white font-poppins font-semibold p-6 rounded-2xl min-h-[100px] flex items-center justify-center text-center shadow-lg">
-                Programar e desenvolver tecnologias
-            </button>
-        </div>
-        <div class="mt-16 flex justify-between items-center">
-            <div class="mt-16 flex justify-end items-center">
-                <a href="{% url 'questionario2' %}" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
-                        Próxima
-                    <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-                </a>
-            </div>
-        </div>
+    <div class="flex flex-col items-center gap-3 mb-8 w-full">
+      <span class="text-sm text-[#565d6d]">Etapa 1 de 5</span>
+      <div class="flex gap-2 w-full max-w-[450px]">
+        <div class="h-1.5 flex-1 bg-[#233e78] rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
+        <div class="h-1.5 flex-1 bg-gray-200 rounded-full"></div>
+      </div>
     </div>
 
-</div>
+    <div class="text-center mb-10">
+      <h1 class="text-2xl lg:text-[32px] leading-tight text-[#233e78] mb-4 font-bold">
+        Quais áreas mais despertam seu interesse?
+      </h1>
+      <p class="text-lg text-[#565d6d]">
+        Selecione até 3 opções que mais combinam com você.
+      </p>
+    </div>
+
+    <form method="POST" class="w-full flex flex-col items-center gap-8">
+      {% csrf_token %}
+
+      <div class="grid grid-cols-2 gap-6 w-full max-w-[650px]">
+        {% for opcao in opcoes_interesses %}
+        <label class="opcao-btn cursor-pointer">
+          <input type="checkbox" name="interesses" value="{{ opcao }}" class="hidden opcao-check" {% if opcao in selecionados %}checked{% endif %}>
+          <div class="h-[107px] w-full rounded-[16px] shadow-lg text-sm px-4 flex items-center justify-center text-center transition-all select-none opcao-visual bg-[#5a91bd] text-white hover:brightness-110 active:scale-95">
+            {{ opcao }}
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="w-full flex justify-end items-center">
+        <button type="submit" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
+          Próxima
+          <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  const MAX = 3;
+
+  document.querySelectorAll('.opcao-check').forEach(function(input) {
+    if (input.checked) aplicarSelecionado(input, true);
+    input.addEventListener('change', function() {
+      var total = document.querySelectorAll('.opcao-check:checked').length;
+      if (total > MAX) { input.checked = false; return; }
+      aplicarSelecionado(input, input.checked);
+    });
+  });
+
+  function aplicarSelecionado(input, ativo) {
+    var visual = input.closest('.opcao-btn').querySelector('.opcao-visual');
+    if (ativo) {
+      visual.classList.remove('bg-[#5a91bd]');
+      visual.classList.add('bg-[#233e78]', 'ring-4', 'ring-offset-1', 'ring-[#233e78]');
+    } else {
+      visual.classList.add('bg-[#5a91bd]');
+      visual.classList.remove('bg-[#233e78]', 'ring-4', 'ring-offset-1', 'ring-[#233e78]');
+    }
+  }
+</script>
 {% endblock %}

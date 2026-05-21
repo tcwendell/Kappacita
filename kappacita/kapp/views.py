@@ -232,30 +232,89 @@ def favoritar_curso(request, curso_id):
 def kappabot(request):
     return render(request, 'kappabot.html')
 
+# ── QUESTIONÁRIO 
 @login_required
 def questionario(request):
-    return render(request, 'questionario.html')
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+
+    # Lista de opções definida na view, não no template
+    opcoes_interesses = [
+        'Tecnologia',
+        'Saúde',
+        'Educação',
+        'Negócios e Empreendedorismo',
+        'Arte e Design',
+        'Direito e Ciências Sociais',
+    ]
+
+    if request.method == 'POST':
+        interesses = request.POST.getlist('interesses')
+        resposta.interesses = ','.join(interesses)
+        resposta.save()
+        return redirect('questionario2')
+
+    return render(request, 'questionario.html', {
+        'resposta': resposta,
+        'selecionados': resposta.get_interesses(),
+        'opcoes_interesses': opcoes_interesses,
+    })
+
 
 @login_required
 def questionario2(request):
-    return render(request, 'questionario2.html')
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        habilidades = request.POST.getlist('habilidades')[:3]
+        resposta.habilidades = ','.join(habilidades)
+        resposta.save()
+        return redirect('questionario3')
+    return render(request, 'questionario2.html', {
+        'resposta': resposta,
+        'selecionados': resposta.get_habilidades(),
+    })
 
 @login_required
 def questionario3(request):
-    return render(request, 'questionario3.html')
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        valores = request.POST.getlist('valores_carreira')[:3]
+        resposta.valores_carreira = ','.join(valores)
+        resposta.save()
+        return redirect('questionario4')
+    return render(request, 'questionario3.html', {
+        'resposta': resposta,
+        'selecionados': resposta.get_valores(),
+    })
 
 @login_required
 def questionario4(request):
-    return render(request, 'questionario4.html')
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.estilo_trabalho = request.POST.get('estilo_trabalho', '')
+        resposta.save()
+        return redirect('questionario5')
+    return render(request, 'questionario4.html', {
+        'resposta': resposta,
+        'selecionado': resposta.estilo_trabalho,
+    })
 
 @login_required
 def questionario5(request):
-    return render(request, 'questionario5.html')
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.escolaridade = request.POST.get('escolaridade', '')
+        resposta.concluido    = True
+        resposta.save()
+        # Redireciona para o KappaBot já com contexto do questionário
+        return redirect('kappabot')
+    return render(request, 'questionario5.html', {
+        'resposta': resposta,
+        'selecionado': resposta.escolaridade,
+    })
 
 @login_required
 def profissoes(request):
     q            = request.GET.get('q', '').strip()
-    # NOVO: lê o id da categoria vindo da URL (?categoria=ID)
     categoria_id = request.GET.get('categoria', '').strip()
 
     qs = Profissao.objects.all()

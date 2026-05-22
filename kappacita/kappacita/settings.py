@@ -1,14 +1,19 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-we9pu_rp(#2c9^p2aarc-l7w%m1g6m2_#i6%v)-*!t2ib7tt@l'
+# ── SEGURANÇA
+# Lê do ambiente em produção; usa valor local só para desenvolvimento
+SECRET_KEY = os.environ.get('SECRET_KEY', 'chave-local-apenas-para-dev')
 
-DEBUG = True
+# Em produção (Render), DEBUG=False. Localmente, True.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['kappacita.onrender.com', 'localhost', '127.0.0.1']
 
+# ── APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -18,17 +23,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kapp',
 
-    # NOVO: necessário para o allauth funcionar
+    # Allauth (login com Google)
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
+    # Cloudinary (armazenamento de imagens na nuvem)
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
-# NOVO: ID do site (padrão 1, usado pelo allauth)
 SITE_ID = 1
 
+# ── MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -38,7 +47,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # NOVO: obrigatório para o allauth funcionar
     'allauth.account.middleware.AccountMiddleware',
 ]
 
@@ -62,13 +70,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kappacita.wsgi.application'
 
+# ── BANCO DE DADOS
+# Se existir a variável DATABASE_URL no ambiente (Render), usa PostgreSQL.
+# Caso contrário, usa SQLite local para desenvolvimento.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
 }
 
+# ── VALIDAÇÃO DE SENHA
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -76,15 +88,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# NOVO: backends de autenticação
-# ModelBackend = login normal com usuário/senha (já existia)
-# AuthenticationBackend = login com Google (novo)
+# ── AUTENTICAÇÃO
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# NOVO: configuração do provedor Google
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
@@ -92,22 +101,37 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# NOVO: após login com Google, vai direto para a homepage
-# LOGOUT_REDIRECT_URL já não existia, adicionado agora
 SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/loginFuncionalidades/'
+LOGIN_REDIRECT_URL = '/homepage/'
 
+# ── INTERNACIONALIZAÇÃO
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# ── ARQUIVOS ESTÁTICOS (CSS, JS, fontes)
+# WhiteNoise serve esses arquivos diretamente, sem precisar de servidor externo
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ← essa linha precisa estar presente
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-LOGIN_URL = '/loginFuncionalidades/'
-LOGIN_REDIRECT_URL = '/homepage/'
 
+# ── CLOUDINARY (imagens enviadas pelo admin/usuário)
+# As credenciais vêm das variáveis de ambiente definidas no Render
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# Diz ao Django para usar o Cloudinary ao salvar qualquer ImageField ou FileField
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Mantido por compatibilidade, mas na prática as URLs virão do Cloudinary
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

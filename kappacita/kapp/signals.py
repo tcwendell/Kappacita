@@ -1,27 +1,28 @@
-# signals.py
 from django.dispatch import receiver
-from allauth.socialaccount.signals import social_account_added, social_account_updated
+from allauth.socialaccount.signals import social_account_added, social_account_updated, pre_social_login
 from .models import Perfil
 import requests
 from django.core.files.base import ContentFile
 
+
 def salvar_foto_google(sociallogin, **kwargs):
     user = sociallogin.user
+    if not user.pk:
+        return
+
     perfil, _ = Perfil.objects.get_or_create(usuario=user)
 
-    # Só busca se ainda não tiver foto
     if not perfil.foto:
-        extra_data = sociallogin.account.extra_data
-        foto_url = extra_data.get('picture')
-
+        foto_url = sociallogin.account.extra_data.get('picture')
         if foto_url:
             try:
-                response = requests.get(foto_url)
+                response = requests.get(foto_url, timeout=5)
                 if response.status_code == 200:
-                    nome_arquivo = f"google_{user.pk}.jpg"
-                    perfil.foto.save(nome_arquivo, ContentFile(response.content), save=True)
+                    perfil.foto.save(f"google_{user.pk}.jpg", ContentFile(response.content), save=True)
             except Exception:
-                pass  # Se falhar, fica sem foto mesmo
+                pass
+
 
 social_account_added.connect(salvar_foto_google)
 social_account_updated.connect(salvar_foto_google)
+pre_social_login.connect(salvar_foto_google)

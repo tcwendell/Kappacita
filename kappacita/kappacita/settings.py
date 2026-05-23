@@ -8,7 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Lê do ambiente em produção; usa valor local só para desenvolvimento
 SECRET_KEY = os.environ.get('SECRET_KEY', 'chave-local-apenas-para-dev')
 
-# Em produção (Render), DEBUG=False. Localmente, True.
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['kappacita.onrender.com', 'localhost', '127.0.0.1']
@@ -37,7 +36,6 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# ── MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -101,7 +99,11 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_LOGIN_ON_GET = False
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/loginFuncionalidades/'
 LOGIN_REDIRECT_URL = '/homepage/'
@@ -113,14 +115,12 @@ USE_I18N = True
 USE_TZ = True
 
 # ── ARQUIVOS ESTÁTICOS (CSS, JS, fontes)
-# WhiteNoise serve esses arquivos diretamente, sem precisar de servidor externo
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ── CLOUDINARY (imagens enviadas pelo admin/usuário)
-# As credenciais vêm das variáveis de ambiente definidas no Render
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),

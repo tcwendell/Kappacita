@@ -4,32 +4,33 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import *
+from .models import (
+    AreaAtuacao, Curso, Profissao, Favorito, Perfil,
+    RespostaQuestionario, SessaoChat, MensagemChat, LimiteUsoBot,
+)
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 
 
-# ---------- AUTH ----------
+# ── AUTH ──────────────────────────────────────────────────────────────────────
 
 def loginFuncionalidades(request):
     if request.user.is_authenticated:
         return redirect('homepage')
 
     if request.method == 'POST':
-        email = request.POST.get('username')
+        email    = request.POST.get('username')
         password = request.POST.get('password')
-
         try:
             user_obj = User.objects.get(email=email)
-            user = authenticate(request, username=user_obj.username, password=password)
+            user     = authenticate(request, username=user_obj.username, password=password)
         except User.DoesNotExist:
             user = None
 
         if user is not None:
             login(request, user)
             return redirect('homepage')
-        else:
-            messages.error(request, 'E-mail ou senha incorretos.')
+        messages.error(request, 'E-mail ou senha incorretos.')
 
     return render(request, 'loginFuncionalidades.html')
 
@@ -39,20 +40,18 @@ def loginArea(request):
         return redirect('homepage')
 
     if request.method == 'POST':
-        email = request.POST.get('username')
+        email    = request.POST.get('username')
         password = request.POST.get('password')
-
         try:
             user_obj = User.objects.get(email=email)
-            user = authenticate(request, username=user_obj.username, password=password)
+            user     = authenticate(request, username=user_obj.username, password=password)
         except User.DoesNotExist:
             user = None
 
         if user is not None:
             login(request, user)
             return redirect('homepage')
-        else:
-            messages.error(request, 'E-mail ou senha incorretos.')
+        messages.error(request, 'E-mail ou senha incorretos.')
 
     return render(request, 'loginArea.html')
 
@@ -62,34 +61,29 @@ def cadastrarFuncionalidades(request):
         return redirect('homepage')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username      = request.POST.get('username')
+        email         = request.POST.get('email')
         email_confirm = request.POST.get('email_confirm')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        password1     = request.POST.get('password1')
+        password2     = request.POST.get('password2')
 
         if email != email_confirm:
             messages.error(request, 'Os e-mails não coincidem.')
             return render(request, 'cadastrarFuncionalidades.html')
-
         if password1 != password2:
             messages.error(request, 'As senhas não coincidem.')
             return render(request, 'cadastrarFuncionalidades.html')
-
         if len(password1) < 8:
             messages.error(request, 'A senha deve ter pelo menos 8 caracteres.')
             return render(request, 'cadastrarFuncionalidades.html')
-
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Este nome de usuário já está em uso.')
             return render(request, 'cadastrarFuncionalidades.html')
-
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Este e-mail já está cadastrado.')
             return render(request, 'cadastrarFuncionalidades.html')
 
-        user = User.objects.create_user(username=username, email=email, password=password1)
-        user.save()
+        User.objects.create_user(username=username, email=email, password=password1)
         messages.success(request, 'Conta criada com sucesso! Faça o login.')
         return redirect('loginFuncionalidades')
 
@@ -101,34 +95,29 @@ def cadastrarArea(request):
         return redirect('homepage')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username      = request.POST.get('username')
+        email         = request.POST.get('email')
         email_confirm = request.POST.get('email_confirm')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        password1     = request.POST.get('password1')
+        password2     = request.POST.get('password2')
 
         if email != email_confirm:
             messages.error(request, 'Os e-mails não coincidem.')
             return render(request, 'cadastrarArea.html')
-
         if password1 != password2:
             messages.error(request, 'As senhas não coincidem.')
             return render(request, 'cadastrarArea.html')
-
         if len(password1) < 8:
             messages.error(request, 'A senha deve ter pelo menos 8 caracteres.')
             return render(request, 'cadastrarArea.html')
-
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Este nome de usuário já está em uso.')
             return render(request, 'cadastrarArea.html')
-
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Este e-mail já está cadastrado.')
             return render(request, 'cadastrarArea.html')
 
-        user = User.objects.create_user(username=username, email=email, password=password1)
-        user.save()
+        User.objects.create_user(username=username, email=email, password=password1)
         messages.success(request, 'Conta criada com sucesso! Faça o login.')
         return redirect('loginFuncionalidades')
 
@@ -140,70 +129,54 @@ def sair(request):
     return redirect('loginFuncionalidades')
 
 
-# ---------- HOME ----------
+# ── HOME ──────────────────────────────────────────────────────────────────────
 
 @login_required
 def homepage(request):
-    # Cursos ordenados por avaliação decrescente, limitado a 6
     cursos_recomendados = Curso.objects.order_by('-avaliacao')[:6]
-
-    # IDs dos favoritos do usuário — usado no template para pintar o coração
     favoritos_ids = list(
-        Favorito.objects.filter(usuario=request.user).values_list('curso_id', flat=True)
+        Favorito.objects.filter(usuario=request.user)
+        .values_list('curso_id', flat=True)
     )
-
     return render(request, 'homepage.html', {
         'cursos_recomendados': cursos_recomendados,
-        'favoritos_ids': favoritos_ids,
+        'favoritos_ids':       favoritos_ids,
     })
 
 
-# ---------- FAVORITAR VIA AJAX (homepage e outras páginas) ----------
+# ── FAVORITAR CURSO (AJAX toggle) ─────────────────────────────────────────────
 
 @login_required
 @require_POST
 def favoritar_curso_ajax(request, curso_id):
-    """
-    Chamada pelo JavaScript via fetch().
-    Faz o toggle de favorito: cria se não existe, deleta se já existe.
-    Retorna JSON com o novo estado { favoritado: true/false }.
-    """
     try:
         curso = Curso.objects.get(id=curso_id)
     except Curso.DoesNotExist:
         return JsonResponse({'erro': 'Curso não encontrado.'}, status=404)
 
     favorito, criado = Favorito.objects.get_or_create(usuario=request.user, curso=curso)
-
     if not criado:
         favorito.delete()
-        favoritado = False
-    else:
-        favoritado = True
 
-    return JsonResponse({'favoritado': favoritado, 'curso_id': curso_id})
+    return JsonResponse({'favoritado': criado, 'curso_id': curso_id})
 
 
-# ---------- CURSOS ----------
+# ── CURSOS ────────────────────────────────────────────────────────────────────
 
 @login_required
 def cursos(request):
-    q            = request.GET.get('q', '').strip()
-    # NOVO: lê o id da categoria vindo da URL (?categoria=ID)
-    categoria_id = request.GET.get('categoria', '').strip()
+    q    = request.GET.get('q', '').strip()
+    area_id = request.GET.get('area', '').strip()
 
-    qs = Curso.objects.all()
-    
+    qs = Curso.objects.select_related('area').all()
+
     if q:
         qs = qs.filter(nome__icontains=q)
-
-    # NOVO: filtra pelo categoria_id se ele foi enviado na URL
-    if categoria_id:
-        qs = qs.filter(categoria_id=categoria_id)
+    if area_id:
+        qs = qs.filter(area_id=area_id)
 
     paginator        = Paginator(qs, 9)
-    page             = request.GET.get('page', 1)
-    cursos_paginados = paginator.get_page(page)
+    cursos_paginados = paginator.get_page(request.GET.get('page', 1))
 
     favoritos_ids = set(
         Favorito.objects.filter(usuario=request.user, curso__isnull=False)
@@ -211,10 +184,10 @@ def cursos(request):
     )
 
     return render(request, 'cursos.html', {
-        'cursos':          cursos_paginados,
-        'categorias':      CategoriaCurso.objects.all(),
-        'favoritos_ids':   favoritos_ids,
-        'categoria_ativa': int(categoria_id) if categoria_id.isdigit() else None,
+        'cursos':       cursos_paginados,
+        'areas':        AreaAtuacao.objects.all(),          # já ordenado por nome (Meta.ordering)
+        'favoritos_ids': favoritos_ids,
+        'area_ativa':   int(area_id) if area_id.isdigit() else None,
     })
 
 
@@ -228,106 +201,22 @@ def favoritar_curso(request, curso_id):
     return redirect('cursos')
 
 
-@login_required
-def kappabot(request):
-    return render(request, 'kappabot.html')
-
-# ── QUESTIONÁRIO 
-@login_required
-def questionario(request):
-    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
-
-    # Lista de opções definida na view, não no template
-    opcoes_interesses = [
-        'Tecnologia',
-        'Saúde',
-        'Educação',
-        'Negócios e Empreendedorismo',
-        'Arte e Design',
-        'Direito e Ciências Sociais',
-    ]
-
-    if request.method == 'POST':
-        interesses = request.POST.getlist('interesses')
-        resposta.interesses = ','.join(interesses)
-        resposta.save()
-        return redirect('questionario2')
-
-    return render(request, 'questionario.html', {
-        'resposta': resposta,
-        'selecionados': resposta.get_interesses(),
-        'opcoes_interesses': opcoes_interesses,
-    })
-
-
-@login_required
-def questionario2(request):
-    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
-    if request.method == 'POST':
-        habilidades = request.POST.getlist('habilidades')[:3]
-        resposta.habilidades = ','.join(habilidades)
-        resposta.save()
-        return redirect('questionario3')
-    return render(request, 'questionario2.html', {
-        'resposta': resposta,
-        'selecionados': resposta.get_habilidades(),
-    })
-
-@login_required
-def questionario3(request):
-    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
-    if request.method == 'POST':
-        valores = request.POST.getlist('valores_carreira')[:3]
-        resposta.valores_carreira = ','.join(valores)
-        resposta.save()
-        return redirect('questionario4')
-    return render(request, 'questionario3.html', {
-        'resposta': resposta,
-        'selecionados': resposta.get_valores(),
-    })
-
-@login_required
-def questionario4(request):
-    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
-    if request.method == 'POST':
-        resposta.estilo_trabalho = request.POST.get('estilo_trabalho', '')
-        resposta.save()
-        return redirect('questionario5')
-    return render(request, 'questionario4.html', {
-        'resposta': resposta,
-        'selecionado': resposta.estilo_trabalho,
-    })
-
-@login_required
-def questionario5(request):
-    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
-    if request.method == 'POST':
-        resposta.escolaridade = request.POST.get('escolaridade', '')
-        resposta.concluido    = True
-        resposta.save()
-        # Redireciona para o KappaBot já com contexto do questionário
-        return redirect('kappabot')
-    return render(request, 'questionario5.html', {
-        'resposta': resposta,
-        'selecionado': resposta.escolaridade,
-    })
+# ── PROFISSÕES ────────────────────────────────────────────────────────────────
 
 @login_required
 def profissoes(request):
-    q            = request.GET.get('q', '').strip()
-    categoria_id = request.GET.get('categoria', '').strip()
+    q       = request.GET.get('q', '').strip()
+    area_id = request.GET.get('area', '').strip()
 
-    qs = Profissao.objects.all()
+    qs = Profissao.objects.select_related('area').all()
 
     if q:
         qs = qs.filter(nome__icontains=q)
-
-    if categoria_id:
-        qs = qs.filter(categoria_id=categoria_id)
+    if area_id:
+        qs = qs.filter(area_id=area_id)
 
     paginator            = Paginator(qs, 9)
-    page                 = request.GET.get('page', 1)
-    profissoes_paginadas = paginator.get_page(page)
+    profissoes_paginadas = paginator.get_page(request.GET.get('page', 1))
 
     favoritos_ids = set(
         Favorito.objects.filter(usuario=request.user, profissao__isnull=False)
@@ -335,16 +224,27 @@ def profissoes(request):
     )
 
     return render(request, 'profissoes.html', {
-        'profissoes':      profissoes_paginadas,
-        'categorias':      CategoriaProfissao.objects.all(),
-        'favoritos_ids':   favoritos_ids,
-        'categoria_ativa': int(categoria_id) if categoria_id.isdigit() else None,
+        'profissoes':    profissoes_paginadas,
+        'areas':         AreaAtuacao.objects.all(),
+        'favoritos_ids': favoritos_ids,
+        'area_ativa':    int(area_id) if area_id.isdigit() else None,
     })
-    
+
+
+@login_required
+@require_POST
+def favoritar_profissao(request, profissao_id):
+    profissao = Profissao.objects.get(id=profissao_id)
+    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, profissao=profissao)
+    if not criado:
+        favorito.delete()
+    return redirect('profissoes')
+
+
+# ── FAVORITOS ─────────────────────────────────────────────────────────────────
+
 @login_required
 def favoritos(request):
-    filtro = request.GET.get('filtro', 'todos')
-
     favoritos_cursos = Favorito.objects.filter(
         usuario=request.user, curso__isnull=False
     ).select_related('curso')
@@ -354,22 +254,102 @@ def favoritos(request):
     ).select_related('profissao')
 
     return render(request, 'favoritos.html', {
-        'favoritos_cursos': favoritos_cursos,
+        'favoritos_cursos':    favoritos_cursos,
         'favoritos_profissoes': favoritos_profissoes,
-        'filtro': filtro,
+        'filtro': request.GET.get('filtro', 'todos'),
     })
-    
+
+
 @login_required
 @require_POST
 def desfavoritar_curso(request, curso_id):
     Favorito.objects.filter(usuario=request.user, curso_id=curso_id).delete()
     return JsonResponse({'ok': True})
 
+
 @login_required
 @require_POST
 def desfavoritar_profissao(request, profissao_id):
     Favorito.objects.filter(usuario=request.user, profissao_id=profissao_id).delete()
     return JsonResponse({'ok': True})
+
+
+# ── QUESTIONÁRIO ──────────────────────────────────────────────────────────────
+
+@login_required
+def questionario(request):
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    opcoes_interesses = [
+        'Tecnologia', 'Saúde', 'Educação',
+        'Negócios e Empreendedorismo', 'Arte e Design', 'Direito e Ciências Sociais',
+    ]
+    if request.method == 'POST':
+        resposta.interesses = ','.join(request.POST.getlist('interesses'))
+        resposta.save()
+        return redirect('questionario2')
+
+    return render(request, 'questionario.html', {
+        'resposta':          resposta,
+        'selecionados':      resposta.get_interesses(),
+        'opcoes_interesses': opcoes_interesses,
+    })
+
+
+@login_required
+def questionario2(request):
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.habilidades = ','.join(request.POST.getlist('habilidades')[:3])
+        resposta.save()
+        return redirect('questionario3')
+    return render(request, 'questionario2.html', {
+        'resposta': resposta, 'selecionados': resposta.get_habilidades(),
+    })
+
+
+@login_required
+def questionario3(request):
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.valores_carreira = ','.join(request.POST.getlist('valores_carreira')[:3])
+        resposta.save()
+        return redirect('questionario4')
+    return render(request, 'questionario3.html', {
+        'resposta': resposta, 'selecionados': resposta.get_valores(),
+    })
+
+
+@login_required
+def questionario4(request):
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.estilo_trabalho = request.POST.get('estilo_trabalho', '')
+        resposta.save()
+        return redirect('questionario5')
+    return render(request, 'questionario4.html', {
+        'resposta': resposta, 'selecionado': resposta.estilo_trabalho,
+    })
+
+
+@login_required
+def questionario5(request):
+    resposta, _ = RespostaQuestionario.objects.get_or_create(usuario=request.user)
+    if request.method == 'POST':
+        resposta.escolaridade = request.POST.get('escolaridade', '')
+        resposta.concluido    = True
+        resposta.save()
+        return redirect('kappabot')
+    return render(request, 'questionario5.html', {
+        'resposta': resposta, 'selecionado': resposta.escolaridade,
+    })
+
+
+# ── OUTRAS PÁGINAS ────────────────────────────────────────────────────────────
+
+@login_required
+def kappabot(request):
+    return render(request, 'kappabot.html')
+
 @login_required
 def meuprogresso(request):
     return render(request, 'meuprogresso.html')
@@ -385,7 +365,6 @@ def notificacoes(request):
 @login_required
 def idiomas(request):
     perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
-
     if request.method == 'POST':
         perfil.idioma            = request.POST.get('idioma', 'pt-br')
         perfil.alto_contraste    = 'alto_contraste' in request.POST
@@ -394,15 +373,12 @@ def idiomas(request):
         perfil.save()
         messages.success(request, 'Preferências salvas com sucesso!')
         return redirect('idiomas')
+    return render(request, 'idiomas.html', {'idioma_atual': perfil.idioma, 'prefs': perfil})
 
-    return render(request, 'idiomas.html', {
-        'idioma_atual': perfil.idioma,
-        'prefs': perfil,
-    })
 
 @login_required
 def configuracoes(request):
-    user = request.user
+    user   = request.user
     perfil, _ = Perfil.objects.get_or_create(usuario=user)
 
     if request.method == 'POST':
@@ -420,14 +396,11 @@ def configuracoes(request):
                 user.last_name  = last_name
                 user.email      = email
                 user.save()
-
                 if 'foto' in request.FILES:
                     perfil.foto = request.FILES['foto']
                     perfil.save()
-
                 if request.POST.get('remover_foto') == '1':
                     perfil.foto.delete(save=True)
-
                 messages.success(request, 'Alterações salvas com sucesso!')
             return redirect('configuracoes')
 
@@ -451,27 +424,16 @@ def configuracoes(request):
 
     return render(request, 'configuracoes.html', {'perfil': perfil})
 
+
 @login_required
 @require_POST
 def excluir_conta(request):
     senha = request.POST.get('senha_confirmacao')
-    user = request.user
-
+    user  = request.user
     if not user.check_password(senha):
         messages.error(request, 'Senha incorreta. Sua conta não foi excluída.')
         return redirect('privacidade')
-
     logout(request)
     user.delete()
-
     messages.success(request, 'Sua conta foi excluída com sucesso.')
     return redirect('loginFuncionalidades')
-
-@login_required
-@require_POST
-def favoritar_profissao(request, profissao_id):
-    profissao = Profissao.objects.get(id=profissao_id)
-    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, profissao=profissao)
-    if not criado:
-        favorito.delete()
-    return redirect('profissoes')

@@ -25,189 +25,289 @@
   }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .card-shadow { box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12), 0px 17px 35px 0px rgba(23,26,31,0.24); }
+  .card-shadow {
+    box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12),
+                0px 17px 35px 0px rgba(23,26,31,0.24);
+  }
 </style>
+
+<div id="drawer-overlay"
+     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+     onclick="fecharDrawer()">
+</div>
+
+<aside id="drawer"
+       class="fixed top-0 right-0 h-full w-80 max-w-[90vw] z-50 flex flex-col
+              translate-x-full transition-transform duration-300 ease-in-out"
+       style="background: linear-gradient(160deg, #1a3a5c 0%, #0f2340 100%);
+              border-left: 1px solid rgba(255,255,255,0.12);
+              box-shadow: -8px 0 40px rgba(0,0,0,0.4);">
+
+  {# Cabeçalho #}
+  <div class="flex items-center justify-between px-6 py-5"
+       style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div>
+      <h2 class="text-white font-poppins font-bold text-lg leading-tight">Filtrar por Área</h2>
+      <p class="text-white/50 font-poppins text-xs mt-0.5">Selecione uma área de atuação</p>
+    </div>
+    <button onclick="fecharDrawer()"
+            class="w-8 h-8 flex items-center justify-center rounded-full text-white/60
+                   hover:text-white hover:bg-white/10 transition-all text-xl leading-none">
+      ×
+    </button>
+  </div>
+
+  {# Busca interna #}
+  <div class="px-4 pt-4 pb-2">
+    <div class="relative">
+      <input id="drawer-search"
+             type="text"
+             placeholder="Buscar área..."
+             oninput="filtrarDrawer(this.value)"
+             class="w-full bg-white/10 text-white placeholder-white/40 font-poppins text-sm
+                    rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
+                    focus:border-white/30 transition-colors">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </div>
+  </div>
+
+  {# Lista #}
+  <div class="flex-1 overflow-y-auto px-4 py-2 space-y-1" id="drawer-lista">
+
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all
+              {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/8 hover:text-white{% endif %}
+              font-poppins text-sm font-medium">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+                   {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+      </span>
+      Todas as áreas
+      {% if not area_ativa %}
+        <svg class="w-4 h-4 ml-auto text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      {% endif %}
+    </a>
+
+    {% for area in areas %}
+    <a href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+       data-nome="{{ area.nome|lower }}"
+       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all
+              {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/8 hover:text-white{% endif %}
+              font-poppins text-sm font-medium">
+
+      <span class="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0
+                   {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
+        {% if area.imagem %}
+          <img src="{{ area.imagem.url }}" class="w-full h-full object-cover" alt="{{ area.nome }}">
+        {% else %}
+          <span class="w-full h-full flex items-center justify-center
+                       {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/8{% endif %}
+                       text-white font-bold text-xs font-poppins">
+            {{ area.nome|slice:":1"|upper }}
+          </span>
+        {% endif %}
+      </span>
+
+      {{ area.nome }}
+
+      {% if area_ativa == area.id %}
+        <svg class="w-4 h-4 ml-auto text-white/70 flex-shrink-0"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      {% endif %}
+    </a>
+    {% empty %}
+      <p class="text-white/40 font-poppins text-sm text-center py-6">
+        Nenhuma área cadastrada.
+      </p>
+    {% endfor %}
+  </div>
+
+  {% if area_ativa %}
+  <div class="px-4 pb-6 pt-3" style="border-top: 1px solid rgba(255,255,255,0.08);">
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+       class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
+              bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
+              font-poppins text-sm transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+      Limpar filtro
+    </a>
+  </div>
+  {% endif %}
+
+</aside>
+{# ═══════════════════════════════════════════════════════════════════ #}
+
 
 <main class="flex-1 flex flex-col min-w-0">
   <div class="p-4 lg:p-10 space-y-8 bg-[#5b91bc] dark:bg-gray-950 min-h-screen transition-colors">
 
     <h2 class="text-white text-4xl lg:text-5xl font-bold font-poppins">Explorar Profissões</h2>
 
-    <!-- ───────────────────────────────────────────
-         Search & Filter Bar — ALTERAÇÃO:
-         Adicionado campo hidden para preservar
-         a categoria ativa durante buscas por texto.
-         ─────────────────────────────────────────── -->
-    <div class="flex flex-col md:flex-row items-center gap-4">
-      <button class="p-2 text-[#233e78] dark:text-white hover:bg-white/20 rounded-full">
-        <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filter">
+    {# ── Barra de pesquisa + botão filtro ── #}
+    <div class="flex flex-col md:flex-row items-center gap-3">
+
+      <button onclick="abrirDrawer()"
+              id="btn-filtro"
+              title="Filtrar por área"
+              class="relative p-2.5 rounded-full transition-all
+                     {% if area_ativa %}bg-white/30 ring-2 ring-white{% else %}hover:bg-white/20{% endif %}">
+        <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filtro">
+        {% if area_ativa %}
+          <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full
+                       border-2 border-[#5b91bc]"></span>
+        {% endif %}
       </button>
+
       <div class="relative flex-1 w-full">
         <form method="GET" action="">
-          <!--
-            NOVO: quando uma categoria está ativa e o usuário faz
-            uma busca por texto, esse campo hidden garante que
-            ?categoria=ID continue na URL junto com ?q=...
-          -->
-          {% if categoria_ativa %}
-            <input type="hidden" name="categoria" value="{{ categoria_ativa }}">
+          {% if area_ativa %}
+            <input type="hidden" name="area" value="{{ area_ativa }}">
           {% endif %}
-
           <div class="flex items-center bg-white dark:bg-gray-800 rounded-full px-6 py-3 card-shadow">
             <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Search">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar profissões..."
-              class="bg-transparent border-none focus:ring-0 text-[#233e78] dark:text-white placeholder-[#233e78]/60 dark:placeholder-white/40 w-full ml-3 outline-none">
+                   class="bg-transparent border-none focus:ring-0 text-[#233e78] dark:text-white
+                          placeholder-[#233e78]/60 dark:placeholder-white/40 w-full ml-3 outline-none">
           </div>
         </form>
       </div>
     </div>
 
-    <!-- ───────────────────────────────────────────
-         Contador + botão limpar — ALTERAÇÃO:
-         NOVO botão "Limpar filtro" aparece apenas
-         quando uma categoria está selecionada.
-         ─────────────────────────────────────────── -->
-    <div class="flex items-center gap-4 flex-wrap">
+    {# ── Contador + pill filtro ativo ── #}
+    <div class="flex items-center gap-3 flex-wrap">
       <p class="text-white text-sm font-poppins">
         {{ profissoes.paginator.count }} profissão(ões) encontrada(s)
       </p>
-
-      <!--
-        NOVO: link que remove o filtro de categoria da URL.
-        Preserva o ?q= se houver uma busca por texto ativa.
-      -->
-      {% if categoria_ativa %}
-        <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
-           class="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white text-xs font-poppins px-3 py-1 rounded-full transition-all">
-          ✕ Limpar filtro de categoria
-        </a>
+      {% if area_ativa %}
+        {% for area in areas %}{% if area.id == area_ativa %}
+          <span class="inline-flex items-center gap-1.5 bg-white/20 text-white
+                       text-xs font-poppins px-3 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+            {{ area.nome }}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+               class="ml-0.5 opacity-70 hover:opacity-100 transition-opacity">✕</a>
+          </span>
+        {% endif %}{% endfor %}
       {% endif %}
     </div>
 
-    <!-- ───────────────────────────────────────────
-         Categorias Horizontais — ALTERAÇÕES:
-         1. Cada card agora é uma tag <a> (link) ao
-            invés de <div> — permite clicar e navegar
-         2. Clicar aplica ?categoria=ID na URL
-         3. Categoria ativa recebe ring-4 ring-white
-            e ícone ✓ no canto superior direito
-         4. Clicar na categoria ativa a remove (limpa)
-         5. Preserva ?q= no link quando há busca ativa
-         ─────────────────────────────────────────── -->
+    {# ── Carrossel de Áreas de Atuação ── #}
     <div class="relative group">
-      <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+      <button onclick="scrollAreas(-1)"
+              class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700
+                     p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
         <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
       </button>
 
-      <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth no-scrollbar">
-        {% for categoria in categorias %}
+      <div id="areas-scroll"
+           class="flex gap-5 overflow-x-auto pb-4 scroll-smooth no-scrollbar">
 
-        <!--
-          ALTERAÇÃO PRINCIPAL: era <div class="... cursor-pointer">
-          Agora é <a href="..."> — funciona como link real ao clicar.
-
-          Se a categoria clicada JÁ está ativa → link limpa o filtro.
-          Se a categoria clicada NÃO está ativa → link aplica o filtro.
-        -->
-        {% if categoria_ativa == categoria.id %}
-          <!-- Categoria ATIVA: clicar limpa o filtro -->
-          <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
-             class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl ring-4 ring-white transition-all">
-        {% else %}
-          <!-- Categoria INATIVA: clicar aplica o filtro -->
-          <a href="?categoria={{ categoria.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-             class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl transition-all hover:ring-2 hover:ring-white/60">
-        {% endif %}
-
-          {% if categoria.imagem %}
-            <img src="{{ categoria.imagem.url }}"
-                 class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500"
-                 alt="{{ categoria.nome }}">
+        {% for area in areas %}
+          {% if area_ativa == area.id %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+               class="flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
+                      cursor-pointer shadow-xl ring-4 ring-white transition-all">
           {% else %}
-            <div class="absolute inset-0 bg-[#1e293b]/60"></div>
+            <a href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+               class="flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
+                      cursor-pointer shadow-xl transition-all hover:ring-2 hover:ring-white/60">
           {% endif %}
 
-          <!--
-            ALTERAÇÃO: overlay levemente mais escuro quando
-            a categoria está ativa, para dar contraste ao ✓
-          -->
-          <div class="absolute inset-0 {% if categoria_ativa == categoria.id %}bg-black/40{% else %}bg-black/20{% endif %}"></div>
+            {% if area.imagem %}
+              <img src="{{ area.imagem.url }}"
+                   class="absolute inset-0 w-full h-full object-cover opacity-70
+                          group-hover:scale-110 transition-transform duration-500"
+                   alt="{{ area.nome }}">
+            {% else %}
+              <div class="absolute inset-0"
+                   style="background: linear-gradient(135deg, #1a3a5c, #0f2340);"></div>
+            {% endif %}
 
-          <span class="absolute bottom-4 left-4 text-white text-xl font-bold font-poppins">{{ categoria.nome }}</span>
-
-          <!--
-            NOVO: ícone ✓ aparece somente quando esta categoria
-            é a que está atualmente filtrando os resultados.
-          -->
-          {% if categoria_ativa == categoria.id %}
-            <div class="absolute top-3 right-3 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow">
-              <span class="text-[#1065a6] text-sm font-bold leading-none">✓</span>
+            <div class="absolute inset-0
+                        {% if area_ativa == area.id %}bg-black/40{% else %}bg-black/25{% endif %}">
             </div>
-          {% endif %}
 
-        </a>
+            <span class="absolute bottom-4 left-4 right-4 text-white text-base
+                         font-bold font-poppins leading-tight">{{ area.nome }}</span>
 
+            {% if area_ativa == area.id %}
+              <div class="absolute top-3 right-3 bg-white rounded-full w-6 h-6
+                          flex items-center justify-center shadow">
+                <span class="text-[#1065a6] text-sm font-bold leading-none">✓</span>
+              </div>
+            {% endif %}
+
+          </a>
         {% empty %}
-          <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
+          <p class="text-white/70 font-poppins text-sm">Nenhuma área cadastrada.</p>
         {% endfor %}
       </div>
 
-      <button class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+      <button onclick="scrollAreas(1)"
+              class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700
+                     p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
         <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Próximo">
       </button>
     </div>
 
-    <!-- ───────────────────────────────────────────
-         Grid de Profissões — SEM ALTERAÇÃO visual.
-         Os dados já chegam filtrados da view.
-         ─────────────────────────────────────────── -->
+    {# ── Grid de Profissões ── #}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {% for profissao in profissoes %}
-      <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative group transition-all">
+      <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative transition-all">
 
         <div class="flex justify-between items-start">
           <div class="flex gap-4">
-            <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl
+                        flex items-center justify-center flex-shrink-0 overflow-hidden">
               {% if profissao.icone %}
-                <img src="{{ profissao.icone.url }}" class="w-full h-full object-cover" alt="{{ profissao.nome }}">
+                <img src="{{ profissao.icone.url }}" class="w-full h-full object-cover"
+                     alt="{{ profissao.nome }}">
               {% else %}
-                <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ profissao.nome }}">
+                <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-7 h-7"
+                     alt="{{ profissao.nome }}">
               {% endif %}
             </div>
-
             <div>
               <h3 class="text-white text-lg font-bold font-poppins">{{ profissao.nome }}</h3>
-              <p class="text-white/80 dark:text-white/60 text-sm font-poppins">{{ profissao.area }}</p>
+              <p class="text-white/80 dark:text-white/60 text-sm font-poppins">
+                {{ profissao.area.nome|default:"—" }}
+              </p>
             </div>
           </div>
 
+          {# Estrelas #}
           <div class="flex gap-0.5 flex-shrink-0">
-            {% if profissao.avaliacao >= 1 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 0.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-            {% if profissao.avaliacao >= 2 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 1.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-            {% if profissao.avaliacao >= 3 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 2.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-            {% if profissao.avaliacao >= 4 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 3.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-            {% if profissao.avaliacao >= 5 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-            {% elif profissao.avaliacao >= 4.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-            {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
+            {% for i in "12345" %}
+              {% with i_int=forloop.counter %}
+                {% if profissao.avaliacao >= i_int %}
+                  <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="★">
+                {% elif profissao.avaliacao >= i_int|add:"-0.5" %}
+                  <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="½">
+                {% else %}
+                  <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="☆">
+                {% endif %}
+              {% endwith %}
+            {% endfor %}
           </div>
         </div>
 
         <p class="text-white text-xs leading-relaxed font-poppins">{{ profissao.descricao }}</p>
 
         <p class="text-white/90 text-sm font-poppins font-semibold">
-          Salário: R$ {{ profissao.salario_min }} à R$ {{ profissao.salario_max }}
+          Salário: R$ {{ profissao.salario_min }} — R$ {{ profissao.salario_max }}
         </p>
 
         <div class="flex justify-end mt-auto">
@@ -222,25 +322,22 @@
             </button>
           </form>
         </div>
-
       </div>
       {% empty %}
-        <p class="text-white col-span-3 text-center py-10 font-poppins">Nenhuma profissão encontrada.</p>
+        <p class="text-white col-span-3 text-center py-10 font-poppins">
+          Nenhuma profissão encontrada.
+        </p>
       {% endfor %}
     </div>
 
-    <!-- ───────────────────────────────────────────
-         Paginação — ALTERAÇÃO: adicionado
-         &categoria={{ categoria_ativa }} em todos
-         os links de página para que ao trocar de
-         página o filtro de categoria não se perca.
-         ─────────────────────────────────────────── -->
+    {# ── Paginação ── #}
     {% if profissoes.has_other_pages %}
     <div class="flex items-center justify-center gap-2 py-8">
 
       {% if profissoes.has_previous %}
-      <a href="?page={{ profissoes.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-          class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
+      <a href="?page={{ profissoes.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+         class="w-9 h-9 flex items-center justify-center rounded-md
+                hover:bg-white/20 dark:hover:bg-white/10 transition-all">
         <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4 rotate-180" alt="Anterior">
       </a>
       {% else %}
@@ -251,24 +348,24 @@
 
       {% for num in profissoes.paginator.page_range %}
         {% if profissoes.number == num %}
-          <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md font-poppins font-bold flex items-center justify-center">
+          <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md
+                       font-poppins font-bold flex items-center justify-center">
             {{ num }}
           </span>
         {% else %}
-          <!--
-            ALTERAÇÃO: &categoria={{ categoria_ativa }} preserva
-            o filtro ao navegar entre as páginas da paginação.
-          -->
-          <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-              class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600 text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+          <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+             class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600
+                    text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center
+                    justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
             {{ num }}
           </a>
         {% endif %}
       {% endfor %}
 
       {% if profissoes.has_next %}
-      <a href="?page={{ profissoes.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-          class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
+      <a href="?page={{ profissoes.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+         class="w-9 h-9 flex items-center justify-center rounded-md
+                hover:bg-white/20 dark:hover:bg-white/10 transition-all">
         <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Próximo">
       </a>
       {% else %}
@@ -280,10 +377,13 @@
     </div>
     {% endif %}
 
-    <!-- Footer — SEM ALTERAÇÃO -->
-    <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6] dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
+    {# Footer #}
+    <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6]
+                   dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-sm text-white/70 font-poppins">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
+        <p class="text-sm text-white/70 font-poppins">
+          © 2026 Kappacita LTDA. Todos os direitos reservados.
+        </p>
         <div class="flex gap-6">
           <a href="{% url 'privacidade' %}" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Privacidade</a>
           <a href="#" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Termos de Uso</a>
@@ -294,4 +394,42 @@
 
   </div>
 </main>
+
+<script>
+  // ── Drawer ──────────────────────────────────────────────────────────
+  const drawer  = document.getElementById('drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  function abrirDrawer() {
+    drawer.classList.remove('translate-x-full');
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharDrawer() {
+    drawer.classList.add('translate-x-full');
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fecharDrawer();
+  });
+
+  // ── Busca interna no drawer ─────────────────────────────────────────
+  function filtrarDrawer(termo) {
+    const itens = document.querySelectorAll('#drawer-lista .drawer-item[data-nome]');
+    const t     = termo.toLowerCase().trim();
+    itens.forEach(item => {
+      item.style.display = (!t || item.dataset.nome.includes(t)) ? '' : 'none';
+    });
+  }
+
+  // ── Scroll manual do carrossel ──────────────────────────────────────
+  function scrollAreas(dir) {
+    const el = document.getElementById('areas-scroll');
+    el.scrollBy({ left: dir * 220, behavior: 'smooth' });
+  }
+</script>
+
 {% endblock %}

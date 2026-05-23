@@ -6,180 +6,288 @@
 {% block body %}
 {% include 'header.html' %}
 
+{# ═══════════════════════════════════════════════════════════════════
+   DRAWER — Filtro por Área de Atuação
+   Estrutura: overlay escuro + painel lateral direito
+   ═══════════════════════════════════════════════════════════════════ #}
+<div id="drawer-overlay"
+     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+     onclick="fecharDrawer()">
+</div>
+
+<aside id="drawer"
+       class="fixed top-0 right-0 h-full w-80 max-w-[90vw] z-50 flex flex-col
+              translate-x-full transition-transform duration-300 ease-in-out"
+       style="background: linear-gradient(160deg, #1a3a5c 0%, #0f2340 100%);
+              border-left: 1px solid rgba(255,255,255,0.12);
+              box-shadow: -8px 0 40px rgba(0,0,0,0.4);">
+
+  {# Cabeçalho do drawer #}
+  <div class="flex items-center justify-between px-6 py-5"
+       style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div>
+      <h2 class="text-white font-poppins font-bold text-lg leading-tight">Filtrar por Área</h2>
+      <p class="text-white/50 font-poppins text-xs mt-0.5">Selecione uma área de atuação</p>
+    </div>
+    <button onclick="fecharDrawer()"
+            class="w-8 h-8 flex items-center justify-center rounded-full text-white/60
+                   hover:text-white hover:bg-white/10 transition-all text-xl leading-none">
+      ×
+    </button>
+  </div>
+
+  {# Busca interna no drawer #}
+  <div class="px-4 pt-4 pb-2">
+    <div class="relative">
+      <input id="drawer-search"
+             type="text"
+             placeholder="Buscar área..."
+             oninput="filtrarDrawer(this.value)"
+             class="w-full bg-white/10 text-white placeholder-white/40 font-poppins text-sm
+                    rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
+                    focus:border-white/30 transition-colors">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </div>
+  </div>
+
+  {# Lista de áreas #}
+  <div class="flex-1 overflow-y-auto px-4 py-2 space-y-1" id="drawer-lista">
+
+    {# Opção "Todas" #}
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+       id="drawer-item-todos"
+       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all
+              {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/8 hover:text-white{% endif %}
+              font-poppins text-sm font-medium">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+                   {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+      </span>
+      Todas as áreas
+      {% if not area_ativa %}
+        <svg class="w-4 h-4 ml-auto text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      {% endif %}
+    </a>
+
+    {% for area in areas %}
+    <a href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+       data-nome="{{ area.nome|lower }}"
+       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all
+              {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/8 hover:text-white{% endif %}
+              font-poppins text-sm font-medium">
+
+      {# Miniatura da imagem da área ou inicial #}
+      <span class="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0
+                   {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
+        {% if area.imagem %}
+          <img src="{{ area.imagem.url }}" class="w-full h-full object-cover" alt="{{ area.nome }}">
+        {% else %}
+          <span class="w-full h-full flex items-center justify-center
+                       {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/8{% endif %}
+                       text-white font-bold text-xs font-poppins">
+            {{ area.nome|slice:":1"|upper }}
+          </span>
+        {% endif %}
+      </span>
+
+      {{ area.nome }}
+
+      {% if area_ativa == area.id %}
+        <svg class="w-4 h-4 ml-auto text-white/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      {% endif %}
+    </a>
+    {% empty %}
+      <p class="text-white/40 font-poppins text-sm text-center py-6">
+        Nenhuma área cadastrada.
+      </p>
+    {% endfor %}
+
+  </div>
+
+  {# Rodapé do drawer — botão limpar se houver filtro ativo #}
+  {% if area_ativa %}
+  <div class="px-4 pb-6 pt-3" style="border-top: 1px solid rgba(255,255,255,0.08);">
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+       class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
+              bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
+              font-poppins text-sm transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+      Limpar filtro
+    </a>
+  </div>
+  {% endif %}
+
+</aside>
+{# ═══════════════════════════════════════════════════════════════════ #}
+
+
 <div class="p-4 lg:p-8 space-y-8 bg-[#5b91bc]/75 dark:bg-gray-950 min-h-screen transition-colors">
 
   <h1 class="text-4xl lg:text-5xl text-white font-bold font-poppins">Explorar Cursos</h1>
 
-  <!-- ───────────────────────────────────────────
-       Search & Filter Bar — SEM ALTERAÇÃO
-       ─────────────────────────────────────────── -->
-  <div class="flex items-center gap-4">
-    <button class="p-2 bg-transparent hover:bg-white/20 rounded-full">
+  {# ── Barra de pesquisa + botão filtro ── #}
+  <div class="flex items-center gap-3">
+
+    {# Botão Filtro — abre o drawer #}
+    <button onclick="abrirDrawer()"
+            id="btn-filtro"
+            title="Filtrar por área"
+            class="relative p-2.5 rounded-full transition-all
+                   {% if area_ativa %}bg-white/30 ring-2 ring-white{% else %}bg-transparent hover:bg-white/20{% endif %}">
       <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filtro">
+      {# Bolinha indicadora quando há filtro ativo #}
+      {% if area_ativa %}
+        <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full
+                     border-2 border-[#5b91bc]"></span>
+      {% endif %}
     </button>
 
     <form method="GET" action="{% url 'cursos' %}" class="relative flex-1">
-      <!--
-        ALTERAÇÃO: adicionado campo hidden para preservar a categoria ativa
-        durante uma busca por texto. Sem isso, ao buscar um curso a categoria
-        selecionada seria perdida da URL.
-      -->
-      {% if categoria_ativa %}
-        <input type="hidden" name="categoria" value="{{ categoria_ativa }}">
+      {% if area_ativa %}
+        <input type="hidden" name="area" value="{{ area_ativa }}">
       {% endif %}
-
       <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5 opacity-80" alt="Buscar">
       </div>
       <input type="text" name="q" placeholder="Buscar cursos..." value="{{ request.GET.q|default:'' }}"
-        class="w-full bg-white dark:bg-gray-800 rounded-full py-3 pl-12 pr-12 text-[#233e78] dark:text-white shadow-lg outline-none">
+             class="w-full bg-white dark:bg-gray-800 rounded-full py-3 pl-12 pr-12
+                    text-[#233e78] dark:text-white shadow-lg outline-none">
       <button type="submit" class="absolute inset-y-0 right-4 flex items-center">
         <img src="{% static 'img/lupa.svg' %}" class="w-5 h-5" alt="Buscar">
       </button>
     </form>
   </div>
 
-  <!-- ───────────────────────────────────────────
-       Contador de resultados — SEM ALTERAÇÃO no
-       contador em si. NOVO: botão "Limpar filtro"
-       aparece somente quando uma categoria está ativa.
-       ─────────────────────────────────────────── -->
-  <div class="flex items-center gap-4 flex-wrap">
+  {# ── Contador + pill do filtro ativo ── #}
+  <div class="flex items-center gap-3 flex-wrap">
     <p class="text-white text-sm font-poppins">
       {{ cursos.paginator.count }} curso(s) encontrado(s)
     </p>
-
-    <!--
-      NOVO: link para limpar o filtro de categoria.
-      Preserva o texto de busca (?q=...) caso exista,
-      mas remove o ?categoria= da URL.
-    -->
-    {% if categoria_ativa %}
-      <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
-         class="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white text-xs font-poppins px-3 py-1 rounded-full transition-all">
-        ✕ Limpar filtro de categoria
-      </a>
+    {% if area_ativa %}
+      {% for area in areas %}{% if area.id == area_ativa %}
+        <span class="inline-flex items-center gap-1.5 bg-white/20 text-white
+                     text-xs font-poppins px-3 py-1 rounded-full">
+          <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+          {{ area.nome }}
+          <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+             class="ml-0.5 opacity-70 hover:opacity-100 transition-opacity">✕</a>
+        </span>
+      {% endif %}{% endfor %}
     {% endif %}
   </div>
 
-  <!-- ───────────────────────────────────────────
-       Categorias Horizontais — ALTERAÇÕES:
-       1. Cada card agora é uma tag <a> (link) ao invés de <div>
-       2. Clicar envia ?categoria=ID na URL
-       3. Categoria ativa recebe borda branca (ring-4 ring-white)
-          e um ícone ✓ no canto superior direito
-       4. Preserva o texto de busca (?q=...) no link se houver
-       ─────────────────────────────────────────── -->
+  {# ── Carrossel de Áreas de Atuação ── #}
   <div class="relative group">
-    <button class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+    <button onclick="scrollAreas(-1)"
+            class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700
+                   p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
     </button>
 
-    <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth" style="scrollbar-width: none;">
-      {% for categoria in categorias %}
+    <div id="areas-scroll"
+         class="flex gap-5 overflow-x-auto pb-4 scroll-smooth" style="scrollbar-width: none;">
 
-      <!--
-        ALTERAÇÃO PRINCIPAL: era <div class="... group cursor-pointer">
-        Agora é <a href="..."> para navegar ao clicar.
-
-        A URL montada é: ?categoria={{ categoria.id }}
-        Se já há uma busca por texto (&q=...) ela é preservada.
-        Se esta categoria já é a ativa, clicar nela age como "limpar"
-        (leva para a URL sem ?categoria=, mantendo só ?q= se houver).
-      -->
-      {% if categoria_ativa == categoria.id %}
-        <!-- Categoria ATIVA: clicar remove o filtro (limpar) -->
-        <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
-           class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl ring-4 ring-white transition-all">
-      {% else %}
-        <!-- Categoria INATIVA: clicar aplica o filtro -->
-        <a href="?categoria={{ categoria.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-           class="flex-shrink-0 w-48 h-48 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl transition-all hover:ring-2 hover:ring-white/60">
-      {% endif %}
-
-        {% if categoria.imagem %}
-          <img src="{{ categoria.imagem.url }}"
-               class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-500"
-               alt="{{ categoria.nome }}">
+      {% for area in areas %}
+        {% if area_ativa == area.id %}
+          <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
+             class="flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
+                    cursor-pointer shadow-xl ring-4 ring-white transition-all">
         {% else %}
-          <div class="absolute inset-0 bg-[#1e293b]/60"></div>
+          <a href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+             class="flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
+                    cursor-pointer shadow-xl transition-all hover:ring-2 hover:ring-white/60">
         {% endif %}
 
-        <!--
-          ALTERAÇÃO: overlay mais escuro quando a categoria está ativa
-          para dar contraste ao ícone ✓
-        -->
-        <div class="absolute inset-0 {% if categoria_ativa == categoria.id %}bg-black/40{% else %}bg-black/20{% endif %}"></div>
+          {% if area.imagem %}
+            <img src="{{ area.imagem.url }}"
+                 class="absolute inset-0 w-full h-full object-cover opacity-70
+                        group-hover:scale-110 transition-transform duration-500"
+                 alt="{{ area.nome }}">
+          {% else %}
+            <div class="absolute inset-0"
+                 style="background: linear-gradient(135deg, #1a3a5c, #0f2340);"></div>
+          {% endif %}
 
-        <span class="absolute bottom-4 left-4 text-white text-xl font-bold font-poppins">{{ categoria.nome }}</span>
-
-        <!--
-          NOVO: ícone de seleção (✓) visível somente quando
-          a categoria está ativa, no canto superior direito.
-        -->
-        {% if categoria_ativa == categoria.id %}
-          <div class="absolute top-3 right-3 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow">
-            <span class="text-[#1065a6] text-sm font-bold leading-none">✓</span>
+          <div class="absolute inset-0
+                      {% if area_ativa == area.id %}bg-black/40{% else %}bg-black/25{% endif %}">
           </div>
-        {% endif %}
 
-      </a>
+          <span class="absolute bottom-4 left-4 right-4 text-white text-base
+                       font-bold font-poppins leading-tight">{{ area.nome }}</span>
+
+          {% if area_ativa == area.id %}
+            <div class="absolute top-3 right-3 bg-white rounded-full w-6 h-6
+                        flex items-center justify-center shadow">
+              <span class="text-[#1065a6] text-sm font-bold leading-none">✓</span>
+            </div>
+          {% endif %}
+
+        </a>
 
       {% empty %}
-        <p class="text-white/70 font-poppins text-sm">Nenhuma categoria disponível.</p>
+        <p class="text-white/70 font-poppins text-sm">Nenhuma área cadastrada.</p>
       {% endfor %}
     </div>
 
-    <button class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
+    <button onclick="scrollAreas(1)"
+            class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-700
+                   p-2 rounded-full shadow-md hidden lg:flex items-center justify-center">
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Próximo">
     </button>
   </div>
 
-  <!-- ───────────────────────────────────────────
-       Grid de Cursos — SEM ALTERAÇÃO no visual.
-       O conteúdo já vem filtrado da view.
-       ─────────────────────────────────────────── -->
+  {# ── Grid de Cursos ── #}
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     {% for curso in cursos %}
-    <div class="rounded-2xl p-5 flex flex-col gap-3 relative group hover:bg-white/20 dark:hover:bg-white/5 transition-all"
-         style="background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);">
+    <div class="rounded-2xl p-5 flex flex-col gap-3 relative hover:bg-white/20
+                dark:hover:bg-white/5 transition-all"
+         style="background: rgba(255,255,255,0.15);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid rgba(255,255,255,0.2);">
 
       <div class="flex justify-between items-start">
         <div class="flex gap-4">
-          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl
+                      flex items-center justify-center flex-shrink-0 overflow-hidden">
             {% if curso.icone %}
               <img src="{{ curso.icone.url }}" class="w-full h-full object-cover" alt="{{ curso.nome }}">
             {% else %}
               <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ curso.nome }}">
             {% endif %}
           </div>
-
           <div>
             <h3 class="text-white text-lg font-bold font-poppins">{{ curso.nome }}</h3>
-            <p class="text-white/80 dark:text-white/60 text-sm font-poppins">{{ curso.area }}</p>
+            <p class="text-white/80 dark:text-white/60 text-sm font-poppins">
+              {{ curso.area.nome|default:"—" }}
+            </p>
           </div>
         </div>
 
+        {# Estrelas #}
         <div class="flex gap-0.5 flex-shrink-0">
-          {% if curso.avaliacao >= 1 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-          {% elif curso.avaliacao >= 0.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-          {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-          {% if curso.avaliacao >= 2 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-          {% elif curso.avaliacao >= 1.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-          {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-          {% if curso.avaliacao >= 3 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-          {% elif curso.avaliacao >= 2.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-          {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-          {% if curso.avaliacao >= 4 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-          {% elif curso.avaliacao >= 3.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-          {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
-
-          {% if curso.avaliacao >= 5 %}<img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="estrela">
-          {% elif curso.avaliacao >= 4.5 %}<img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="meia estrela">
-          {% else %}<img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="estrela vazia">{% endif %}
+          {% for i in "12345" %}
+            {% with i_int=forloop.counter %}
+              {% if curso.avaliacao >= i_int %}
+                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-4 h-4" alt="★">
+              {% elif curso.avaliacao >= i_int|add:"-0.5" %}
+                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-4 h-4" alt="½">
+              {% else %}
+                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-4 h-4" alt="☆">
+              {% endif %}
+            {% endwith %}
+          {% endfor %}
         </div>
       </div>
 
@@ -197,25 +305,22 @@
           </button>
         </form>
       </div>
-
     </div>
     {% empty %}
-      <p class="text-white col-span-3 text-center py-10 font-poppins">Nenhum curso encontrado.</p>
+      <p class="text-white col-span-3 text-center py-10 font-poppins">
+        Nenhum curso encontrado.
+      </p>
     {% endfor %}
   </div>
 
-  <!-- ───────────────────────────────────────────
-       Paginação — ALTERAÇÃO: adicionado
-       &categoria={{ categoria_ativa }} em todos
-       os links de página para que ao trocar de
-       página o filtro de categoria não se perca.
-       ─────────────────────────────────────────── -->
+  {# ── Paginação ── #}
   {% if cursos.has_other_pages %}
   <div class="flex items-center justify-center gap-2 py-8">
 
     {% if cursos.has_previous %}
-    <a href="?page={{ cursos.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-        class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
+    <a href="?page={{ cursos.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+       class="w-9 h-9 flex items-center justify-center rounded-md
+              hover:bg-white/20 dark:hover:bg-white/10 transition-all">
       <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4 rotate-180" alt="Anterior">
     </a>
     {% else %}
@@ -226,24 +331,24 @@
 
     {% for num in cursos.paginator.page_range %}
       {% if cursos.number == num %}
-        <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md font-poppins font-bold flex items-center justify-center">
+        <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md
+                     font-poppins font-bold flex items-center justify-center">
           {{ num }}
         </span>
       {% else %}
-        <!--
-          ALTERAÇÃO: &categoria={{ categoria_ativa }} adicionado
-          para manter o filtro ao navegar entre páginas.
-        -->
-        <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-            class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600 text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+        <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+           class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600
+                  text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center
+                  justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
           {{ num }}
         </a>
       {% endif %}
     {% endfor %}
 
     {% if cursos.has_next %}
-    <a href="?page={{ cursos.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa }}{% endif %}"
-        class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 dark:hover:bg-white/10 transition-all">
+    <a href="?page={{ cursos.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
+       class="w-9 h-9 flex items-center justify-center rounded-md
+              hover:bg-white/20 dark:hover:bg-white/10 transition-all">
       <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Próximo">
     </a>
     {% else %}
@@ -255,10 +360,13 @@
   </div>
   {% endif %}
 
-  <!-- Footer — SEM ALTERAÇÃO -->
-  <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6] dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
+  {# Footer #}
+  <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6]
+                 dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-      <p class="text-sm text-white/70 font-poppins">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
+      <p class="text-sm text-white/70 font-poppins">
+        © 2026 Kappacita LTDA. Todos os direitos reservados.
+      </p>
       <div class="flex gap-6">
         <a href="{% url 'privacidade' %}" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Privacidade</a>
         <a href="#" class="text-sm text-white/70 hover:text-white font-poppins transition-colors">Termos de Uso</a>
@@ -268,4 +376,43 @@
   </footer>
 
 </div>
+
+<script>
+  // ── Drawer ──────────────────────────────────────────────────────────
+  const drawer  = document.getElementById('drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  function abrirDrawer() {
+    drawer.classList.remove('translate-x-full');
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharDrawer() {
+    drawer.classList.add('translate-x-full');
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+  }
+
+  // Fecha com ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fecharDrawer();
+  });
+
+  // ── Busca interna no drawer ─────────────────────────────────────────
+  function filtrarDrawer(termo) {
+    const itens = document.querySelectorAll('#drawer-lista .drawer-item[data-nome]');
+    const t     = termo.toLowerCase().trim();
+    itens.forEach(item => {
+      item.style.display = (!t || item.dataset.nome.includes(t)) ? '' : 'none';
+    });
+  }
+
+  // ── Scroll manual do carrossel ──────────────────────────────────────
+  function scrollAreas(dir) {
+    const el = document.getElementById('areas-scroll');
+    el.scrollBy({ left: dir * 220, behavior: 'smooth' });
+  }
+</script>
+
 {% endblock %}

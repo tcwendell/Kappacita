@@ -6,13 +6,18 @@
 {% block body %}
 {% include 'header.html' %}
 
+{# URLs passadas ao JS via data attributes para não hardcodar caminhos #}
+<div id="js-urls"
+     data-remover-curso="{% url 'desfavoritar_curso' 0 %}"
+     data-remover-profissao="{% url 'desfavoritar_profissao' 0 %}"
+     hidden>
+</div>
+
 <div class="flex flex-col xl:flex-row min-h-screen bg-[#5b91bc]/75 dark:bg-gray-950 transition-colors">
 
-  <!-- Lista de Favoritos -->
   <section class="flex-1 p-4 lg:p-10 overflow-y-auto">
     <h2 class="text-[#224178] dark:text-white text-4xl font-bold mb-6 font-poppins">Favoritos</h2>
 
-    <!-- Filtros -->
     <div class="flex flex-wrap gap-2 mb-8">
       <a href="?filtro=todos"
          class="px-4 py-1.5 text-xs rounded-full font-poppins transition-all
@@ -33,21 +38,23 @@
 
     <div class="space-y-4" id="lista-favoritos">
 
-      <!-- Cursos Favoritados -->
       {% if filtro == 'todos' or filtro == 'cursos' %}
         {% for fav in favoritos_cursos %}
-        <div class="favorito-item bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-lg border-2 border-transparent hover:border-[#5b90bd]/30 cursor-pointer transition-all"
+        <div class="favorito-item bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center
+                    justify-between shadow-lg border-2 border-transparent
+                    hover:border-[#5b90bd]/30 cursor-pointer transition-all"
              id="fav-curso-{{ fav.curso.id }}"
              data-tipo="curso"
              data-id="{{ fav.curso.id }}"
              data-nome="{{ fav.curso.nome }}"
-             data-area="{{ fav.curso.area }}"
+             data-area="{{ fav.curso.area.nome|default:'—' }}"
              data-descricao="{{ fav.curso.descricao }}"
              data-avaliacao="{{ fav.curso.avaliacao }}"
              data-icone="{% if fav.curso.icone %}{{ fav.curso.icone.url }}{% endif %}"
              onclick="selecionarItem(this)">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-[#f2f2fd] dark:bg-gray-700 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div class="w-12 h-12 bg-[#f2f2fd] dark:bg-gray-700 rounded-xl
+                        flex items-center justify-center overflow-hidden flex-shrink-0">
               {% if fav.curso.icone %}
                 <img src="{{ fav.curso.icone.url }}" class="w-full h-full object-cover" alt="{{ fav.curso.nome }}">
               {% else %}
@@ -57,16 +64,18 @@
             <div>
               <h3 class="text-[#233e78] dark:text-white font-bold text-base font-poppins">{{ fav.curso.nome }}</h3>
               <div class="flex items-center gap-3 mt-1">
-                <span class="bg-[#f3f4f6] dark:bg-gray-700 text-[#1e2128] dark:text-gray-300 text-[10px] px-3 py-0.5 rounded-full font-bold">Curso</span>
-                <span class="text-[#565d6d] dark:text-gray-400 text-[11px]">{{ fav.curso.area }}</span>
+                <span class="bg-[#f3f4f6] dark:bg-gray-700 text-[#1e2128] dark:text-gray-300
+                             text-[10px] px-3 py-0.5 rounded-full font-bold">Curso</span>
+                {# CORREÇÃO: .nome explícito #}
+                <span class="text-[#565d6d] dark:text-gray-400 text-[11px]">{{ fav.curso.area.nome|default:"—" }}</span>
               </div>
             </div>
           </div>
-          <button
-            onclick="event.stopPropagation(); removerFavorito('curso', {{ fav.curso.id }})"
-            class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 rounded-lg transition-colors flex-shrink-0">
+          <button onclick="event.stopPropagation(); removerFavorito('curso', {{ fav.curso.id }})"
+                  class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 rounded-lg transition-colors flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
             </svg>
           </button>
         </div>
@@ -77,41 +86,46 @@
         {% endfor %}
       {% endif %}
 
-      <!-- Profissões Favoritadas -->
       {% if filtro == 'todos' or filtro == 'profissoes' %}
         {% for fav in favoritos_profissoes %}
-        <div class="favorito-item bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-lg border-2 border-transparent hover:border-[#5b90bd]/30 cursor-pointer transition-all"
-              id="fav-profissao-{{ fav.profissao.id }}"
-              data-tipo="profissao"
-              data-id="{{ fav.profissao.id }}"
-              data-nome="{{ fav.profissao.nome }}"
-              data-area="{{ fav.profissao.area }}"
-              data-descricao="{{ fav.profissao.descricao }}"
-              data-salario-min="{{ fav.profissao.salario_min }}"
-              data-salario-max="{{ fav.profissao.salario_max }}"
-              data-icone="{% if fav.profissao.icone %}{{ fav.profissao.icone.url }}{% endif %}"
+        <div class="favorito-item bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center
+                    justify-between shadow-lg border-2 border-transparent
+                    hover:border-[#5b90bd]/30 cursor-pointer transition-all"
+             id="fav-profissao-{{ fav.profissao.id }}"
+             data-tipo="profissao"
+             data-id="{{ fav.profissao.id }}"
+             data-nome="{{ fav.profissao.nome }}"
+             data-area="{{ fav.profissao.area.nome|default:'—' }}"
+             data-descricao="{{ fav.profissao.descricao }}"
+             data-salario-min="{{ fav.profissao.salario_min }}"
+             data-salario-max="{{ fav.profissao.salario_max }}"
+             data-icone="{% if fav.profissao.icone %}{{ fav.profissao.icone.url }}{% endif %}"
              onclick="selecionarItem(this)">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-[#f2f2fd] dark:bg-gray-700 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div class="w-12 h-12 bg-[#f2f2fd] dark:bg-gray-700 rounded-xl
+                        flex items-center justify-center overflow-hidden flex-shrink-0">
               {% if fav.profissao.icone %}
                 <img src="{{ fav.profissao.icone.url }}" class="w-full h-full object-cover" alt="{{ fav.profissao.nome }}">
               {% else %}
-                <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-7 h-7" alt="{{ fav.profissao.nome }}">
+                {# CORREÇÃO: ícone de profissão #}
+                <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-7 h-7" alt="{{ fav.profissao.nome }}">
               {% endif %}
             </div>
             <div>
               <h3 class="text-[#233e78] dark:text-white font-bold text-base font-poppins">{{ fav.profissao.nome }}</h3>
               <div class="flex items-center gap-3 mt-1">
-                <span class="bg-[#f3f4f6] dark:bg-gray-700 text-[#1e2128] dark:text-gray-300 text-[10px] px-3 py-0.5 rounded-full font-bold">Profissão</span>
-                <span class="text-[#565d6d] dark:text-gray-400 text-[11px]">{{ fav.profissao.area }}</span>
+                <span class="bg-[#f3f4f6] dark:bg-gray-700 text-[#1e2128] dark:text-gray-300
+                             text-[10px] px-3 py-0.5 rounded-full font-bold">Profissão</span>
+                {# CORREÇÃO: .nome explícito #}
+                <span class="text-[#565d6d] dark:text-gray-400 text-[11px]">{{ fav.profissao.area.nome|default:"—" }}</span>
               </div>
             </div>
           </div>
-          <button
-            onclick="event.stopPropagation(); removerFavorito('profissao', {{ fav.profissao.id }})"
-            class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 rounded-lg transition-colors flex-shrink-0">
+          <button onclick="event.stopPropagation(); removerFavorito('profissao', {{ fav.profissao.id }})"
+                  class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 rounded-lg transition-colors flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
             </svg>
           </button>
         </div>
@@ -122,27 +136,28 @@
         {% endfor %}
       {% endif %}
 
-      <!-- Mensagem quando não há nenhum favorito -->
       {% if not favoritos_cursos and not favoritos_profissoes %}
-        <p id="msg-vazio" class="text-white/70 font-poppins text-sm text-center py-10">Você ainda não favoritou nenhum item.</p>
+        <p id="msg-vazio" class="text-white/70 font-poppins text-sm text-center py-10">
+          Você ainda não favoritou nenhum item.
+        </p>
       {% endif %}
 
     </div>
   </section>
 
-  <!-- Painel lateral de detalhes -->
-  <aside class="w-full xl:w-[428px] bg-[#81a8cb] dark:bg-gray-800 border-l border-white/20 dark:border-gray-700 p-8 overflow-y-auto">
+  <aside class="w-full xl:w-[428px] bg-[#81a8cb] dark:bg-gray-800 border-l border-white/20
+                dark:border-gray-700 p-8 overflow-y-auto">
 
-    <!-- Estado vazio -->
     <div id="painel-vazio" class="flex flex-col items-center justify-center h-full text-center gap-4">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
       </svg>
       <p class="text-white/50 font-poppins text-sm">Clique em um item para ver os detalhes</p>
     </div>
 
-    <!-- Detalhes preenchidos via JS -->
-    <div id="painel-conteudo" class="hidden flex-col gap-6">
+    {# CORREÇÃO: painel usa display:none via style, sem conflito com Tailwind hidden/flex #}
+    <div id="painel-conteudo" style="display:none;" class="flex-col gap-6">
 
       <div>
         <span id="detalhe-badge" class="bg-[#016abd] text-white text-[12px] font-semibold px-4 py-1 rounded-full font-poppins"></span>
@@ -150,9 +165,11 @@
 
       <div class="flex items-center gap-4">
         <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
-          <img id="detalhe-icone" src="" class="w-full h-full object-cover hidden" alt="">
-          <svg id="detalhe-icone-default" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          <img id="detalhe-icone" src="" class="w-full h-full object-cover" style="display:none;" alt="">
+          <svg id="detalhe-icone-default" xmlns="http://www.w3.org/2000/svg"
+               class="w-8 h-8 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
           </svg>
         </div>
         <div>
@@ -166,8 +183,7 @@
         <p id="detalhe-descricao" class="text-white dark:text-gray-200 text-[15px] leading-relaxed font-poppins"></p>
       </div>
 
-      <!-- Salário (só para profissões) -->
-      <div id="detalhe-salario-bloco" class="hidden bg-white/20 rounded-2xl p-4">
+      <div id="detalhe-salario-bloco" style="display:none;" class="bg-white/20 rounded-2xl p-4">
         <h4 class="text-[#323743] dark:text-gray-300 text-[12px] font-bold tracking-widest uppercase mb-2 opacity-70">Faixa Salarial</h4>
         <p id="detalhe-salario" class="text-white font-bold text-lg font-poppins"></p>
       </div>
@@ -180,50 +196,52 @@
 <script>
   const csrfToken = '{{ csrf_token }}';
 
+  // CORREÇÃO: URLs lidas do DOM, não hardcoded no JS
+  const urlsEl          = document.getElementById('js-urls');
+  const urlRemoverCurso     = urlsEl.dataset.removerCurso;
+  const urlRemoverProfissao = urlsEl.dataset.removerProfissao;
+
   function selecionarItem(el) {
     document.querySelectorAll('.favorito-item').forEach(i => i.classList.remove('border-[#016abd]'));
     el.classList.add('border-[#016abd]');
 
     const tipo      = el.dataset.tipo;
-    const nome      = el.dataset.nome;
-    const area      = el.dataset.area;
-    const descricao = el.dataset.descricao;
     const icone     = el.dataset.icone;
 
-    document.getElementById('detalhe-badge').textContent    = tipo === 'curso' ? 'Curso' : 'Profissão';
-    document.getElementById('detalhe-nome').textContent     = nome;
-    document.getElementById('detalhe-area').textContent     = area;
-    document.getElementById('detalhe-descricao').textContent = descricao || 'Sem descrição disponível.';
+    document.getElementById('detalhe-badge').textContent     = tipo === 'curso' ? 'Curso' : 'Profissão';
+    document.getElementById('detalhe-nome').textContent      = el.dataset.nome;
+    document.getElementById('detalhe-area').textContent      = el.dataset.area;
+    document.getElementById('detalhe-descricao').textContent = el.dataset.descricao || 'Sem descrição disponível.';
 
     const imgEl     = document.getElementById('detalhe-icone');
     const defaultEl = document.getElementById('detalhe-icone-default');
     if (icone) {
       imgEl.src = icone;
-      imgEl.classList.remove('hidden');
-      defaultEl.classList.add('hidden');
+      imgEl.style.display    = '';
+      defaultEl.style.display = 'none';
     } else {
-      imgEl.classList.add('hidden');
-      defaultEl.classList.remove('hidden');
+      imgEl.style.display    = 'none';
+      defaultEl.style.display = '';
     }
 
+    // CORREÇÃO: display via style, sem conflito entre hidden e flex
     const salarioBloco = document.getElementById('detalhe-salario-bloco');
     if (tipo === 'profissao') {
-      document.getElementById('detalhe-salario').textContent = `R$ ${el.dataset.salarioMin} à R$ ${el.dataset.salarioMax}`;
-      salarioBloco.classList.remove('hidden');
+      document.getElementById('detalhe-salario').textContent =
+        `R$ ${el.dataset.salarioMin} — R$ ${el.dataset.salarioMax}`;
+      salarioBloco.style.display = '';
     } else {
-      salarioBloco.classList.add('hidden');
+      salarioBloco.style.display = 'none';
     }
 
-    document.getElementById('painel-vazio').classList.add('hidden');
-    const conteudo = document.getElementById('painel-conteudo');
-    conteudo.classList.remove('hidden');
-    conteudo.classList.add('flex');
+    document.getElementById('painel-vazio').style.display    = 'none';
+    document.getElementById('painel-conteudo').style.display = 'flex';
   }
 
   function removerFavorito(tipo, id) {
-    const url = tipo === 'curso'
-      ? `/favoritos/remover-curso/${id}/`
-      : `/favoritos/remover-profissao/${id}/`;
+    // CORREÇÃO: URL construída a partir do template Django, substituindo o 0 placeholder
+    const base = tipo === 'curso' ? urlRemoverCurso : urlRemoverProfissao;
+    const url  = base.replace('/0/', `/${id}/`);
 
     fetch(url, {
       method: 'POST',
@@ -234,25 +252,20 @@
       if (data.ok) {
         const card = document.getElementById(`fav-${tipo}-${id}`);
         if (card) {
-          // Verifica se o painel está mostrando esse card e limpa se sim
           const nomeAtual = document.getElementById('detalhe-nome').textContent;
           if (nomeAtual === card.dataset.nome) {
-            document.getElementById('painel-vazio').classList.remove('hidden');
-            const conteudo = document.getElementById('painel-conteudo');
-            conteudo.classList.add('hidden');
-            conteudo.classList.remove('flex');
+            document.getElementById('painel-vazio').style.display    = '';
+            document.getElementById('painel-conteudo').style.display = 'none';
           }
 
-          // Animação de saída e remoção do DOM
           card.style.transition = 'opacity 0.3s, transform 0.3s';
-          card.style.opacity = '0';
-          card.style.transform = 'translateX(20px)';
+          card.style.opacity    = '0';
+          card.style.transform  = 'translateX(20px)';
           setTimeout(() => {
             card.remove();
-            // Mostra mensagem se não sobrou nenhum item
             if (document.querySelectorAll('.favorito-item').length === 0) {
-              const lista = document.getElementById('lista-favoritos');
-              lista.innerHTML = '<p class="text-white/70 font-poppins text-sm text-center py-10">Você ainda não favoritou nenhum item.</p>';
+              document.getElementById('lista-favoritos').innerHTML =
+                '<p class="text-white/70 font-poppins text-sm text-center py-10">Você ainda não favoritou nenhum item.</p>';
             }
           }, 300);
         }

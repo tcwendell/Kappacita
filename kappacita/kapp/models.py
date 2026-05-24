@@ -37,6 +37,17 @@ class Profissao(models.Model):
 
     def __str__(self):
         return self.nome
+    
+    def get_estrelas(self):
+        estrelas = []
+        for i in range(1, 6):
+            if self.avaliacao >= i:
+                estrelas.append('cheia')
+            elif self.avaliacao >= i - 0.5:
+                estrelas.append('meia')
+            else:
+                estrelas.append('vazia')
+        return estrelas
 
 
 class Curso(models.Model):
@@ -59,6 +70,17 @@ class Curso(models.Model):
 
     def __str__(self):
         return self.nome
+    
+    def get_estrelas(self):
+        estrelas = []
+        for i in range(1, 6):
+            if self.avaliacao >= i:
+                estrelas.append('cheia')
+            elif self.avaliacao >= i - 0.5:
+                estrelas.append('meia')
+            else:
+                estrelas.append('vazia')
+        return estrelas
 
 
 class Favorito(models.Model):

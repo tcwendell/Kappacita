@@ -1,18 +1,22 @@
-from django.urls import path
-from .views import *  
+from django.contrib import admin
+from django.urls import path, include
+from .views import (
+    loginFuncionalidades, loginArea, cadastrarFuncionalidades,
+    cadastrarArea, sair, homepage, favoritar_curso_ajax,
+    cursos, favoritar_curso, kappabot, questionario,
+    questionario2, questionario3, questionario4, questionario5,
+    profissoes, favoritar_profissao, favoritos,
+    desfavoritar_curso, desfavoritar_profissao, meuprogresso,
+    configuracoes, privacidade, notificacoes, idiomas, excluir_conta,
+)
 
 urlpatterns = [
-    # Raiz vai direto pro login
     path('', loginFuncionalidades, name='inicio'),
-
-    # Auth
     path('loginFuncionalidades/', loginFuncionalidades, name='loginFuncionalidades'),
     path('loginArea/', loginArea, name='loginArea'),
     path('cadastrarFuncionalidades/', cadastrarFuncionalidades, name='cadastrarFuncionalidades'),
     path('cadastrarArea/', cadastrarArea, name='cadastrarArea'),
     path('sair/', sair, name='sair'),
-
-    # Páginas protegidas
     path('homepage/', homepage, name='homepage'),
     path('favoritar-ajax/<int:curso_id>/', favoritar_curso_ajax, name='favoritar_curso_ajax'),
     path('cursos/', cursos, name='cursos'),

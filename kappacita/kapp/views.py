@@ -123,11 +123,10 @@ def cadastrarArea(request):
 
     return render(request, 'cadastrarArea.html')
 
-
+@require_POST
 def sair(request):
     logout(request)
     return redirect('loginFuncionalidades')
-
 
 # ── HOME ──────────────────────────────────────────────────────────────────────
 

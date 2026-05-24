@@ -6,45 +6,83 @@
         <h1 class="text-[#233e78] dark:text-white text-xl font-normal font-[Poppins] whitespace-nowrap">Kappacita</h1>
     </div>
 
-    <nav class="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
-        <a href="{% url 'homepage' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_inicio.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Início">
+    {% with url_atual=request.resolver_match.url_name %}
+    <nav aria-label="Menu principal" class="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
+
+        <a href="{% url 'homepage' %}"
+            {% if url_atual == 'homepage' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'homepage' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_inicio.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Início</span>
         </a>
-        <a href="{% url 'questionario' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_questionario.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Questionário">
+
+        <a href="{% url 'questionario' %}"
+            {% if url_atual == 'questionario' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'questionario' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_questionario.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Questionário de Perfil</span>
         </a>
-        <a href="{% url 'cursos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Cursos">
+
+        <a href="{% url 'cursos' %}"
+            {% if url_atual == 'cursos' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'cursos' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_cursos.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Cursos</span>
         </a>
-        <a href="{% url 'profissoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Profissões">
+
+        <a href="{% url 'profissoes' %}"
+            {% if url_atual == 'profissoes' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'profissoes' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Profissões</span>
         </a>
-        <a href="{% url 'favoritos' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_favorito.png' %}" class="w-4 h-4 flex-shrink-0" alt="Favoritos">
+
+        <a href="{% url 'favoritos' %}"
+            {% if url_atual == 'favoritos' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'favoritos' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_favorito.png' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Favoritos</span>
         </a>
-        <a href="{% url 'kappabot' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_kappabot.svg' %}" class="w-4 h-4 flex-shrink-0" alt="KappaBOT">
+
+        <a href="{% url 'kappabot' %}"
+            {% if url_atual == 'kappabot' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'kappabot' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_kappabot.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">KappaBOT</span>
         </a>
-        <a href="{% url 'meuprogresso' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_progresso.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Progresso">
+
+        <a href="{% url 'meuprogresso' %}"
+            {% if url_atual == 'meuprogresso' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                    {% if url_atual == 'meuprogresso' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_progresso.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Meu Progresso</span>
         </a>
+
     </nav>
 
     <div class="p-4 border-t border-gray-100 dark:border-gray-700 space-y-1">
-        <a href="{% url 'configuracoes' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_config.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Configurações">
+        <a href="{% url 'configuracoes' %}"
+            {% if url_atual == 'configuracoes' %}aria-current="page"{% endif %}
+            class="flex items-center gap-3 px-4 py-3 text-sm rounded-lg
+                {% if url_atual == 'configuracoes' %}sidebar-active-gradient text-[#233e78] dark:text-white{% else %}text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}">
+            <img src="{% static 'img/icons/icon_config.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
             <span class="whitespace-nowrap">Configurações</span>
         </a>
-        <a href="{% url 'sair' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-            <img src="{% static 'img/icons/icon_sair.svg' %}" class="w-4 h-4 flex-shrink-0" alt="Sair">
-            <span class="whitespace-nowrap">Sair</span>
-        </a>
+
+        <form method="POST" action="{% url 'sair' %}">
+            {% csrf_token %}
+            <button type="submit" class="flex items-center gap-3 px-4 py-3 text-sm text-[#171a1f] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg w-full">
+                <img src="{% static 'img/icons/icon_sair.svg' %}" class="w-4 h-4 flex-shrink-0" alt="">
+                <span class="whitespace-nowrap">Sair</span>
+            </button>
+        </form>
     </div>
+    {% endwith %}
 </div>

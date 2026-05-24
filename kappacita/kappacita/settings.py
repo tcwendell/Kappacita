@@ -19,6 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # Cloudinary (armazenamento de imagens na nuvem)
+    'cloudinary',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     'kapp',
 
@@ -29,9 +32,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
-    # Cloudinary (armazenamento de imagens na nuvem)
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 SITE_ID = 1

@@ -8,165 +8,159 @@
 
 <div class="p-6 lg:p-10 bg-[#5b90bd] dark:bg-gray-950 min-h-screen transition-colors">
 
-    {# BANNER DE BOAS-VINDAS #}
-    <section class="relative rounded-[32px] mb-12 min-h-[250px] flex flex-col lg:flex-row overflow-hidden shadow-2xl border border-white/20 dark:border-white/10">
+    {# ── BANNER DE BOAS-VINDAS ── #}
+    <section class="relative rounded-[32px] mb-12 min-h-[250px] flex flex-col lg:flex-row overflow-hidden shadow-2xl border border-white/20 dark:border-white/10"
+             style="background-color: #1e3a5f;">
 
         <div class="absolute inset-0 z-0">
-            <img src="{% static 'img/fundo_inicio.jpeg' %}" class="w-full h-full object-cover" alt="Background">
+            <img src="{% static 'img/fundo_inicio.jpeg' %}"
+                 class="w-full h-full object-cover"
+                 alt=""
+                 onerror="this.style.display='none'">
             <div class="absolute inset-0 bg-[#81a8cb]/40 dark:bg-gray-900/70 mix-blend-multiply"></div>
         </div>
 
+        {# Lado esquerdo — saudação e progresso #}
         <div class="relative z-10 flex-1 p-10 flex flex-col justify-center">
+
             <div class="flex items-center gap-2 mb-2">
-                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="Sparkles">
-                <span class="font-poppins font-bold text-[#233e78] dark:text-white">Seja bem-vindo(a)</span>
+                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="">
+                <span class="font-poppins font-bold text-white">Seja bem-vindo(a)</span>
             </div>
 
-            <h1 class="font-poppins text-4xl text-[#233e78] dark:text-white mb-3 font-bold">
+            <h1 class="font-poppins text-4xl text-white mb-3 font-bold">
                 Olá, {{ user.first_name|default:"Usuário" }}!
             </h1>
 
-            <p class="font-poppins text-[#233e78] dark:text-white/80 font-medium max-w-xl mb-8">
-                Seu perfil está 50% completo. Complete o questionário vocacional para receber recomendações ainda mais precisas.
+            <p class="font-poppins text-white/80 font-medium max-w-xl mb-8">
+                {% if perfil_percentual == 100 %}
+                    Seu perfil está completo! Confira os cursos recomendados para você.
+                {% else %}
+                    Seu perfil está {{ perfil_percentual }}% completo. Complete o questionário vocacional para receber recomendações mais precisas.
+                {% endif %}
             </p>
 
             <div class="flex flex-wrap items-center gap-6">
                 <div class="flex items-center gap-3">
-                    <span class="font-poppins font-bold text-[#233e78] dark:text-white">Perfil</span>
-                    <div class="w-48 h-3.5 bg-white/30 dark:bg-white/10 rounded-full overflow-hidden backdrop-blur-md">
-                        <div class="h-full bg-[#233e78] dark:bg-blue-500 w-1/2 rounded-full"></div>
+                    <span class="font-poppins font-bold text-white">Perfil</span>
+                    <div class="w-48 h-3.5 bg-white/30 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full transition-all duration-500"
+                                style="width: {{ perfil_percentual }}%"></div>
                     </div>
-                    <span class="font-poppins font-bold text-[#233e78] dark:text-white">50%</span>
+                    <span class="font-poppins font-bold text-white">{{ perfil_percentual }}%</span>
                 </div>
 
-                <button class="flex items-center gap-2 px-6 py-2 border-2 border-[#233e78] dark:border-white rounded-xl text-[#233e78] dark:text-white font-poppins font-bold text-sm hover:bg-[#233e78] dark:hover:bg-white hover:text-white dark:hover:text-gray-900 transition-all shadow-lg bg-transparent">
-                    Completar perfil
-                    <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="Seta">
-                </button>
+                {% if perfil_percentual < 100 %}
+                    <a href="{% url 'questionario' %}"
+                        class="flex items-center gap-2 px-6 py-2 border-2 border-white rounded-xl text-white font-poppins font-bold text-sm hover:bg-white hover:text-[#233e78] transition-all shadow-lg">
+                        Completar perfil
+                        <img src="{% static 'img/proximo.svg' %}" class="w-4 h-4" alt="">
+                    </a>
+                {% endif %}
             </div>
         </div>
 
+        {# Lado direito — cards de estatística #}
         <div class="relative z-10 p-10 flex gap-4 items-center justify-center lg:justify-end">
-            <div class="bg-[#1e293b]/80 dark:bg-gray-800/90 backdrop-blur-md w-24 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl">
-                <span class="text-white text-3xl font-bold">3</span>
-                <span class="text-white/70 text-[10px] font-poppins font-bold uppercase tracking-wider">Cursos Salvos</span>
+
+            <div class="bg-[#1e293b]/80 dark:bg-gray-800/90 backdrop-blur-md w-28 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl">
+                <span class="text-white text-3xl font-bold">{{ cursos_salvos }}</span>
+                <span class="text-white/70 text-[10px] font-poppins font-bold uppercase tracking-wider text-center px-2">Cursos Favoritados</span>
             </div>
-            <div class="bg-[#1e293b]/80 dark:bg-gray-800/90 backdrop-blur-md w-24 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl">
-                <span class="text-white text-3xl font-bold">4</span>
-                <span class="text-white/70 text-[10px] font-poppins font-bold uppercase tracking-wider">Áreas</span>
-            </div>
-                        <div class="bg-[#1e293b]/80 dark:bg-gray-800/90 backdrop-blur-md w-24 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl">
-                <span class="text-white text-3xl font-bold">12</span>
-                <span class="text-white/70 text-[10px] font-poppins font-bold uppercase tracking-wider">Dias de acesso</span>
-            </div>
+
+            <a href="{% url 'favoritos' %}"
+                class="bg-[#1e293b]/80 dark:bg-gray-800/90 backdrop-blur-md w-28 h-24 rounded-2xl flex flex-col items-center justify-center shadow-xl hover:bg-[#233e78]/80 transition-colors">
+                <img src="{% static 'img/icons/icon_favorito.png' %}" class="w-7 h-7 mb-1" alt="">
+                <span class="text-white/70 text-[10px] font-poppins font-bold uppercase tracking-wider text-center px-2">Meus Favoritos</span>
+            </a>
+
         </div>
     </section>
 
-    {# CURSOS RECOMENDADOS #}
+    {# ── CURSOS RECOMENDADOS ── #}
     <section>
-        <h2 class="text-2xl font-bold font-poppins text-white dark:text-white mb-6">Cursos Recomendados</h2>
-        <div class="grid grid-cols-1 gap-6">
+        <h2 class="text-2xl font-bold font-poppins text-white mb-6">
+            Cursos Recomendados
+        </h2>
 
+        <div class="grid grid-cols-1 gap-6">
             {% for curso in cursos_recomendados %}
             <div class="flex flex-col md:flex-row bg-[#81a8cb]/30 dark:bg-gray-800/80 backdrop-blur-sm rounded-[32px] overflow-hidden border border-white/20 dark:border-white/10 shadow-2xl">
 
                 {# Imagem do curso #}
                 <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
                     {% if curso.icone %}
-                        <img src="{{ curso.icone.url }}" class="w-full h-full object-cover" alt="{{ curso.nome }}">
+                        <img src="{{ curso.icone.url }}"
+                            class="w-full h-full object-cover"
+                            alt="{{ curso.nome }}"
+                            loading="lazy">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30" alt="">
+                        </div>
                     {% endif %}
                 </div>
 
                 {# Conteúdo do card #}
                 <div class="flex-1 min-w-0 p-8 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-white dark:text-white text-2xl font-bold font-poppins mb-1">{{ curso.nome }}</h3>
-                        <p class="text-white/80 dark:text-white/60 font-poppins font-medium">{{ curso.area }}</p>
-                        <p class="text-white/70 dark:text-white/50 font-poppins text-sm mt-2">{{ curso.descricao }}</p>
+                        <h3 class="text-white text-2xl font-bold font-poppins mb-1">
+                            {{ curso.nome }}
+                        </h3>
+                        <p class="text-white/80 font-poppins font-medium">{{ curso.area }}</p>
+                        <p class="text-white/70 font-poppins text-sm mt-2">{{ curso.descricao }}</p>
                     </div>
 
                     <div class="flex justify-between items-center mt-6 gap-4">
 
-                        {# ESTRELAS #}
+                        {# ── ESTRELAS ── #}
                         <div class="flex items-center gap-1 flex-shrink-0">
-
-                            {# Posição 1 #}
-                            {% if curso.avaliacao >= 1 %}
-                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
-                            {% elif curso.avaliacao >= 0.5 %}
-                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
-                            {% else %}
-                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
-                            {% endif %}
-
-                            {# Posição 2 #}
-                            {% if curso.avaliacao >= 2 %}
-                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
-                            {% elif curso.avaliacao >= 1.5 %}
-                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
-                            {% else %}
-                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
-                            {% endif %}
-
-                            {# Posição 3 #}
-                            {% if curso.avaliacao >= 3 %}
-                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
-                            {% elif curso.avaliacao >= 2.5 %}
-                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
-                            {% else %}
-                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
-                            {% endif %}
-
-                            {# Posição 4 #}
-                            {% if curso.avaliacao >= 4 %}
-                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
-                            {% elif curso.avaliacao >= 3.5 %}
-                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
-                            {% else %}
-                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
-                            {% endif %}
-
-                            {# Posição 5 #}
-                            {% if curso.avaliacao >= 5 %}
-                                <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela">
-                            {% elif curso.avaliacao >= 4.5 %}
-                                <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
-                            {% else %}
-                                <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
-                            {% endif %}
-
+                            {% for i in "12345" %}
+                                {% with i_int=forloop.counter %}
+                                    {% if curso.avaliacao >= i_int %}
+                                        <img src="{% static 'img/icons/estrela_cheia.svg' %}" class="w-5 h-5" alt="estrela cheia">
+                                    {% elif curso.avaliacao >= i_int|add:"-1"|add:"0.5" %}
+                                        <img src="{% static 'img/icons/estrela_meia.svg' %}" class="w-5 h-5" alt="meia estrela">
+                                    {% else %}
+                                        <img src="{% static 'img/icons/estrela_vazia.svg' %}" class="w-5 h-5" alt="estrela vazia">
+                                    {% endif %}
+                                {% endwith %}
+                            {% endfor %}
                             <span class="text-white/70 font-poppins text-sm ml-1">({{ curso.avaliacao }})</span>
                         </div>
 
-                        {# CORAÇÃO — coracao.svg = vazio | coracao_vermelho.svg = favoritado #}
+                        {# ── BOTÃO FAVORITAR ── #}
                         <button
                             class="btn-favoritar hover:scale-110 transition-transform flex-shrink-0"
                             data-curso-id="{{ curso.id }}"
                             data-favoritado="{% if curso.id in favoritos_ids %}true{% else %}false{% endif %}"
-                            aria-label="Favoritar curso"
+                            aria-label="{% if curso.id in favoritos_ids %}Remover dos favoritos{% else %}Adicionar aos favoritos{% endif %}"
                         >
                             <img
                                 src="{% if curso.id in favoritos_ids %}{% static 'img/icons/coracao_vermelho.svg' %}{% else %}{% static 'img/coracao.svg' %}{% endif %}"
                                 class="w-8 h-8 icone-coracao"
-                                alt="Favoritar"
+                                alt=""
                             >
                         </button>
 
                     </div>
                 </div>
             </div>
-            {% empty %}
-                <p class="text-white font-poppins">Nenhum curso disponível no momento.</p>
-            {% endfor %}
 
+            {% empty %}
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30 mb-4" alt="">
+                    <p class="text-white/70 font-poppins text-lg">Nenhum curso disponível no momento.</p>
+                </div>
+            {% endfor %}
         </div>
     </section>
 
 </div>
 
-{# JAVASCRIPT DO CORAÇÃO #}
+{# ── JAVASCRIPT DO FAVORITAR ── #}
 <script>
-    const urlBase = "{% url 'favoritar_curso_ajax' 0 %}".replace('/0/', '/');
+    const urlBase         = "{% url 'favoritar_curso_ajax' 0 %}".replace('/0/', '/');
     const coracaoVazio    = "{% static 'img/coracao.svg' %}";
     const coracaoVermelho = "{% static 'img/icons/coracao_vermelho.svg' %}";
 
@@ -186,6 +180,9 @@
 
     document.querySelectorAll('.btn-favoritar').forEach(function(btn) {
         btn.addEventListener('click', function() {
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+
             const cursoId = this.dataset.cursoId;
             const icone   = this.querySelector('.icone-coracao');
 
@@ -198,12 +195,24 @@
                 if (data.favoritado) {
                     icone.src = coracaoVermelho;
                     btn.dataset.favoritado = 'true';
+                    btn.setAttribute('aria-label', 'Remover dos favoritos');
                 } else {
                     icone.src = coracaoVazio;
                     btn.dataset.favoritado = 'false';
+                    btn.setAttribute('aria-label', 'Adicionar aos favoritos');
                 }
             })
-            .catch(err => console.error('Erro ao favoritar:', err));
+            .catch(() => {
+                const msg = document.createElement('p');
+                msg.textContent = 'Erro ao favoritar. Tente novamente.';
+                msg.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:#ef4444;color:#fff;padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;z-index:9999';
+                document.body.appendChild(msg);
+                setTimeout(() => msg.remove(), 3000);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
         });
     });
 </script>

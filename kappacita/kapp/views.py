@@ -133,15 +133,36 @@ def sair(request):
 @login_required
 def homepage(request):
     cursos_recomendados = Curso.objects.order_by('-avaliacao')[:6]
+
     favoritos_ids = list(
         Favorito.objects.filter(usuario=request.user)
         .values_list('curso_id', flat=True)
     )
+
+    cursos_salvos = Favorito.objects.filter(
+        usuario=request.user, curso__isnull=False
+    ).count()
+
+    try:
+        resposta = RespostaQuestionario.objects.get(usuario=request.user)
+        campos = [
+            resposta.interesses,
+            resposta.habilidades,
+            resposta.valores_carreira,
+            resposta.estilo_trabalho,
+            resposta.escolaridade,
+        ]
+        preenchidos = sum(1 for c in campos if c)
+        perfil_percentual = int((preenchidos / len(campos)) * 100)
+    except RespostaQuestionario.DoesNotExist:
+        perfil_percentual = 0
+
     return render(request, 'homepage.html', {
         'cursos_recomendados': cursos_recomendados,
         'favoritos_ids':       favoritos_ids,
+        'cursos_salvos':       cursos_salvos,
+        'perfil_percentual':   perfil_percentual,
     })
-
 
 # ── FAVORITAR CURSO (AJAX toggle) ─────────────────────────────────────────────
 

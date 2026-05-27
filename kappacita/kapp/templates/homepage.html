@@ -87,19 +87,25 @@
             {% for curso in cursos_recomendados %}
             <div class="flex flex-col md:flex-row bg-[#81a8cb]/30 dark:bg-gray-800/80 backdrop-blur-sm rounded-[32px] overflow-hidden border border-white/20 dark:border-white/10 shadow-2xl">
 
-                {# Imagem do curso #}
-            <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
-                {% if curso.area.imagem %}
-                    <img src="{{ curso.area.imagem.url }}"
-                    class="w-full h-full object-cover"
-                    alt="{{ curso.nome }}"
-                    loading="lazy">
-                {% else %}
-                    <div class="w-full h-full flex items-center justify-center">
-                        <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30" alt="">
-                    </div>
-                {% endif %}
+        {# Imagem do curso #}
+        <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
+            {% if curso.icone %}
+                <img src="{{ curso.icone.url }}"
+                class="w-full h-full object-cover object-center"
+                alt="{{ curso.nome }}"
+                loading="lazy">
+            {% elif curso.area.imagem %}
+                <img src="{{ curso.area.imagem.url }}"
+                class="w-full h-full object-cover object-center"
+                alt="{{ curso.nome }}"
+                loading="lazy">
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                    <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30" alt="Logo Kappacita">
+                </div>
             </div>
+    {% endif %}
+</div>
 
                 {# Conteúdo do card #}
                 <div class="flex-1 min-w-0 p-8 flex flex-col justify-between">

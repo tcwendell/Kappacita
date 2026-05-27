@@ -89,20 +89,14 @@
 
         {# Imagem do curso #}
         <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
-            {% if curso.icone %}
-                <img src="{{ curso.icone.url }}"
-                class="w-full h-full object-cover object-center"
-                alt="{{ curso.nome }}"
-                loading="lazy">
-            {% elif curso.area.imagem %}
+            {% if curso.area.imagem %}
                 <img src="{{ curso.area.imagem.url }}"
                 class="w-full h-full object-cover object-center"
-                alt="{{ curso.nome }}"
+                alt="{{ curso.area }}"
                 loading="lazy">
             {% else %}
-                <div class="w-full h-full flex items-center justify-center">
-                    <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30" alt="Logo Kappacita">
-                </div>
+            <div class="w-full h-full flex items-center justify-center">
+                <img src="{% static 'img/logos/kappacitalogo.png' %}" class="w-16 h-16 opacity-30" alt="Logo Kappacita">
             </div>
             {% endif %}
         </div>

@@ -194,6 +194,8 @@ def cursos(request):
         qs = qs.filter(nome__icontains=q)
     if area_id:
         qs = qs.filter(area_id=area_id)
+        
+    qs = qs.order_by('nome')
 
     paginator        = Paginator(qs, 9)
     cursos_paginados = paginator.get_page(request.GET.get('page', 1))
@@ -205,7 +207,7 @@ def cursos(request):
 
     return render(request, 'cursos.html', {
         'cursos':       cursos_paginados,
-        'areas':        AreaAtuacao.objects.all(),          # já ordenado por nome (Meta.ordering)
+        'areas':        AreaAtuacao.objects.all(),          
         'favoritos_ids': favoritos_ids,
         'area_ativa':   int(area_id) if area_id.isdigit() else None,
     })
@@ -234,6 +236,8 @@ def profissoes(request):
         qs = qs.filter(nome__icontains=q)
     if area_id:
         qs = qs.filter(area_id=area_id)
+
+    qs = qs.order_by('nome')
 
     paginator            = Paginator(qs, 9)
     profissoes_paginadas = paginator.get_page(request.GET.get('page', 1))

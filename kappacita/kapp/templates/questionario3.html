@@ -4,9 +4,22 @@
 {% block title %}Kappacita - Importância na Carreira{% endblock %}
 
 {% block body %}
-<main class="flex-grow flex items-center justify-center p-4 lg:p-8 min-h-screen bg-[#81a8cb]">
+<main class="relative flex-grow flex items-center justify-center p-4 lg:p-8 min-h-screen bg-[#81a8cb] overflow-hidden">
+
+  <!-- KappaBot flutuando na área azul -->
+  <div class="absolute bottom-8 left-8 flex flex-col items-center gap-2 pointer-events-none select-none animate-float z-10">
+    <img
+      src="{% static 'img/kappabot.png' %}"
+      alt="KappaBot"
+      class="w-28 lg:w-36 drop-shadow-xl"
+    >
+    <span class="text-white font-bold text-sm tracking-wide drop-shadow">KappaBot</span>
+  </div>
+
+  <!-- Card principal -->
   <div class="w-full max-w-[1013px] rounded-[18px] p-6 lg:p-12 flex flex-col items-center bg-white/95 backdrop-blur-md shadow-2xl">
 
+    <!-- Barra de progresso -->
     <div class="flex flex-col items-center gap-3 mb-8 w-full">
       <span class="text-sm text-[#565d6d]">Etapa 3 de 5</span>
       <div class="flex gap-2 w-full max-w-[450px]">
@@ -18,6 +31,7 @@
       </div>
     </div>
 
+    <!-- Título -->
     <div class="text-center mb-10">
       <h1 class="text-2xl lg:text-[32px] leading-tight text-[#233e78] mb-4 font-bold">
         O que é mais importante para você em uma carreira?
@@ -27,13 +41,21 @@
       </p>
     </div>
 
+    <!-- Formulário -->
     <form method="POST" class="w-full flex flex-col items-center gap-8">
       {% csrf_token %}
 
+      <!-- Opções -->
       <div class="grid grid-cols-2 gap-6 w-full max-w-[700px]">
         {% for valor, label in resposta.VALORES_CHOICES %}
         <label class="opcao-btn cursor-pointer">
-          <input type="checkbox" name="valores_carreira" value="{{ valor }}" class="hidden opcao-check" {% if valor in selecionados %}checked{% endif %}>
+          <input
+            type="checkbox"
+            name="valores_carreira"
+            value="{{ valor }}"
+            class="hidden opcao-check"
+            {% if valor in selecionados %}checked{% endif %}
+          >
           <div class="h-[107px] w-full rounded-[16px] shadow-lg text-sm px-6 flex items-center justify-center text-center transition-all select-none opcao-visual bg-[#5a91bd] text-white hover:brightness-110 active:scale-95">
             {{ label }}
           </div>
@@ -41,28 +63,40 @@
         {% endfor %}
       </div>
 
+      <!-- Navegação -->
       <div class="w-full flex justify-between items-center">
-        <a href="{% url 'questionario2' %}" class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#233e78] transition-colors group">
+        <a
+          href="{% url 'questionario2' %}"
+          class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#233e78] transition-colors group"
+        >
           <iconify-icon icon="lucide:arrow-left" class="group-hover:-translate-x-1 transition-transform"></iconify-icon>
           Anterior
         </a>
-        <button type="submit" class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group">
+        <button
+          type="submit"
+          class="bg-[#233e78] text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-[#1a2e5a] transition-all flex items-center gap-2 group"
+        >
           Próxima
           <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
         </button>
       </div>
     </form>
+
   </div>
 </main>
 
 <script>
   const MAX = 3;
 
-  document.querySelectorAll('.opcao-check').forEach(function(input) {
+  document.querySelectorAll('.opcao-check').forEach(function (input) {
     if (input.checked) aplicarSelecionado(input, true);
-    input.addEventListener('change', function() {
+
+    input.addEventListener('change', function () {
       var total = document.querySelectorAll('.opcao-check:checked').length;
-      if (total > MAX) { input.checked = false; return; }
+      if (total > MAX) {
+        input.checked = false;
+        return;
+      }
       aplicarSelecionado(input, input.checked);
     });
   });

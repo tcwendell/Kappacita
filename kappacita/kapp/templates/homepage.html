@@ -10,13 +10,13 @@
 
     {# ── BANNER DE BOAS-VINDAS ── #}
     <section class="relative rounded-[32px] mb-12 min-h-[250px] flex flex-col lg:flex-row overflow-hidden shadow-2xl border border-white/20 dark:border-white/10"
-             style="background-color: #1e3a5f;">
+            style="background-color: #1e3a5f;">
 
         <div class="absolute inset-0 z-0">
             <img src="{% static 'img/fundo_inicio.jpeg' %}"
-                 class="w-full h-full object-cover"
-                 alt=""
-                 onerror="this.style.display='none'">
+                class="w-full h-full object-cover"
+                alt=""
+                onerror="this.style.display='none'">
             <div class="absolute inset-0 bg-[#81a8cb]/40 dark:bg-gray-900/70 mix-blend-multiply"></div>
         </div>
 
@@ -90,7 +90,7 @@
                 {# Imagem do curso #}
                 <div class="w-full md:w-80 h-52 bg-[#1e293b]/50 flex-shrink-0">
                     {% if curso.icone %}
-                        <img src="{{ curso.icone.url }}"
+                        <img src="{{ curso.AreaAtuacao.url }}"
                             class="w-full h-full object-cover"
                             alt="{{ curso.nome }}"
                             loading="lazy">

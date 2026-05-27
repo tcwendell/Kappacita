@@ -18,8 +18,8 @@
   id="drawer"
   class="fixed top-0 right-0 h-full w-80 max-w-[90vw] z-50 flex flex-col translate-x-full transition-transform duration-300 ease-in-out"
   style="background: linear-gradient(160deg, #1a3a5c 0%, #0f2340 100%);
-         border-left: 1px solid rgba(255,255,255,0.12);
-         box-shadow: -8px 0 40px rgba(0,0,0,0.4);"
+        border-left: 1px solid rgba(255,255,255,0.12);
+       box-shadow: -8px 0 40px rgba(0,0,0,0.4);"
 >
 
   {% comment %} Cabeçalho do drawer {% endcomment %}
@@ -34,7 +34,7 @@
     <button
       onclick="fecharDrawer()"
       class="w-8 h-8 flex items-center justify-center rounded-full text-white/60
-             hover:text-white hover:bg-white/10 transition-all text-xl leading-none"
+            hover:text-white hover:bg-white/10 transition-all text-xl leading-none"
     >
       ×
     </button>
@@ -49,8 +49,8 @@
         placeholder="Buscar área..."
         oninput="filtrarDrawer(this.value)"
         class="w-full bg-white/10 text-white placeholder-white/40 font-poppins text-sm
-               rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
-               focus:border-white/30 transition-colors"
+              rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
+              focus:border-white/30 transition-colors"
       >
       <svg
         class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
@@ -69,10 +69,10 @@
     <a
       href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all font-poppins text-sm font-medium
-             {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
+            {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
     >
       <span class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-                   {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
+                  {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
@@ -92,15 +92,15 @@
         href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
         data-nome="{{ area.nome|lower }}"
         class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all font-poppins text-sm font-medium
-               {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
+              {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
       >
         <span class="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0
-                     {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
+                    {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
           {% if area.imagem %}
             <img src="{{ area.imagem.url }}" class="w-full h-full object-cover" alt="{{ area.nome }}">
           {% else %}
             <span class="w-full h-full flex items-center justify-center font-bold text-xs font-poppins text-white
-                         {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/10{% endif %}">
+                        {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/10{% endif %}">
               {{ area.nome|slice:":1"|upper }}
             </span>
           {% endif %}
@@ -126,8 +126,8 @@
       <a
         href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
         class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
-               bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
-               font-poppins text-sm transition-all"
+              bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
+              font-poppins text-sm transition-all"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -140,9 +140,7 @@
 </aside>
 
 
-{% comment %} ════════════════════════════════════════
-    Conteúdo principal
-════════════════════════════════════════ {% endcomment %}
+{% comment %} Conteúdo principal{% endcomment %}
 <div class="p-4 lg:p-8 space-y-8 bg-[#5b91bc]/75 dark:bg-gray-950 min-h-screen transition-colors">
 
   <h1 class="text-4xl lg:text-5xl text-white font-bold font-poppins">Explorar Cursos</h1>
@@ -291,14 +289,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
     {% for curso in cursos %}
-      <div
-        class="rounded-2xl p-5 flex flex-col gap-3 relative transition-all duration-200
-               hover:bg-white/20 dark:hover:bg-white/5 hover:-translate-y-0.5 hover:shadow-xl"
-        style="background: rgba(255,255,255,0.15);
-               backdrop-filter: blur(12px);
-               -webkit-backdrop-filter: blur(12px);
-               border: 1px solid rgba(255,255,255,0.2);"
-      >
+      <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative transition-all">
 
         {% comment %} Cabeçalho do card {% endcomment %}
         <div class="flex justify-between items-start">
@@ -427,6 +418,26 @@
 
 
 <style>
+  .profession-card {
+    background-color: rgba(129, 168, 203, 0.8);
+    border: 1px solid #1065a6;
+    backdrop-filter: blur(4px);
+  }
+  .profession-card:hover {
+    background-color: rgba(129, 168, 203, 1);
+    transform: translateY(-2px);
+  }
+  .dark .profession-card {
+    background-color: rgba(30, 41, 59, 0.8);
+    border-color: #334155;
+  }
+  .dark .profession-card:hover {
+    background-color: rgba(30, 41, 59, 1);
+  }
+  .card-shadow {
+    box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12),
+                0px 17px 35px 0px rgba(23,26,31,0.24);
+                
   /* ── Animação das setas do carrossel ── */
   .seta-carrossel {
     opacity: 0;

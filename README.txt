@@ -1,1 +1,1 @@
-Kappacita - Sistema de Apoio à Decisão Profissional e Gestão de Planos de Carreira
+Kappacita - Sistema de Apoio à Decisão Profissional e Gestão de Planos de Carreira Profissional

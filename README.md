@@ -46,7 +46,7 @@ KAPPACITA/
 ├── categoriascursos/          # Aplicação responsável pelas categorias de cursos
 ├── categoriasprof/            # Aplicação responsável pelas categorias de professores
 ├── cursos/                    # Aplicação responsável pelo gerenciamento de ícones dos cursos
-├── imagens/                   # Imagens utilizadas no sistema
+├── imagens/                   # Imagens das telas para o README.md 
 │
 ├── kapp/                      # Aplicação principal do projeto
 │   │
@@ -57,7 +57,6 @@ KAPPACITA/
 │   ├── templates/             # Templates HTML do sistema
 │   │   ├── socialaccount/
 │   │   │   └── signup.html
-│   │   ├── artigos.html
 │   │   ├── base.html
 │   │   ├── cadastrarArea.html
 │   │   ├── cadastrarFuncionalidades.html
@@ -66,14 +65,10 @@ KAPPACITA/
 │   │   ├── favoritos.html
 │   │   ├── header.html
 │   │   ├── homepage.html
-│   │   ├── idiomas.html
 │   │   ├── kappabot.html
 │   │   ├── loginArea.html
 │   │   ├── loginFuncionalidades.html
-│   │   ├── meuprogresso.html
 │   │   ├── navbar.html
-│   │   ├── notificacoes.html
-│   │   ├── privacidade.html
 │   │   ├── profissoes.html
 │   │   ├── questionario.html
 │   │   ├── questionario2.html

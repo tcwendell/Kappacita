@@ -7,8 +7,10 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.conf import settings
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import json
+
 
 from .models import (
     AreaAtuacao, Curso, Profissao, Favorito, Perfil,
@@ -448,15 +450,16 @@ def kappabot(request):
         'questionario_concluido': questionario_concluido,
     })
 
+# ─── FUNÇÃO KAPPABOT_CHAT SUBSTITUÍDA ────────────────────────────────────────
 
 @login_required
 @require_POST
 def kappabot_chat(request):
     """Endpoint AJAX que recebe a mensagem do usuário e retorna a resposta do Gemini."""
     try:
-        data           = json.loads(request.body)
-        mensagem_user  = data.get('mensagem', '').strip()
-        nova_sessao    = data.get('nova_sessao', False)
+        data          = json.loads(request.body)
+        mensagem_user = data.get('mensagem', '').strip()
+        nova_sessao   = data.get('nova_sessao', False)
     except (json.JSONDecodeError, KeyError):
         return JsonResponse({'erro': 'Requisição inválida.'}, status=400)
 
@@ -485,26 +488,36 @@ def kappabot_chat(request):
     # Salva mensagem do usuário
     MensagemChat.objects.create(sessao=sessao, role='user', conteudo=mensagem_user)
 
-    # Monta histórico para o Gemini (últimas 20 mensagens para não estourar contexto)
-    historico_db = sessao.mensagens.order_by('criado_em')[:-1]  # todas menos a que acabou de salvar
-    historico_db = historico_db[max(0, historico_db.count() - 20):]
+    # Monta histórico para o Gemini (últimas 20 mensagens, excluindo a atual)
+    historico_db = list(sessao.mensagens.order_by('criado_em')[:-1])
+    historico_db = historico_db[max(0, len(historico_db) - 20):]
 
     historico_gemini = []
     for msg in historico_db:
         role = 'user' if msg.role == 'user' else 'model'
-        historico_gemini.append({'role': role, 'parts': [msg.conteudo]})
+        historico_gemini.append(
+            types.Content(role=role, parts=[types.Part(text=msg.conteudo)])
+        )
 
     # Configura e chama o Gemini
     try:
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel(
-            model_name='gemini-1.5-flash',
-            system_instruction=_montar_system_prompt(request.user, resposta_quest),
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+
+        system_prompt = _montar_system_prompt(request.user, resposta_quest)
+
+        resposta_gemini = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=historico_gemini + [
+                types.Content(role='user', parts=[types.Part(text=mensagem_user)])
+            ],
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                max_output_tokens=1024,
+                temperature=0.7,
+            ),
         )
 
-        chat    = model.start_chat(history=historico_gemini)
-        response = chat.send_message(mensagem_user)
-        resposta_bot = response.text
+        resposta_bot = resposta_gemini.text
 
     except Exception as e:
         return JsonResponse({'erro': f'Erro ao contatar o KappaBot: {str(e)}'}, status=500)
@@ -514,8 +527,8 @@ def kappabot_chat(request):
     limite.registrar_envio()
 
     return JsonResponse({
-        'resposta':   resposta_bot,
-        'sessao_id':  sessao.id,
+        'resposta':            resposta_bot,
+        'sessao_id':           sessao.id,
         'mensagens_restantes': limite.LIMITE_DIARIO - limite.mensagens_hoje,
     })
 

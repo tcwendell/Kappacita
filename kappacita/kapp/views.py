@@ -10,7 +10,7 @@ from django.conf import settings
 from google import genai
 from google.genai import types
 import json
-
+import os
 
 from .models import (
     AreaAtuacao, Curso, Profissao, Favorito, Perfil,
@@ -503,7 +503,7 @@ def kappabot_chat(request):
 
     # Configura e chama o Gemini
     try:
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        client = genai.Client(api_key=os.environ.get('API_KEY', ''))
 
         system_prompt = _montar_system_prompt(request.user, resposta_quest)
 

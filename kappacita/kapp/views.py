@@ -488,9 +488,11 @@ def kappabot_chat(request):
     # Salva mensagem do usuário
     MensagemChat.objects.create(sessao=sessao, role='user', conteudo=mensagem_user)
 
-    # Monta histórico para o Gemini (últimas 20 mensagens, excluindo a atual)
-    historico_db = list(sessao.mensagens.order_by('criado_em')[:-1])
+
+    total = sessao.mensagens.count() - 1  # exclui a mensagem que acabou de salvar
+    historico_db = list(sessao.mensagens.order_by('criado_em')[:total])
     historico_db = historico_db[max(0, len(historico_db) - 20):]
+
 
     historico_gemini = []
     for msg in historico_db:

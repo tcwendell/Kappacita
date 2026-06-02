@@ -1,52 +1,33 @@
 # PRATICA +
-
 Sistema web de gestão de carreira com login e cadastro de usuários, usando HTML, CSS, JavaScript e Python (Django).
-
 # 🎓 Kappacita - Sistema de Apoio à Decisão Profissional e Gestão de Planos de Carreira Profissional
-
 
 
 Este projeto é uma plataforma  de apoio e gestão profissional, com um agente virtual interativo, desenvolvido com páginas de login, cadastro, área de curso, área de profissões e KappaBot (Agente Virtual).
 
-
+---
 
 # Imagens
 
-### [Tela de Login]
+[Tela de Login]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/login.png/>
 
-![Tela de Login](imagens/login.png)
+[Tela de Cadastro]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/cadastro.png/>
 
-### [Tela de Cadastro]
+[Tela de Inicio]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/inicio.jpeg/>
 
-![Tela de Cadastro](imagens/cadastro.png)
+[Tela de Cursos]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/cursos.jpeg/>
 
-### [Tela Inicial]
+[Tela de Profissões]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/profissoes.jpeg/>
 
-![Tela Inicial](imagens/inicio.jpeg)
+[Tela de Favoritos]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/favoritos.jpeg/>
 
-### [Tela de Cursos]
+[Tela do Questionario]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/questionario.jpeg/>
 
-![Tela Cursos](imagens/cursos.jpeg)
-
-### [Tela de Profissões]
-
-![Tela Profissões](imagens/profissoes.jpeg)
-
-### [Tela de Favoritos]
-
-![Tela Favoritos](imagens/favoritos.jpeg)
-
-### [Tela de Questionário]
-
-![Tela Questionário](imagens/questionario.jpeg)
-
-### [Tela do KappaBot]
-
-![Tela KappaBot](imagens/kappabot.png)
+[Tela do KappaBot]<img width="1920" height="1080" alt="tela_inicial" src=kappacita/imagens/kappabot.png/>
 
 
 
-# 🚀 Funcionalidades
+## 🚀 Funcionalidades
 
 - Cadastro e login de usuários
 - Página inicial com menu lateral
@@ -55,8 +36,9 @@ Este projeto é uma plataforma  de apoio e gestão profissional, com um agente v
 - Interações com o agente virtual KappaBot
 - Possibilidade de favoritar ações
 
+---
 
-# 🧩 Estrutura do Projeto
+## 🧩 Estrutura do Projeto
 
 ```text
 KAPPACITA/
@@ -122,18 +104,18 @@ KAPPACITA/
 └── requirements.txt           # Dependências do sistema
 ```
 
+---
 
+## 🛠️ Tecnologias Utilizadas
 
-# 🛠️ Tecnologias Utilizadas
+- **HTML5**
+- **CSS3**
+- **JavaScript (ES6)**
+- **Python (Django)**
 
-- HTML5
-- CSS3
-- JavaScript (ES6)
-- Python (Django)
+---
 
-
-
-# ⚙️ Como Executar o Projeto
+## ⚙️ Como Executar o Projeto
 
 1. Clone o repositório:
 
@@ -171,8 +153,9 @@ python manage.py runserver
 http://127.0.0.1:8000/
 ```
 
+---
 
-# 👨‍💻 Autor
+## 👨‍💻 Autores
 
 - [Daniele Oliveira da Cruz](https://github.com/Daniielecruz)
 - [Diego Victor Medeiros Marialva](https://github.com/Gokugamerbr1777)
@@ -181,13 +164,12 @@ http://127.0.0.1:8000/
 - [Tacio Wendell de Andrade Loiola](https://github.com/tcwendell)
 
 
-
-# 👩‍🏫 Orientadora
+## 👩‍🏫 Orientadora
 
 - [Luana Leal](https://github.com/ProfaLuanaLeal)
 
-
+---
 
 💼 Projeto desenvolvido para estudos e prática em desenvolvimento web.
 
-
+---

@@ -1,4 +1,4 @@
-# PRATICA +
+# KAPPACITA
 Sistema web de gestão de carreira com login e cadastro de usuários, usando HTML, CSS, JavaScript e Python (Django).
 # 🎓 Kappacita - Sistema de Apoio à Decisão Profissional e Gestão de Planos de Carreira Profissional
 

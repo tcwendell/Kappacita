@@ -508,7 +508,7 @@ def kappabot_chat(request):
         system_prompt = _montar_system_prompt(request.user, resposta_quest)
 
         resposta_gemini = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-1.5-flash-latest',
             contents=historico_gemini + [
                 types.Content(role='user', parts=[types.Part(text=mensagem_user)])
             ],

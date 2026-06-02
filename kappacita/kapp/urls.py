@@ -8,6 +8,7 @@ from .views import (
     profissoes, favoritar_profissao, favoritos,
     desfavoritar_curso, desfavoritar_profissao, meuprogresso,
     configuracoes, privacidade, notificacoes, idiomas, excluir_conta,
+    kappabot_chat, kappabot_nova_sessao
 )
 
 urlpatterns = [
@@ -38,4 +39,7 @@ urlpatterns = [
     path('notificacoes/', notificacoes, name='notificacoes'),
     path('idiomas/', idiomas, name='idiomas'),
     path('excluir-conta/', excluir_conta, name='excluir_conta'),
+    path('kappabot/chat/', kappabot_chat, name='kappabot_chat'),
+    path('kappabot/nova-sessao/', kappabot_nova_sessao, name='kappabot_nova_sessao'),
+    
 ]

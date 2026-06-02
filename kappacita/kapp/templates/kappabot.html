@@ -25,63 +25,231 @@
     border-color: #334155;
   }
   .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Animação de digitação (três pontinhos) */
+  .typing-indicator span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #233e78;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40%           { transform: translateY(-8px); }
+  }
+
+  /* Formatação do texto do bot */
+  .msg-bot p  { margin-bottom: 0.5rem; }
+  .msg-bot ul { list-style: disc; padding-left: 1.2rem; margin-bottom: 0.5rem; }
+  .msg-bot strong { font-weight: 700; }
 </style>
 
 <div class="flex-1 p-4 lg:p-10 flex items-center justify-center overflow-hidden bg-[#8EC2ED] dark:bg-gray-950 min-h-screen transition-colors">
   <div class="glass-panel w-full max-w-6xl h-[85vh] rounded-[32px] shadow-2xl flex flex-col overflow-hidden">
 
-    <div class="pt-10 pb-2 text-center shrink-0">
+    <div class="pt-10 pb-2 text-center shrink-0 flex items-center justify-center gap-4 px-8">
       <h1 class="text-2xl lg:text-4xl font-bold font-poppins text-[#233e78] dark:text-white">Como Posso Ajudar Você?</h1>
+      <!-- Botão nova conversa -->
+      <button id="btn-nova-sessao" title="Nova conversa"
+        class="ml-auto p-2.5 rounded-xl bg-white/40 hover:bg-white/70 text-[#233e78] transition-all"
+        onclick="novaSessao()">
+        <iconify-icon icon="lucide:refresh-ccw" width="20"></iconify-icon>
+      </button>
     </div>
 
     <div class="flex-1 flex overflow-hidden px-8 pb-10 gap-8">
+
+      <!-- Lado esquerdo: imagem do bot -->
       <div class="hidden lg:flex w-1/3 flex-col justify-center items-center">
         <div class="flex flex-col items-center translate-y-8">
-          <img src="{% static 'img/kappabot.png' %}" alt="KappaBot" class="w-120 h-auto object-contain drop-shadow-2xl">
+          <img src="{% static 'img/kappabot.png' %}" alt="KappaBot"
+            class="w-120 h-auto object-contain drop-shadow-2xl">
           <h3 class="text-3xl font-bold mt-6 text-[#233e78] dark:text-white font-poppins">KappaBot</h3>
+
+          <!-- Contador de mensagens restantes -->
+          <p id="contador-msgs" class="text-sm text-[#233e78]/70 dark:text-white/50 mt-3"></p>
         </div>
       </div>
 
+      <!-- Lado direito: chat -->
       <div class="flex-1 flex flex-col overflow-hidden">
         <div class="chat-container-inner w-full h-full rounded-3xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
-          <div class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+
+          <!-- Área de mensagens -->
+          <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+
+            <!-- Mensagem de boas-vindas fixa -->
             <div class="flex justify-start">
               <div class="bg-white dark:bg-gray-800 px-6 py-3 rounded-[20px] shadow max-w-[85%]">
-                <p class="text-[#233e78] dark:text-white text-lg font-poppins">Olá! Como você está se sentindo hoje em relação à sua carreira?</p>
+                <p class="text-[#233e78] dark:text-white text-lg font-poppins">
+                  Olá, <strong>{{ request.user.first_name|default:request.user.username }}</strong>! 👋
+                  Sou o KappaBot, seu guia de orientação vocacional.
+                  {% if questionario_concluido %}
+                    Já analisei suas respostas do questionário. Me diga <strong>"me recomende uma área"</strong> para começar!
+                  {% else %}
+                    Para uma recomendação personalizada, complete o
+                    <a href="{% url 'questionario' %}" class="underline font-bold">questionário vocacional</a> primeiro.
+                    Mas pode me perguntar o que quiser!
+                  {% endif %}
+                </p>
               </div>
             </div>
-            <div class="flex justify-end">
-              <div class="bg-[#233e78] dark:bg-blue-700 px-6 py-3 rounded-[20px] shadow-md max-w-[85%]">
-                <p class="text-white text-lg font-poppins">Estou um pouco confusa sobre qual caminho seguir.</p>
-              </div>
-            </div>
-            <div class="flex justify-start">
-              <div class="bg-white dark:bg-gray-800 px-6 py-3 rounded-[20px] shadow max-w-[85%]">
-                <p class="text-[#233e78] dark:text-white text-lg font-poppins">Não se preocupe, estou aqui para te guiar!</p>
-              </div>
-            </div>
+
+            <!-- Histórico de mensagens salvas -->
+            {% for msg in mensagens %}
+              {% if msg.role == 'user' %}
+                <div class="flex justify-end">
+                  <div class="bg-[#233e78] dark:bg-blue-700 px-6 py-3 rounded-[20px] shadow-md max-w-[85%]">
+                    <p class="text-white text-base font-poppins">{{ msg.conteudo }}</p>
+                  </div>
+                </div>
+              {% else %}
+                <div class="flex justify-start">
+                  <div class="bg-white dark:bg-gray-800 px-6 py-3 rounded-[20px] shadow max-w-[85%] msg-bot">
+                    <div class="text-[#233e78] dark:text-white text-base font-poppins">{{ msg.conteudo|linebreaks }}</div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+
           </div>
 
+          <!-- Input de mensagem -->
           <div class="p-4 bg-white/30 dark:bg-gray-800/50 border-t border-white/20 dark:border-gray-700">
             <div class="bg-white dark:bg-gray-800 rounded-2xl flex items-center px-4 py-3 gap-3 shadow-lg">
-              <div class="flex items-center gap-1 border-r border-gray-100 dark:border-gray-700 pr-2">
-                <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-[#233e78] dark:text-white opacity-70">
-                  <iconify-icon icon="lucide:image" width="20"></iconify-icon>
-                </button>
-                <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-[#233e78] dark:text-white opacity-70">
-                  <iconify-icon icon="lucide:mic" width="20"></iconify-icon>
-                </button>
-              </div>
-              <input type="text" placeholder="Pergunte algo ao KappaBOT..."
-                class="flex-1 bg-transparent border-none outline-none text-base text-[#233e78] dark:text-white px-2 font-poppins placeholder-[#233e78]/50 dark:placeholder-white/40 focus:ring-0">
-              <button class="bg-[#233e78] dark:bg-blue-600 p-2.5 rounded-xl hover:bg-[#1a2e5a] dark:hover:bg-blue-700 transition-all text-white shadow-md">
+              <input id="input-mensagem" type="text"
+                placeholder="Pergunte algo ao KappaBOT..."
+                class="flex-1 bg-transparent border-none outline-none text-base text-[#233e78] dark:text-white px-2 font-poppins placeholder-[#233e78]/50 dark:placeholder-white/40 focus:ring-0"
+                onkeydown="if(event.key==='Enter') enviarMensagem()">
+              <button onclick="enviarMensagem()"
+                class="bg-[#233e78] dark:bg-blue-600 p-2.5 rounded-xl hover:bg-[#1a2e5a] dark:hover:bg-blue-700 transition-all text-white shadow-md">
                 <iconify-icon icon="lucide:send" width="20"></iconify-icon>
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  const chatMessages  = document.getElementById('chat-messages');
+  const inputMensagem = document.getElementById('input-mensagem');
+  const contadorEl    = document.getElementById('contador-msgs');
+  const csrfToken     = '{{ csrf_token }}';
+
+  // Rola para o final ao carregar
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  function adicionarMensagem(role, conteudo) {
+    const wrapper = document.createElement('div');
+
+    if (role === 'user') {
+      wrapper.className = 'flex justify-end';
+      wrapper.innerHTML = `
+        <div class="bg-[#233e78] dark:bg-blue-700 px-6 py-3 rounded-[20px] shadow-md max-w-[85%]">
+          <p class="text-white text-base font-poppins">${escapar(conteudo)}</p>
+        </div>`;
+    } else {
+      wrapper.className = 'flex justify-start';
+      // Converte quebras de linha em <br> para o bot
+      const html = escapar(conteudo).replace(/\n/g, '<br>');
+      wrapper.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 px-6 py-3 rounded-[20px] shadow max-w-[85%] msg-bot">
+          <div class="text-[#233e78] dark:text-white text-base font-poppins">${html}</div>
+        </div>`;
+    }
+
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return wrapper;
+  }
+
+  function mostrarTyping() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex justify-start';
+    wrapper.id = 'typing-indicator';
+    wrapper.innerHTML = `
+      <div class="bg-white dark:bg-gray-800 px-6 py-4 rounded-[20px] shadow">
+        <div class="typing-indicator flex gap-1">
+          <span></span><span></span><span></span>
+        </div>
+      </div>`;
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function removerTyping() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+  }
+
+  function escapar(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  async function enviarMensagem() {
+    const mensagem = inputMensagem.value.trim();
+    if (!mensagem) return;
+
+    inputMensagem.value = '';
+    inputMensagem.disabled = true;
+
+    adicionarMensagem('user', mensagem);
+    mostrarTyping();
+
+    try {
+      const res = await fetch("{% url 'kappabot_chat' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ mensagem }),
+      });
+
+      const data = await res.json();
+      removerTyping();
+
+      if (data.erro) {
+        adicionarMensagem('bot-erro', '⚠️ ' + data.erro);
+      } else {
+        adicionarMensagem('assistant', data.resposta);
+        if (data.mensagens_restantes !== undefined) {
+          contadorEl.textContent = `${data.mensagens_restantes} mensagens restantes hoje`;
+        }
+      }
+    } catch (e) {
+      removerTyping();
+      adicionarMensagem('assistant', '⚠️ Erro de conexão. Tente novamente.');
+    } finally {
+      inputMensagem.disabled = false;
+      inputMensagem.focus();
+    }
+  }
+
+  async function novaSessao() {
+    if (!confirm('Iniciar uma nova conversa? O histórico atual será mantido no servidor.')) return;
+
+    await fetch("{% url 'kappabot_nova_sessao' %}", {
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrfToken },
+    });
+
+    // Limpa mensagens da tela (mantém só a de boas-vindas)
+    const msgs = chatMessages.querySelectorAll('div.flex');
+    msgs.forEach((el, i) => { if (i > 0) el.remove(); });
+    contadorEl.textContent = '';
+  }
+</script>
 {% endblock %}

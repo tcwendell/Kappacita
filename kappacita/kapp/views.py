@@ -4,14 +4,16 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
+from django.conf import settings
+import google.generativeai as genai
+import json
+
 from .models import (
     AreaAtuacao, Curso, Profissao, Favorito, Perfil,
     RespostaQuestionario, SessaoChat, MensagemChat, LimiteUsoBot,
 )
-from django.core.paginator import Paginator
-from django.views.decorators.http import require_POST
-
-
 # ── AUTH ──────────────────────────────────────────────────────────────────────
 
 def loginFuncionalidades(request):
@@ -370,9 +372,163 @@ def questionario5(request):
 
 # ── OUTRAS PÁGINAS ────────────────────────────────────────────────────────────
 
+
+
+def _montar_system_prompt(usuario, resposta):
+    """
+    Monta o system prompt do Gemini com os dados do usuário
+    e os cursos/profissões do banco de dados.
+    """
+    # Busca cursos e profissões do banco para o Gemini conhecer
+    cursos     = Curso.objects.select_related('area').all()[:50]
+    profissoes = Profissao.objects.select_related('area').all()[:50]
+
+    lista_cursos = "\n".join(
+        f"- {c.nome} (Área: {c.area.nome if c.area else 'Geral'}, Avaliação: {c.avaliacao})"
+        for c in cursos
+    )
+    lista_profissoes = "\n".join(
+        f"- {p.nome} (Área: {p.area.nome if p.area else 'Geral'}, "
+        f"Salário: R${p.salario_min}–R${p.salario_max}, Avaliação: {p.avaliacao})"
+        for p in profissoes
+    )
+
+    interesses      = resposta.interesses.replace(',', ', ') if resposta else 'Não informado'
+    habilidades     = resposta.habilidades.replace(',', ', ') if resposta else 'Não informado'
+    valores         = resposta.valores_carreira.replace(',', ', ') if resposta else 'Não informado'
+    estilo          = resposta.estilo_trabalho if resposta else 'Não informado'
+    escolaridade    = resposta.escolaridade if resposta else 'Não informado'
+
+    return f"""Você é o KappaBot, assistente de orientação vocacional da plataforma Kappacita.
+Seu objetivo é ajudar o usuário a descobrir a melhor área de atuação, curso e profissão com base no perfil dele.
+
+PERFIL DO USUÁRIO ({usuario.username}):
+- Interesses: {interesses}
+- Habilidades: {habilidades}
+- Valores de carreira: {valores}
+- Estilo de trabalho preferido: {estilo}
+- Escolaridade pretendida: {escolaridade}
+
+CURSOS DISPONÍVEIS NA PLATAFORMA:
+{lista_cursos}
+
+PROFISSÕES DISPONÍVEIS NA PLATAFORMA:
+{lista_profissoes}
+
+REGRAS IMPORTANTES:
+1. Na PRIMEIRA mensagem da conversa, apresente uma recomendação clara de área de atuação, curso e profissão baseada no perfil acima. Seja específico e justifique brevemente.
+2. Após a recomendação, convide o usuário a fazer perguntas sobre a área recomendada.
+3. Responda SEMPRE em português brasileiro.
+4. Seja amigável, encorajador e objetivo.
+5. Quando falar de profissões ou cursos, use APENAS os que estão listados acima.
+6. Mantenha respostas com no máximo 4 parágrafos curtos.
+7. Nunca saia do tema de orientação vocacional e carreira."""
+
+
 @login_required
 def kappabot(request):
-    return render(request, 'kappabot.html')
+    """Renderiza a página do KappaBot com o histórico da sessão atual."""
+    # Busca ou cria sessão de chat do usuário
+    sessao = SessaoChat.objects.filter(usuario=request.user).order_by('-criado_em').first()
+
+    mensagens = []
+    if sessao:
+        mensagens = list(sessao.mensagens.order_by('criado_em').values('role', 'conteudo'))
+
+    # Verifica se o questionário foi concluído
+    try:
+        resposta = RespostaQuestionario.objects.get(usuario=request.user)
+        questionario_concluido = resposta.concluido
+    except RespostaQuestionario.DoesNotExist:
+        resposta = None
+        questionario_concluido = False
+
+    return render(request, 'kappabot.html', {
+        'mensagens':              mensagens,
+        'questionario_concluido': questionario_concluido,
+    })
+
+
+@login_required
+@require_POST
+def kappabot_chat(request):
+    """Endpoint AJAX que recebe a mensagem do usuário e retorna a resposta do Gemini."""
+    try:
+        data           = json.loads(request.body)
+        mensagem_user  = data.get('mensagem', '').strip()
+        nova_sessao    = data.get('nova_sessao', False)
+    except (json.JSONDecodeError, KeyError):
+        return JsonResponse({'erro': 'Requisição inválida.'}, status=400)
+
+    if not mensagem_user:
+        return JsonResponse({'erro': 'Mensagem vazia.'}, status=400)
+
+    # Verifica limite diário
+    limite, _ = LimiteUsoBot.objects.get_or_create(usuario=request.user)
+    if not limite.pode_enviar():
+        return JsonResponse({'erro': 'Você atingiu o limite de 20 mensagens por dia. Volte amanhã!'}, status=429)
+
+    # Busca perfil do usuário
+    try:
+        resposta_quest = RespostaQuestionario.objects.get(usuario=request.user)
+    except RespostaQuestionario.DoesNotExist:
+        resposta_quest = None
+
+    # Busca ou cria sessão de chat
+    if nova_sessao:
+        sessao = SessaoChat.objects.create(usuario=request.user, origem='direto')
+    else:
+        sessao = SessaoChat.objects.filter(usuario=request.user).order_by('-criado_em').first()
+        if not sessao:
+            sessao = SessaoChat.objects.create(usuario=request.user, origem='direto')
+
+    # Salva mensagem do usuário
+    MensagemChat.objects.create(sessao=sessao, role='user', conteudo=mensagem_user)
+
+    # Monta histórico para o Gemini (últimas 20 mensagens para não estourar contexto)
+    historico_db = sessao.mensagens.order_by('criado_em')[:-1]  # todas menos a que acabou de salvar
+    historico_db = historico_db[max(0, historico_db.count() - 20):]
+
+    historico_gemini = []
+    for msg in historico_db:
+        role = 'user' if msg.role == 'user' else 'model'
+        historico_gemini.append({'role': role, 'parts': [msg.conteudo]})
+
+    # Configura e chama o Gemini
+    try:
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel(
+            model_name='gemini-1.5-flash',
+            system_instruction=_montar_system_prompt(request.user, resposta_quest),
+        )
+
+        chat    = model.start_chat(history=historico_gemini)
+        response = chat.send_message(mensagem_user)
+        resposta_bot = response.text
+
+    except Exception as e:
+        return JsonResponse({'erro': f'Erro ao contatar o KappaBot: {str(e)}'}, status=500)
+
+    # Salva resposta do bot e registra uso
+    MensagemChat.objects.create(sessao=sessao, role='assistant', conteudo=resposta_bot)
+    limite.registrar_envio()
+
+    return JsonResponse({
+        'resposta':   resposta_bot,
+        'sessao_id':  sessao.id,
+        'mensagens_restantes': limite.LIMITE_DIARIO - limite.mensagens_hoje,
+    })
+
+
+@login_required
+@require_POST
+def kappabot_nova_sessao(request):
+    """Cria uma nova sessão de chat, limpando o histórico da tela."""
+    sessao = SessaoChat.objects.create(usuario=request.user, origem='direto')
+    return JsonResponse({'sessao_id': sessao.id})
+
+
+
 
 @login_required
 def meuprogresso(request):

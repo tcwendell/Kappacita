@@ -496,7 +496,7 @@ def kappabot_chat(request):
     # Chama o Gemini via HTTP
     try:
         api_key = os.environ.get('API_KEY', '')
-        url     = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
+        url     = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}'
 
         contents = []
         for msg in historico_db:

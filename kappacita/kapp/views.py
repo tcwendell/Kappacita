@@ -438,7 +438,7 @@ REGRAS IMPORTANTES:
 
 def _chamar_gemini(api_key, system_prompt, historico_msgs, mensagem_atual):
 
-    modelo = 'gemini-3.5-flash'
+    modelo = 'gemini-2.5-flash'
     url    = (
         f'https://generativelanguage.googleapis.com/v1beta/models/'
         f'{modelo}:generateContent?key={api_key}'
@@ -508,7 +508,6 @@ def kappabot(request):
 @login_required
 @require_POST
 def kappabot_chat(request):
-
     # ── 1. Parse do body ──────────────────────────────────────────────────
     try:
         data          = json.loads(request.body)
@@ -520,7 +519,9 @@ def kappabot_chat(request):
     if not mensagem_user:
         return JsonResponse({'erro': 'Mensagem vazia.'}, status=400)
 
-
+    # ── 2. Verifica API Key ANTES de qualquer coisa ───────────────────────
+    # Configure a variável de ambiente GEMINI_API_KEY no seu .env ou sistema.
+    # Exemplo no .env:  GEMINI_API_KEY=AIzaSy...
     api_key = os.environ.get('GEMINI_API_KEY', '').strip()
     if not api_key:
         return JsonResponse(
@@ -555,9 +556,6 @@ def kappabot_chat(request):
         if not sessao:
             sessao = SessaoChat.objects.create(usuario=request.user, origem='direto')
 
-    # ── 6. Detecta primeira mensagem da sessão ────────────────────────────
-    # Se não há mensagens ainda, é o primeiro envio — o system prompt
-    # instrui o Gemini a já recomendar automaticamente nesse caso.
     is_primeira_mensagem = not sessao.mensagens.exists()
 
     # Salva mensagem do usuário
@@ -565,8 +563,6 @@ def kappabot_chat(request):
         sessao=sessao, role='user', conteudo=mensagem_user
     )
 
-    # ── 7. Monta histórico para o Gemini (excluindo a mensagem recém salva) ──
-    # Pega as mensagens ANTERIORES à atual (todas exceto a última = a que acabamos de salvar)
     total_msgs   = sessao.mensagens.count()
     historico_db = list(
         sessao.mensagens.order_by('criado_em')[: total_msgs - 1]
@@ -600,7 +596,6 @@ def kappabot_chat(request):
             status=504
         )
     except ValueError as e:
-        # Erros de API (chave inválida, cota, modelo etc.) com mensagem legível
         return JsonResponse({'erro': str(e)}, status=500)
     except Exception as e:
         return JsonResponse(

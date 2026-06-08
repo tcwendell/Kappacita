@@ -438,41 +438,37 @@ REGRAS IMPORTANTES:
 
 def _chamar_gemini(api_key, system_prompt, historico_msgs, mensagem_atual):
 
+    import google.generativeai as genai
+
+    # Modelos disponiveis (gratuitos no Google AI Studio):
+    #   gemini-2.5-flash   <- recomendado (mais recente, gratuito)
+    #   gemini-2.0-flash   <- rapido e estavel
+    #   gemini-1.5-flash   <- versao anterior
     modelo = 'gemini-2.5-flash'
-    url    = (
-        f'https://generativelanguage.googleapis.com/v1beta/models/'
-        f'{modelo}:generateContent?key={api_key}'
+
+    genai.configure(api_key=api_key)
+
+    generation_config = genai.GenerationConfig(
+        max_output_tokens=1024,
+        temperature=0.7,
     )
 
-    # Monta o array contents: histórico + mensagem atual
-    contents = []
+    model = genai.GenerativeModel(
+        model_name=modelo,
+        generation_config=generation_config,
+        system_instruction=system_prompt,
+    )
+
+    historico_sdk = []
     for msg in historico_msgs:
         role = 'user' if msg.role == 'user' else 'model'
-        contents.append({'role': role, 'parts': [{'text': msg.conteudo}]})
-    contents.append({'role': 'user', 'parts': [{'text': mensagem_atual}]})
+        historico_sdk.append({'role': role, 'parts': [msg.conteudo]})
 
-    payload = {
-        'system_instruction': {
-            'parts': [{'text': system_prompt}]
-        },
-        'contents': contents,
-        'generationConfig': {
-            'maxOutputTokens': 1024,
-            'temperature':     0.7,
-        },
-    }
+    chat     = model.start_chat(history=historico_sdk)
+    response = chat.send_message(mensagem_atual)
 
-    response = requests.post(url, json=payload, timeout=30)
+    return response.text
 
-    # Captura erros HTTP com mensagem legível
-    if not response.ok:
-        try:
-            detalhe = response.json().get('error', {}).get('message', response.text)
-        except Exception:
-            detalhe = response.text
-        raise ValueError(f'Gemini retornou status {response.status_code}: {detalhe}')
-
-    return response.json()['candidates'][0]['content']['parts'][0]['text']
 
 
 @login_required
@@ -508,6 +504,7 @@ def kappabot(request):
 @login_required
 @require_POST
 def kappabot_chat(request):
+
     # ── 1. Parse do body ──────────────────────────────────────────────────
     try:
         data          = json.loads(request.body)
@@ -556,6 +553,9 @@ def kappabot_chat(request):
         if not sessao:
             sessao = SessaoChat.objects.create(usuario=request.user, origem='direto')
 
+    # ── 6. Detecta primeira mensagem da sessão ────────────────────────────
+    # Se não há mensagens ainda, é o primeiro envio — o system prompt
+    # instrui o Gemini a já recomendar automaticamente nesse caso.
     is_primeira_mensagem = not sessao.mensagens.exists()
 
     # Salva mensagem do usuário
@@ -563,6 +563,8 @@ def kappabot_chat(request):
         sessao=sessao, role='user', conteudo=mensagem_user
     )
 
+    # ── 7. Monta histórico para o Gemini (excluindo a mensagem recém salva) ──
+    # Pega as mensagens ANTERIORES à atual (todas exceto a última = a que acabamos de salvar)
     total_msgs   = sessao.mensagens.count()
     historico_db = list(
         sessao.mensagens.order_by('criado_em')[: total_msgs - 1]
@@ -596,6 +598,7 @@ def kappabot_chat(request):
             status=504
         )
     except ValueError as e:
+        # Erros de API (chave inválida, cota, modelo etc.) com mensagem legível
         return JsonResponse({'erro': str(e)}, status=500)
     except Exception as e:
         return JsonResponse(

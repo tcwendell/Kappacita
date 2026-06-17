@@ -286,7 +286,7 @@
           type="button"
           class="btn-favoritar-curso p-2 hover:bg-white/20 rounded-full transition-all"
           data-id="{{ curso.id }}"
-          data-favoritado="{{ curso.id in favoritos_ids|yesno:'true,false' }}"
+          data-favoritado="{% if curso.id in favoritos_ids %}true{% else %}false{% endif %}"
           onclick="toggleFavoritoCurso(this)">
           {% if curso.id in favoritos_ids %}
             <img src="{% static 'img/icons/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">

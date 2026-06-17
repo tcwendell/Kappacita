@@ -7,7 +7,7 @@
 {% include 'header.html' %}
 
 <style>
-  /* ── Cards de profissão ── */
+  {% comment %} Estilo base e hover dos cards de profissão com suporte a dark mode {% endcomment %}
   .profession-card {
     background-color: rgba(129, 168, 203, 0.8);
     border: 1px solid #1065a6;
@@ -25,57 +25,54 @@
     background-color: rgba(30, 41, 59, 1);
   }
 
-  /* ── Sombra dos cards ── */
+  {% comment %} Sombra padrão aplicada nos cards {% endcomment %}
   .card-shadow {
     box-shadow: 0px 0px 2px 0px rgba(23,26,31,0.12),
                 0px 17px 35px 0px rgba(23,26,31,0.24);
   }
 
-  /* ── Animação das setas do carrossel ── */
+  {% comment %} Setas do carrossel: ficam invisíveis e surgem com animação ao passar o mouse no container {% endcomment %}
   .seta-carrossel {
     opacity: 0;
     transform: translateY(-50%) scale(0.85);
     transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
-
   .group\/carousel:hover .seta-carrossel {
     opacity: 1;
     transform: translateY(-50%) scale(1);
   }
-
   .seta-carrossel:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-50%) scale(1.08) !important;
   }
-
   .seta-carrossel:active {
     transform: translateY(-50%) scale(0.95) !important;
     transition-duration: 0.1s;
   }
 
-  /* ── Esconde scrollbar do carrossel no WebKit ── */
+  {% comment %} Esconde a scrollbar do carrossel em navegadores WebKit (Chrome, Safari) {% endcomment %}
   #areas-scroll::-webkit-scrollbar {
     display: none;
   }
 </style>
 
-{% comment %} ── Overlay do Drawer ── {% endcomment %}
+{% comment %} Overlay escurecido que aparece atrás do drawer quando ele está aberto {% endcomment %}
 <div
   id="drawer-overlay"
   onclick="fecharDrawer()"
   class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"
 ></div>
 
-{% comment %} ── Drawer lateral de filtros ── {% endcomment %}
+{% comment %} Drawer lateral de filtro por área (desliza da direita) {% endcomment %}
 <aside
   id="drawer"
   class="fixed top-0 right-0 h-full w-80 max-w-[90vw] z-50 flex flex-col translate-x-full transition-transform duration-300 ease-in-out"
   style="background: linear-gradient(160deg, #1a3a5c 0%, #0f2340 100%);
-         border-left: 1px solid rgba(255,255,255,0.12);
-         box-shadow: -8px 0 40px rgba(0,0,0,0.4);"
+        border-left: 1px solid rgba(255,255,255,0.12);
+        box-shadow: -8px 0 40px rgba(0,0,0,0.4);"
 >
 
-  {% comment %} Cabeçalho do drawer {% endcomment %}
+  {% comment %} Cabeçalho do drawer com título e botão de fechar {% endcomment %}
   <div
     class="flex items-center justify-between px-6 py-5"
     style="border-bottom: 1px solid rgba(255,255,255,0.1);"
@@ -87,13 +84,13 @@
     <button
       onclick="fecharDrawer()"
       class="w-8 h-8 flex items-center justify-center rounded-full text-white/60
-             hover:text-white hover:bg-white/10 transition-all text-xl leading-none"
+            hover:text-white hover:bg-white/10 transition-all text-xl leading-none"
     >
       ×
     </button>
   </div>
 
-  {% comment %} Campo de busca {% endcomment %}
+  {% comment %} Campo de busca para filtrar as áreas listadas no drawer {% endcomment %}
   <div class="px-4 pt-4 pb-2">
     <div class="relative">
       <input
@@ -102,8 +99,8 @@
         placeholder="Buscar área..."
         oninput="filtrarDrawer(this.value)"
         class="w-full bg-white/10 text-white placeholder-white/40 font-poppins text-sm
-               rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
-               focus:border-white/30 transition-colors"
+              rounded-xl px-4 py-2.5 pl-9 outline-none border border-white/10
+              focus:border-white/30 transition-colors"
       >
       <svg
         class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
@@ -115,17 +112,17 @@
     </div>
   </div>
 
-  {% comment %} Lista de áreas {% endcomment %}
+  {% comment %} Lista de áreas navegáveis — "Todas as áreas" + cada área cadastrada {% endcomment %}
   <div class="flex-1 overflow-y-auto px-4 py-2 space-y-1" id="drawer-lista">
 
-    {% comment %} Opção "Todas as áreas" {% endcomment %}
-    <a
+    {% comment %} Opção especial para remover o filtro de área e mostrar todas as profissões {% endcomment %}
+    
       href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
       class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all font-poppins text-sm font-medium
-             {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
+            {% if not area_ativa %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
     >
       <span class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-                   {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
+                  {% if not area_ativa %}bg-white/20{% else %}bg-white/5{% endif %}">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
@@ -139,21 +136,21 @@
       {% endif %}
     </a>
 
-    {% comment %} Áreas cadastradas {% endcomment %}
+    {% comment %} Itera sobre todas as áreas cadastradas e exibe cada uma como link de filtro {% endcomment %}
     {% for area in areas %}
-      <a
+      
         href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
         data-nome="{{ area.nome|lower }}"
         class="drawer-item flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all font-poppins text-sm font-medium
-               {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
+              {% if area_ativa == area.id %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}"
       >
         <span class="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0
-                     {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
+                    {% if area_ativa == area.id %}ring-2 ring-white/40{% endif %}">
           {% if area.imagem %}
             <img src="{{ area.imagem.url }}" class="w-full h-full object-cover" alt="{{ area.nome }}">
           {% else %}
             <span class="w-full h-full flex items-center justify-center font-bold text-xs font-poppins text-white
-                         {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/10{% endif %}">
+                        {% if area_ativa == area.id %}bg-white/20{% else %}bg-white/10{% endif %}">
               {{ area.nome|slice:":1"|upper }}
             </span>
           {% endif %}
@@ -173,14 +170,14 @@
 
   </div>
 
-  {% comment %} Botão limpar filtro {% endcomment %}
+  {% comment %} Botão de limpar filtro — só aparece quando uma área está ativa {% endcomment %}
   {% if area_ativa %}
     <div class="px-4 pb-6 pt-3" style="border-top: 1px solid rgba(255,255,255,0.08);">
-      <a
+      
         href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
         class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
-               bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
-               font-poppins text-sm transition-all"
+              bg-white/10 hover:bg-white/15 text-white/80 hover:text-white
+              font-poppins text-sm transition-all"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -193,14 +190,12 @@
 </aside>
 
 
-{% comment %} ════════════════════════════════════════
-    Conteúdo principal
-════════════════════════════════════════ {% endcomment %}
+{% comment %} Conteúdo principal da página {% endcomment %}
 <div class="p-4 lg:p-10 space-y-8 bg-[#5b91bc] dark:bg-gray-950 min-h-screen transition-colors">
 
   <h2 class="text-white text-4xl lg:text-5xl font-bold font-poppins">Explorar Profissões</h2>
 
-  {% comment %} ── Barra de busca e filtro ── {% endcomment %}
+  {% comment %} Barra de ações: botão de filtro por área + campo de busca por nome {% endcomment %}
   <div class="flex flex-col md:flex-row items-center gap-3">
 
     <button
@@ -208,7 +203,7 @@
       id="btn-filtro"
       title="Filtrar por área"
       class="relative p-2.5 rounded-full transition-all
-             {% if area_ativa %}bg-white/30 ring-2 ring-white{% else %}hover:bg-white/20{% endif %}"
+            {% if area_ativa %}bg-white/30 ring-2 ring-white{% else %}hover:bg-white/20{% endif %}"
     >
       <img src="{% static 'img/filtro.svg' %}" class="w-6 h-6" alt="Filtro">
       {% if area_ativa %}
@@ -228,14 +223,14 @@
           value="{{ request.GET.q|default:'' }}"
           placeholder="Buscar profissões..."
           class="bg-transparent border-none focus:ring-0 text-[#233e78] dark:text-white
-                 placeholder-[#233e78]/60 dark:placeholder-white/40 w-full ml-3 outline-none"
+                placeholder-[#233e78]/60 dark:placeholder-white/40 w-full ml-3 outline-none"
         >
       </div>
     </form>
 
   </div>
 
-  {% comment %} ── Contador e filtro ativo ── {% endcomment %}
+  {% comment %} Contador de resultados e badge da área filtrada atualmente ativa {% endcomment %}
   <div class="flex items-center gap-3 flex-wrap">
     <p class="text-white text-sm font-poppins">
       {{ profissoes.paginator.count }} profissão(ões) encontrada(s)
@@ -246,7 +241,7 @@
           <span class="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-poppins px-3 py-1 rounded-full">
             <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
             {{ area.nome }}
-            <a
+            
               href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
               class="ml-0.5 opacity-70 hover:opacity-100 transition-opacity"
             >✕</a>
@@ -256,15 +251,14 @@
     {% endif %}
   </div>
 
-  {% comment %} ── Carrossel de áreas ── {% endcomment %}
+  {% comment %} Carrossel horizontal de cards de área para filtro rápido por clique {% endcomment %}
   <div class="relative group/carousel">
 
-    {% comment %} Seta esquerda {% endcomment %}
     <button
       onclick="scrollAreas(-1)"
       class="seta-carrossel absolute -left-4 top-1/2 -translate-y-1/2 z-10
-             bg-white dark:bg-gray-700 p-2 rounded-full shadow-md
-             hidden lg:flex items-center justify-center"
+            bg-white dark:bg-gray-700 p-2 rounded-full shadow-md
+            hidden lg:flex items-center justify-center"
       aria-label="Anterior"
     >
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5 rotate-180" alt="Anterior">
@@ -275,19 +269,20 @@
       class="flex gap-5 overflow-x-auto pb-4 scroll-smooth"
       style="scrollbar-width: none;"
     >
+      {% comment %} Cada card de área é um link que ativa ou remove o filtro daquela área {% endcomment %}
       {% for area in areas %}
 
         {% if area_ativa == area.id %}
-          <a
+          
             href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}"
             class="group flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
-                   cursor-pointer shadow-xl ring-4 ring-white transition-all duration-300"
+                  cursor-pointer shadow-xl ring-4 ring-white transition-all duration-300"
           >
         {% else %}
-          <a
+          
             href="?area={{ area.id }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
             class="group flex-shrink-0 w-44 h-44 relative rounded-2xl overflow-hidden
-                   cursor-pointer shadow-xl transition-all duration-300 hover:ring-2 hover:ring-white/60 hover:shadow-2xl hover:-translate-y-1"
+                  cursor-pointer shadow-xl transition-all duration-300 hover:ring-2 hover:ring-white/60 hover:shadow-2xl hover:-translate-y-1"
           >
         {% endif %}
 
@@ -295,7 +290,7 @@
             <img
               src="{{ area.imagem.url }}"
               class="absolute inset-0 w-full h-full object-cover opacity-70
-                     group-hover:scale-110 transition-transform duration-500 ease-out"
+                    group-hover:scale-110 transition-transform duration-500 ease-out"
               alt="{{ area.nome }}"
             >
           {% else %}
@@ -324,12 +319,11 @@
       {% endfor %}
     </div>
 
-    {% comment %} Seta direita {% endcomment %}
     <button
       onclick="scrollAreas(1)"
       class="seta-carrossel absolute -right-4 top-1/2 -translate-y-1/2 z-10
-             bg-white dark:bg-gray-700 p-2 rounded-full shadow-md
-             hidden lg:flex items-center justify-center"
+            bg-white dark:bg-gray-700 p-2 rounded-full shadow-md
+            hidden lg:flex items-center justify-center"
       aria-label="Próximo"
     >
       <img src="{% static 'img/proximo.svg' %}" class="w-5 h-5" alt="Próximo">
@@ -337,82 +331,90 @@
 
   </div>
 
-  {% comment %} ── Grid de profissões (ordem alfabética) ── {% endcomment %}
+  {% comment %} Grid de cards de profissões — exibe as profissões da página atual {% endcomment %}
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
     {% for profissao in profissoes %}
-      <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative transition-all">
 
-        {% comment %} Cabeçalho do card {% endcomment %}
-        <div class="flex justify-between items-start">
-          <div class="flex gap-4">
+    {% comment %} Card individual de profissão com ícone, nome, área, avaliação, salário e botão de favoritar {% endcomment %}
+    <div class="profession-card rounded-2xl p-5 flex flex-col gap-3 relative transition-all">
 
-            <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl
-                        flex items-center justify-center flex-shrink-0 overflow-hidden">
-              {% if profissao.icone %}
-                <img src="{{ profissao.icone.url }}" class="w-full h-full object-cover" alt="{{ profissao.nome }}">
-              {% else %}
-                <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-7 h-7" alt="{{ profissao.nome }}">
-              {% endif %}
-            </div>
+      <div class="flex justify-between items-start">
+        <div class="flex gap-4">
 
-            <div>
-              <h3 class="text-white text-lg font-bold font-poppins">{{ profissao.nome }}</h3>
-              <p class="text-white/80 dark:text-white/60 text-sm font-poppins">
-                {{ profissao.area.nome|default:"—" }}
-              </p>
-            </div>
-
+          {% comment %} Ícone da profissão — usa imagem própria se cadastrada, senão usa ícone padrão {% endcomment %}
+          <div class="w-12 h-12 bg-[#dee1e6] dark:bg-gray-700 rounded-xl
+                      flex items-center justify-center flex-shrink-0 overflow-hidden">
+            {% if profissao.icone %}
+              <img src="{{ profissao.icone.url }}" class="w-full h-full object-cover" alt="{{ profissao.nome }}">
+            {% else %}
+              <img src="{% static 'img/icons/icon_profissoes.svg' %}" class="w-7 h-7" alt="{{ profissao.nome }}">
+            {% endif %}
           </div>
 
-          {% comment %} Estrelas de avaliação {% endcomment %}
-          <div class="flex gap-0.5 flex-shrink-0">
-            {% for estrela in profissao.get_estrelas %}
-              <img
-                src="{% static 'img/icons/estrela_' %}{{ estrela }}.svg"
-                class="w-4 h-4"
-                alt="{{ estrela }}"
-              >
-            {% endfor %}
+          <div>
+            <h3 class="text-white text-lg font-bold font-poppins">{{ profissao.nome }}</h3>
+            <p class="text-white/80 dark:text-white/60 text-sm font-poppins">
+              {{ profissao.area.nome|default:"—" }}
+            </p>
           </div>
+
         </div>
 
-        {% comment %} Descrição {% endcomment %}
-        <p class="text-white text-xs leading-relaxed font-poppins">{{ profissao.descricao }}</p>
-
-        {% comment %} Faixa salarial {% endcomment %}
-        <p class="text-white/90 text-sm font-poppins font-semibold">
-          Salário: R$ {{ profissao.salario_min }} — R$ {{ profissao.salario_max }}
-        </p>
-
-        {% comment %} Botão favoritar {% endcomment %}
-        <div class="flex justify-end mt-auto">
-          <form method="post" action="{% url 'favoritar_profissao' profissao.id %}">
-            {% csrf_token %}
-            <button type="submit" class="p-2 hover:bg-white/20 rounded-full transition-all">
-              {% if profissao.id in favoritos_ids %}
-                <img src="{% static 'img/icons/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">
-              {% else %}
-                <img src="{% static 'img/coracao.svg' %}" class="w-5 h-5" alt="Favoritar">
-              {% endif %}
-            </button>
-          </form>
+        {% comment %} Estrelas de avaliação da profissão — renderizadas via método get_estrelas do model {% endcomment %}
+        <div class="flex gap-0.5 flex-shrink-0">
+          {% for estrela in profissao.get_estrelas %}
+            <img
+              src="{% static 'img/icons/estrela_' %}{{ estrela }}.svg"
+              class="w-4 h-4"
+              alt="{{ estrela }}"
+            >
+          {% endfor %}
         </div>
-
       </div>
+
+      <p class="text-white text-xs leading-relaxed font-poppins">{{ profissao.descricao }}</p>
+
+      {% comment %} Faixa salarial da profissão cadastrada no banco de dados {% endcomment %}
+      <p class="text-white/90 text-sm font-poppins font-semibold">
+        Salário: R$ {{ profissao.salario_min }} — R$ {{ profissao.salario_max }}
+      </p>
+
+      {% comment %}
+        Botão de favoritar — ao clicar, chama toggleFavoritoProfissao() via AJAX sem recarregar a página.
+        O data-id armazena o ID da profissão para uso no JavaScript.
+        O data-favoritado indica o estado atual (true/false) para alternar o ícone corretamente.
+      {% endcomment %}
+      <div class="flex justify-end mt-auto">
+        <button
+          type="button"
+          class="btn-favoritar-profissao p-2 hover:bg-white/20 rounded-full transition-all"
+          data-id="{{ profissao.id }}"
+          data-favoritado="{{ profissao.id in favoritos_ids|yesno:'true,false' }}"
+          onclick="toggleFavoritoProfissao(this)">
+          {% if profissao.id in favoritos_ids %}
+            <img src="{% static 'img/icons/coracao_vermelho.svg' %}" class="w-5 h-5" alt="Favoritado">
+          {% else %}
+            <img src="{% static 'img/coracao.svg' %}" class="w-5 h-5" alt="Favoritar">
+          {% endif %}
+        </button>
+      </div>
+
+    </div>
+
     {% empty %}
       <p class="text-white col-span-3 text-center py-10 font-poppins">Nenhuma profissão encontrada.</p>
     {% endfor %}
 
   </div>
 
-  {% comment %} ── Paginação ── {% endcomment %}
+  {% comment %} Paginação — só aparece quando há mais de uma página de resultados {% endcomment %}
   {% if profissoes.has_other_pages %}
     <div class="flex items-center justify-center gap-2 py-8">
 
-      {% comment %} Botão anterior {% endcomment %}
+      {% comment %} Botão de página anterior — desativado visualmente quando já está na primeira {% endcomment %}
       {% if profissoes.has_previous %}
-        <a
+        
           href="?page={{ profissoes.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
           class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 transition-all"
         >
@@ -424,14 +426,14 @@
         </span>
       {% endif %}
 
-      {% comment %} Páginas numeradas {% endcomment %}
+      {% comment %} Números de página — página atual destacada, demais como links clicáveis {% endcomment %}
       {% for num in profissoes.paginator.page_range %}
         {% if profissoes.number == num %}
           <span class="w-8 h-9 bg-[#223f78] dark:bg-blue-600 text-white rounded-md font-poppins font-bold flex items-center justify-center">
             {{ num }}
           </span>
         {% else %}
-          <a
+          
             href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
             class="w-8 h-9 bg-white dark:bg-gray-700 border border-[#dee1e6] dark:border-gray-600
                   text-[#9095a1] dark:text-gray-300 rounded-md font-poppins flex items-center
@@ -442,9 +444,9 @@
         {% endif %}
       {% endfor %}
 
-      {% comment %} Botão próximo {% endcomment %}
+      {% comment %} Botão de próxima página — desativado visualmente quando já está na última {% endcomment %}
       {% if profissoes.has_next %}
-        <a
+        
           href="?page={{ profissoes.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if area_ativa %}&area={{ area_ativa }}{% endif %}"
           class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-white/20 transition-all"
         >
@@ -459,7 +461,7 @@
     </div>
   {% endif %}
 
-  {% comment %} ── Rodapé ── {% endcomment %}
+  {% comment %} Rodapé com copyright e links institucionais {% endcomment %}
   <footer class="mt-auto bg-gray-100/30 dark:bg-gray-800/30 border-t border-[#dee1e6] dark:border-gray-700 py-6 px-4 lg:px-12 rounded-xl">
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <p class="text-sm text-white/70 font-poppins">© 2026 Kappacita LTDA. Todos os direitos reservados.</p>
@@ -473,29 +475,32 @@
 
 </div>
 
-
+{% comment %} Scripts de interatividade da página {% endcomment %}
 <script>
-  // ── Drawer ──
+  {% comment %} Drawer: referências aos elementos do DOM {% endcomment %}
   const drawer  = document.getElementById('drawer');
   const overlay = document.getElementById('drawer-overlay');
 
+  {% comment %} Abre o drawer lateral e bloqueia o scroll da página {% endcomment %}
   function abrirDrawer() {
     drawer.classList.remove('translate-x-full');
     overlay.classList.remove('opacity-0', 'pointer-events-none');
     document.body.style.overflow = 'hidden';
   }
 
+  {% comment %} Fecha o drawer lateral e restaura o scroll da página {% endcomment %}
   function fecharDrawer() {
     drawer.classList.add('translate-x-full');
     overlay.classList.add('opacity-0', 'pointer-events-none');
     document.body.style.overflow = '';
   }
 
+  {% comment %} Fecha o drawer ao pressionar a tecla Escape {% endcomment %}
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') fecharDrawer();
   });
 
-  // ── Busca interna do drawer ──
+  {% comment %} Filtra os itens do drawer em tempo real conforme o usuário digita na busca {% endcomment %}
   function filtrarDrawer(termo) {
     const itens = document.querySelectorAll('#drawer-lista .drawer-item[data-nome]');
     const t = termo.toLowerCase().trim();
@@ -504,12 +509,46 @@
     });
   }
 
-  // ── Scroll do carrossel ──
+  {% comment %} Move o carrossel de áreas para a esquerda (dir=-1) ou direita (dir=1) {% endcomment %}
   function scrollAreas(dir) {
     document.getElementById('areas-scroll').scrollBy({
       left: dir * 220,
       behavior: 'smooth',
     });
+  }
+
+  {% comment %}
+    toggleFavoritoProfissao: envia requisição AJAX para favoritar/desfavoritar uma profissão.
+    - Lê o ID da profissão e o estado atual (favoritado ou não) dos atributos data-* do botão.
+    - Envia POST para o endpoint favoritar_profissao_ajax com o CSRF token.
+    - Na resposta, troca o ícone do coração e atualiza o data-favoritado sem recarregar a página.
+    - Em caso de erro, exibe alerta para o usuário.
+  {% endcomment %}
+  function toggleFavoritoProfissao(btn) {
+    const profissaoId = btn.dataset.id;
+    const csrfToken   = document.cookie.match(/csrftoken=([^;]+)/)?.[1] ?? '';
+
+    fetch(`/profissoes/favoritar-ajax/${profissaoId}/`, {
+      method:  'POST',
+      headers: { 'X-CSRFToken': csrfToken },
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.erro) { alert(data.erro); return; }
+
+      const novoFavoritado = data.favoritado;
+      btn.dataset.favoritado = novoFavoritado ? 'true' : 'false';
+
+      const img = btn.querySelector('img');
+      if (novoFavoritado) {
+        img.src = "{% static 'img/icons/coracao_vermelho.svg' %}";
+        img.alt = 'Favoritado';
+      } else {
+        img.src = "{% static 'img/coracao.svg' %}";
+        img.alt = 'Favoritar';
+      }
+    })
+    .catch(() => alert('Erro ao favoritar. Tente novamente.'));
   }
 </script>
 

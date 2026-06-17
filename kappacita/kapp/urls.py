@@ -8,7 +8,7 @@ from .views import (
     profissoes, favoritar_profissao, favoritos,
     desfavoritar_curso, desfavoritar_profissao, meuprogresso,
     configuracoes, privacidade, notificacoes, idiomas, excluir_conta,
-    kappabot_chat, kappabot_nova_sessao
+    kappabot_chat, kappabot_nova_sessao,favoritar_curso_ajax, favoritar_profissao_ajax,
 )
 
 urlpatterns = [
@@ -20,6 +20,7 @@ urlpatterns = [
     path('sair/', sair, name='sair'),
     path('homepage/', homepage, name='homepage'),
     path('favoritar-ajax/<int:curso_id>/', favoritar_curso_ajax, name='favoritar_curso_ajax'),
+    path('profissoes/favoritar-ajax/<int:profissao_id>/', favoritar_profissao_ajax, name='favoritar_profissao_ajax'),
     path('cursos/', cursos, name='cursos'),
     path('cursos/<int:curso_id>/favoritar/', favoritar_curso, name='favoritar_curso'),
     path('kappabot/', kappabot, name='kappabot'),

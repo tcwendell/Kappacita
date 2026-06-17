@@ -187,6 +187,22 @@ def favoritar_curso_ajax(request, curso_id):
 
     return JsonResponse({'favoritado': criado, 'curso_id': curso_id})
 
+# ── FAVORITAR PROFISSÃO (AJAX toggle) ────────────────────────────────────────
+
+@login_required
+@require_POST
+def favoritar_profissao_ajax(request, profissao_id):
+    try:
+        profissao = Profissao.objects.get(id=profissao_id)
+    except Profissao.DoesNotExist:
+        return JsonResponse({'erro': 'Profissão não encontrada.'}, status=404)
+
+    favorito, criado = Favorito.objects.get_or_create(usuario=request.user, profissao=profissao)
+    if not criado:
+        favorito.delete()
+
+    return JsonResponse({'favoritado': criado, 'profissao_id': profissao_id})
+
 
 # ── CURSOS ────────────────────────────────────────────────────────────────────
 
